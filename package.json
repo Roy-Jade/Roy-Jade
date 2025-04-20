@@ -24,6 +24,7 @@
   "homepage": "https://github.com/Roy-Jade/Roy-Jade#readme",
   "description": "",
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.14.4"
+    "@parcel/transformer-sass": "^2.14.4",
+    "parcel-reporter-static-files-copy": "^1.5.3"
   }
 }

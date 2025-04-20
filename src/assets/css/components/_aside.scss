@@ -1,27 +1,26 @@
 aside {
     background: var(--backgroundAside);
-    min-height: calc(100vh - 150px);
-    padding: 0 10%;
+    padding: 0 15pt;
 }
 
 aside img {
     width: 100%;
-    margin: 60px auto 60px;
+    margin: 45pt auto 45pt;
     display: block;
     border-radius: 50%;
 }
 
 aside h2, section article h2 {
-    font-size: 18px;
+    font-size: 12pt;
     font-weight: bold;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 15pt;
 }
 
 aside ul {
     color: var(--text);
-    margin-bottom: 30px;
-    padding-bottom: 30px;
+    margin-bottom: 22pt;
+    padding-bottom: 22pt;
     border-bottom: 1px solid var(--borderLight);
     line-height: 1.4;
 }

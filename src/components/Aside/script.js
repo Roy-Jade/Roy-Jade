@@ -1,6 +1,6 @@
 export default function Aside({skills, langages, hobbies}) {
     return (
-        <aside>
+        <aside className="position-right">
 
             <img src="null" alt="Photo de Grégoire"></img>
 

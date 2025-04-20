@@ -1,34 +1,36 @@
-section {
-    padding-top: 70px;
+.main-content {
+    padding-top: 30pt;
 }
 
-section article {
+.main-content section {
     border-top: 1px solid var(--borderLight);
-    margin-bottom: 50px;
+    margin-bottom: 30pt;
 }
 
-section article h2 {
+.main-content section h2 {
     width: auto;
     background: var(--background);
     border-right: 1px solid var(--borderLight);
     position: relative;
-    top: -10px;
+    top: -7pt;
     display: inline-block;
-    padding-right: 10px;
+    padding-right: 7pt;
+    font-weight: bold;
+    font-size: 13pt;
 }
 
-section article p {
+.main-content section p {
     color: var(--text);
     line-height: 1.2;
 }
 
-section article li.exp {
+.main-content section li.exp {
     display: grid;
-    grid-template-columns: 105px auto;
-    margin-bottom: 20px;
+    grid-template-columns: 70pt auto;
+    margin-bottom: 15pt;
 }
 
-section article li span.periode {
+.main-content section li span.periode {
     border-right: 1px solid var(--borderDark);;
     font-weight: bold;
     display: flex;
@@ -36,12 +38,12 @@ section article li span.periode {
     justify-content: center;
 }
 
-section article li.exp span.desc {
-    padding-left: 20px;
+.main-content section li.exp span.desc {
+    padding-left: 15pt;
     line-height: 1.4;
     color: var(--text);
 }
 
-section article li.exp span.desc strong {
+.main-content section li.exp span.desc strong {
     font-weight: bold;   
 }
