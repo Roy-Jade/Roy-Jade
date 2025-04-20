@@ -1,0 +1,60 @@
+
+
+header {
+    background: var(--banner);
+    height: 150px;
+}
+
+header ul {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.5fr 1.5fr;
+}
+
+header ul li {
+    height: 150px;
+    padding: 50px 0 0 15%;
+    font-size: 15px;
+    color: var(--bannerText);
+    line-height: 1.5;
+}
+
+header ul li strong {
+    display: block;
+    text-transform: uppercase;
+    color: var(--bannerTitle);
+    font-size: 14px;
+}
+
+header ul li:nth-child(2) {
+    padding-left: 20%;
+}
+
+header ul li:nth-child(3) {
+    padding-left: 15%;
+}
+
+header ul li:first-child {
+    background: var(--name);
+    // height: 110px;
+    padding: 40px 16% 0 16%;
+}
+
+header ul li #prenom, header ul li #nom {
+    display: block;
+    font-size: 28px;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+header ul li #nom {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+header h1 {
+    color: var(--title);
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+    padding: 15px 0 0 30%;
+}

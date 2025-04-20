@@ -1,0 +1,47 @@
+section {
+    padding-top: 70px;
+}
+
+section article {
+    border-top: 1px solid var(--borderLight);
+    margin-bottom: 50px;
+}
+
+section article h2 {
+    width: auto;
+    background: var(--background);
+    border-right: 1px solid var(--borderLight);
+    position: relative;
+    top: -10px;
+    display: inline-block;
+    padding-right: 10px;
+}
+
+section article p {
+    color: var(--text);
+    line-height: 1.2;
+}
+
+section article li.exp {
+    display: grid;
+    grid-template-columns: 105px auto;
+    margin-bottom: 20px;
+}
+
+section article li span.periode {
+    border-right: 1px solid var(--borderDark);;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+section article li.exp span.desc {
+    padding-left: 20px;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+section article li.exp span.desc strong {
+    font-weight: bold;   
+}

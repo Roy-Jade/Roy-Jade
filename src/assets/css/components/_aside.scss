@@ -1,0 +1,27 @@
+aside {
+    background: var(--backgroundAside);
+    min-height: calc(100vh - 150px);
+    padding: 0 10%;
+}
+
+aside img {
+    width: 100%;
+    margin: 60px auto 60px;
+    display: block;
+    border-radius: 50%;
+}
+
+aside h2, section article h2 {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+aside ul {
+    color: var(--text);
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--borderLight);
+    line-height: 1.4;
+}
