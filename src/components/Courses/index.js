@@ -5,7 +5,7 @@ export default function Courses({courses}) {
         <section>
             <h2>Formations et diplômes</h2>
             <ul>
-                {courses.map((course) =>  <Course key={course.title} course={course} />).slice(0, 4)}
+                {courses.map((course) =>  <Course key={course.title} course={course} />).slice(0, 5)}
             </ul>
         </section>
     )

@@ -1,39 +1,55 @@
 footer {
-    background: var(--banner);
+    // Colore l'arrière plan
+    background: var(--backgroundBanner);
+    // Sépare l'espace pour les parties gauches et droites de la feuille en ratio 2 pour 5
     display: grid;
     grid-template-columns: 2fr 5fr;
+    // Force une taille d'affichage
+    height: 40pt;
 }
 
+// Partie gauche
 footer h2 {
+    // Coloration de l'arrière-plan
     background: var(--backgroundFooter);
-    height: 40pt;
+    // Centrage du texte
     text-align: center;
     padding-top: 18px;
 }
 
 footer ul {
+    // Affichage des blocs de liens en ligne flexible
     display: flex;
 }
 
+// Image des liens
 footer ul li img {
+    // Applique une taille
     height: 12pt;
+    // Centre les images
     position: relative;
     top: 2pt;
 }
 
+// Blocs des liens
 footer ul li {
-    display: block;
-    text-align: center;
+    // Espace les liens entre eux
     padding-left: 30pt;
+    // Centre les liens en hauteur
     padding-top: 12pt;
 }
 
+// Liens
 footer ul li a {
+    // Colore le texte des liens
     color: var(--bannerText);
+    // Enlève le surlignage des liens
     text-decoration: none;
-    font-size: 12px;
+    // Réduit la taille du texte
+    font-size: 85%;
 }
 
+// Surligne
 footer ul li a:hover {
     text-decoration: underline;
 }

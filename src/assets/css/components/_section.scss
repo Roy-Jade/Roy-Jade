@@ -1,49 +1,73 @@
-.main-content {
-    padding-top: 30pt;
-}
+// Contenu principal de la feuille (partie droite)
 
+// Sections contenant les éléments
 .main-content section {
+    // Place la bordure haute
     border-top: 1px solid var(--borderLight);
-    margin-bottom: 30pt;
+    // /Espace les blocs
+    margin-top: 28pt;
+
+    // Titre des sections
+    &>h2 {
+        // Graisse et agrandit le texte
+        font-weight: bold;
+        font-size: 120%;
+        // Réduit le bloc du titre pour laisser la place à la bordure de section
+        display: inline-block;
+        // Déplace le titre pour l'aligner avec la bordure de section
+        position: relative;
+        top: -7pt;
+        // Efface la bordure haute sous le titre
+        background: var(--background);
+        // Place la bordure droite
+        border-right: 1px solid var(--borderLight);
+        // Espace le titre de sa bordure droite
+        padding-right: 7pt;
+    }
+
+
+    // Texte de la section présentation
+    &>p {
+        // Colore le texte
+        color: var(--text);
+        // Espace les lignes
+        line-height: 1.2;
+    }
 }
 
-.main-content section h2 {
-    width: auto;
-    background: var(--background);
-    border-right: 1px solid var(--borderLight);
-    position: relative;
-    top: -7pt;
-    display: inline-block;
-    padding-right: 7pt;
-    font-weight: bold;
-    font-size: 13pt;
-}
 
-.main-content section p {
-    color: var(--text);
-    line-height: 1.2;
-}
-
-.main-content section li.exp {
+// Element de liste des sections
+.main-content section li {
+    // Définit une place pour la partie date et pour le reste
     display: grid;
     grid-template-columns: 70pt auto;
+    // Espace les éléments
     margin-bottom: 15pt;
-}
 
-.main-content section li span.periode {
-    border-right: 1px solid var(--borderDark);;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+    // Partie date
+    &>span.periode{
+        // Applique la bordure droite
+        border-right: 1px solid var(--borderDark);;
+        // Graissage
+        font-weight: bold;
+        // Centrage
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-.main-content section li.exp span.desc {
-    padding-left: 15pt;
-    line-height: 1.4;
-    color: var(--text);
-}
+    // Partie contenu
+    &>span.desc {
+        // Espace des dates
+        padding-left: 15pt;
+        // Espace les lignes
+        line-height: 1.4;
+        // Coloration
+        color: var(--text);
 
-.main-content section li.exp span.desc strong {
-    font-weight: bold;   
+        // Graissage du titre des expériences
+        &>strong {
+            font-weight: bold;   
+        }
+    }
 }

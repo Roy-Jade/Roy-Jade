@@ -1,10 +1,19 @@
 export default [
     {
+        title : "Stage développeur full-stack",
+        date : "2025",
+        duration : "2 mois",
+        compagny : "Tritons",
+        content : "Développement back-end en python FastAPI et front-end en VueJS. Création et maintenance d'infrastructures via Kubermetes. Développement de compétences en architecture logicielle, technique et en méthodologie Agile.",
+        domain : "Informatique et développement",
+    },
+    {
         title : "Technicien d'analyse en agro-alimentaire",
         date : "2021 - 2023",
         duration : "21 mois",
         compagny : "Wessling France",
         content : "Développement de méthodes d'analyse de métaux lourds sur des matrices alimentaires et  validation de ces méthodes. Une fois les méthodes validées, mise en application pour des analyses de routines. Participation active à l'amélioration continue du laboratoire, au respect des règles de sécurités, et aux activités parallèles au laboratoire lors de besoins ponctuels de renforts.",
+        domain : "Science analytique",
     },
     {
         title : "Technicien radioprotection",
@@ -12,6 +21,7 @@ export default [
         duration : "3 mois",
         compagny : "Cerap Prévention",
         content : "Prestation de vérification des derniers niveaux de filtration en installation nucléaire de base, et analyse des écnahtillons récupérés. Suivi stricte des règles de radioprotection et des processus de validations.",
+        domain : "Physique nucléaire",
     },
     {
         title : "Technicien d'analyse en laboratoire routier",
@@ -19,6 +29,7 @@ export default [
         duration : "5 mois",
         compagny : "Colas Ile-De-France-Nord",
         content : "Prélèvement sur site de matériaux de constructions, et analyses en laboratoire de ces matériaux (conformité et détection de corps indésirables pour le bétonnage). Développement de méthodes d'analyses rapides in-situ, et tests de conformités des compactages de sols. Réécriture des documents techniques vieillissants du laboratoire et des protocoles.",
+        domain : "Science analytique",
     },
     {
         title : "Technicien data maintenance",
@@ -26,6 +37,7 @@ export default [
         duration : "10 mois",
         compagny : "GSK Évreux",
         content : "Création de nouvelles méthodes d'analyses et de leurs paramètres sur le système de gestion de l'information du laboratoire (lims), et modification et maintenances de données déjà présentes. Mise à jour d'anciennes méthodes dans le cadre de l'amélioration de la traçabilité et de la data integrity des laboratoires du site. Création de bases de données pour soutenir la suite de l'activité de l'équipe en fin de mission.",
+        domain : "Science analytique",
     },
     {
         title : "Technicien chimiste",
@@ -33,5 +45,38 @@ export default [
         duration : "9 mois",
         compagny : "Eurofins Hydrologie Est",
         content : "Analyse sur ICP AES, ICP couplé masse et LC à détection fluorescente/ultraviolet d'échantillons d'eaux propres et résiduraires, puis exploitation des résultats et transmission dans les bases de données. Optimisation des méthodes et des zéones de travail (suivi du 5S), et suivi qualité selon les normes en vigueurs.",
+        domain : "Science analytique",
+    },
+    {
+        title : "Stage technicien de laboratoire",
+        date : "2016",
+        duration : "2 mois",
+        compagny : "Valeo La Verrière",
+        content : "",
+        domain : "Science analytique",
+    },
+    {
+        title : "Surveillant d'internat",
+        date : "2015",
+        duration : "1 mois",
+        compagny : "Lycée privée Sainte Geneviève (78)",
+        content : "Surveillance des entrées et sorties de l'établissement dans le cadre du plan vigipirate. Informer les parents d'élèves, visiteurs et les externes et les guider à travers l'établissement.",
+        domain : "Milieu scolaire",
+    },
+    {
+        title : "Employé de bureau, archiviste",
+        date : "2015",
+        duration : "1 mois",
+        compagny : "Lycée privée Sainte Geneviève (78)",
+        content : "Gestion de l'accueil de l'établissement : standart téléphonique, traitement du courrier, renseignement des visiteurs. Tri et archivage des anciens dossiers élèves de l'école.",
+        domain : "Milieu scolaire",
+    },
+    {
+        title : "Restaurateur scolaire",
+        date : "2014",
+        duration : "1 mois",
+        compagny : "Collège Saint Louis Notre Dame du Bel Air (78)",
+        content : "Préparation des repas suivant les normes d'hygiènes en vigueur. Distribution des repas aux élèves et au corps enseignant. Nettoyage des locaux et entretien du matériel de l'établissement.",
+        domain : "Milieu scolaire",
     },
 ];
