@@ -10,8 +10,8 @@ header {
 
 header h1 {
     // Colore le fond et le texte pour le nom
-    color: var(--bannerTitle);
-    background: var(--backgroundName);
+    color: var(--bannerText);
+    background: var(--backgroundBannerGlassed);
     // Formate la taille de l'encadré
     height: 100pt;
     // Centre le texte et l'espace
@@ -29,6 +29,9 @@ header h1 {
     &>#nom {
         font-weight: bold;
     }
+
+    // Place le conteneur devant la bande aside pour l'effet vitrifié
+    z-index: 1;
 }
 
 // Parties liste d'infos personnelles
@@ -58,14 +61,14 @@ header ul li strong {
     // Mise en majuscule
     text-transform: uppercase;
     // Coloration
-    color: var(--bannerTitle);
+    color: var(--bannerText);
 }
 
 // Titre principal du CV (intitulé de poste)
 .main-title {
     // Coloration et ombrage
-    color: var(--mainTitle);
-    text-shadow: 1pt 1pt 2pt var(--mainTitleShadow);
+    color: var(--bannerText);
+    text-shadow: 1pt 1pt 2pt var(--bannerTextShadow);
     // Taille du texte et mise en majuscule
     font-size: 230%;
     text-transform: uppercase;

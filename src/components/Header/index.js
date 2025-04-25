@@ -1,12 +1,12 @@
 export default function Header({infos}) {
     return (
         <header>
-            <h1 className="position-right">
+            <h1 className="position-left">
                 <span id="prenom">Grégoire</span> 
                 <span id="nom">Portier</span>
             </h1>
             <div>
-                <ul className="container position-left">
+                <ul className="container position-right">
                     <li>
                         <strong>Adresse</strong>
                         {infos.postalCode} {infos.town}

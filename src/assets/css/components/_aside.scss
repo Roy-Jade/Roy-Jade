@@ -5,6 +5,12 @@ aside {
     background: var(--backgroundAside);
     // Décale le texte sans centrer
     padding: 0 15pt;
+
+    // Agrandit le container,le fait chevaucher les bandes header et footer et le place en arrière plan pour l'effet vitrifié
+    height: 720pt;
+    position: relative;
+    top: -10pt;
+    z-index: 0;
 }
 
 // Image de profil
@@ -33,7 +39,7 @@ aside ul {
     margin-bottom: 22pt;
     padding-bottom: 22pt;
     // Place la bordure de séparation
-    border-bottom: 1px solid var(--borderLight);
+    border-bottom: 1px solid var(--borderAside);
     // Espace les lignes
     line-height: 1.4;
 }

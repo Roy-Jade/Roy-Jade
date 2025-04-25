@@ -1,17 +1,32 @@
+@use 'sass:color';
+
+$backgroundBanner : #0345a8;
+$backgroundBannerGlassed: rgba(color.adjust($backgroundBanner, $lightness: 10%), 0.7);
+$backgroundAside: rgba(color.adjust($backgroundBanner, $lightness : 50%), 0.5);
+$mainTitleShadow: rgba(color.adjust($backgroundBanner, $lightness: 80%), 0.5);
+
+
+$bannerText : #ffffff;
+@if (lightness($backgroundAside) >95%) {
+    $bannerText : #000000;
+}
+
+$borderAside : #ffffff;
+
 // Choix des couleurs de la page
 :root {
     --backpage: #cacaca;
     --backpageShadow: #8a8a8a;
     --borderDark: #aaa;
-    --background: #fff;
-    --backgroundBanner: #111;
-    --backgroundName: #068ec6;
-    --backgroundAside: #e5eaeb;
-    --backgroundFooter: #444;
-    --text: #555;
-    --bannerText: #aaa;
-    --bannerTitle: #eee;
-    --mainTitle: #ff0000;
     --borderLight: #cecece;
-    --mainTitleShadow: white;
+    --borderAside: #{$borderAside};
+
+    --background: #fff;
+    --backgroundBanner: #{$backgroundBanner};
+    --backgroundBannerGlassed: #{$backgroundBannerGlassed};
+    --backgroundAside: #{$backgroundAside};
+    
+    --text: #111111;
+    --bannerText: #{$bannerText};
+    --bannerTextShadow: #{$mainTitleShadow};
 }

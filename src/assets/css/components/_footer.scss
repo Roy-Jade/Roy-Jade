@@ -1,4 +1,6 @@
 footer {
+    // Colore le texte
+    color: var(--bannerText);
     // Colore l'arrière plan
     background: var(--backgroundBanner);
     // Sépare l'espace pour les parties gauches et droites de la feuille en ratio 2 pour 5
@@ -11,7 +13,7 @@ footer {
 // Partie gauche
 footer h2 {
     // Coloration de l'arrière-plan
-    background: var(--backgroundFooter);
+    background: var(--backgroundBannerGlassed);
     // Centrage du texte
     text-align: center;
     padding-top: 18px;
@@ -41,8 +43,6 @@ footer ul li {
 
 // Liens
 footer ul li a {
-    // Colore le texte des liens
-    color: var(--bannerText);
     // Enlève le surlignage des liens
     text-decoration: none;
     // Réduit la taille du texte

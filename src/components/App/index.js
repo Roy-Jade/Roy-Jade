@@ -16,7 +16,7 @@ export default function App() {
             <Header infos={personalInfos} />
             <main className="container">
                 <Aside skills={skills.hard.coding} langages={skills.hard.langages} hobbies={skills.hobbies} />
-                <div className="container main-content position-left">
+                <div className="container main-content position-right">
                     <Presentation />
                     <Experiences experiences={experiences} />
                     <Courses courses={courses} />
