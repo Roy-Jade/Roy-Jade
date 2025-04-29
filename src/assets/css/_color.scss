@@ -7,7 +7,7 @@ $mainTitleShadow: rgba(color.adjust($backgroundBanner, $lightness: 80%), 0.5);
 
 
 $bannerText : #ffffff;
-@if (lightness($backgroundAside) >95%) {
+@if (color.lightness($backgroundAside) >95%) {
     $bannerText : #000000;
 }
 

@@ -23,6 +23,7 @@
         border-right: 1px solid var(--borderLight);
         // Espace le titre de sa bordure droite
         padding-right: 7pt;
+        margin-bottom: 5pt;
     }
 
 
@@ -31,7 +32,7 @@
         // Colore le texte
         color: var(--text);
         // Espace les lignes
-        line-height: 1.2;
+        line-height: 1.3;
     }
 }
 

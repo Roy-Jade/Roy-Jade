@@ -2,7 +2,7 @@ export default function Aside({skills, langages, hobbies}) {
     return (
         <aside className="position-left">
 
-            <img src="null" alt="Photo de Grégoire"></img>
+            <img src="/img/Photo_Grégoire.jpg" alt="Photo de Grégoire"></img>
 
             <article>
                 <h2>Compétences</h2>

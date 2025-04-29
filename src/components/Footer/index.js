@@ -5,12 +5,12 @@ export default function Footer() {
             <ul className="container position-right">
                 {/* <li>Sur les réseaux:</li> */}
                 <li>
-                    <a href="#">
-                        <img src="/img/github-mark.png" alt="logo Github" /> GitHub</a>
+                    <a href="https://github.com/Roy-Jade">
+                        <img src="/img/github-mark.png" alt="logo Github" /> Roy-Jade</a>
                 </li>
                 <li>
-                    <a href="#">
-                        <img src="/img/LI-In-Bug.png" alt="logo Linkedin" /> LinkedIn</a>
+                    <a href="https://www.linkedin.com/in/grégoire-portier-0b6775a7">
+                        <img src="/img/LI-In-Bug.png" alt="logo Linkedin" /> Grégoire Portier</a>
                 </li>
             </ul>
         </footer>
