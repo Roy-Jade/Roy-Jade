@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     let printLink = document.getElementById("print");
-    let container = document.getElementById("CV");
+    let CV_container = document.getElementById("CV");
 
     printLink.addEventListener("click", event => {
         event.preventDefault();
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.print();
     }, false);
 
-    container.addEventListener("click", event => {
+    CV_container.addEventListener("click", event => {
         printLink.style.display = "flex";
     }, false);
 

@@ -1,7 +1,7 @@
 @use "./reset";
-@use "./color";
-@use "./main";
-@use "./components/header";
-@use "./components/aside";
-@use "./components/section";
-@use "./components/footer";
+@use "./color_CV";
+@use "./main_CV";
+@use "./components/CV/header";
+@use "./components/CV/aside";
+@use "./components/CV/section";
+@use "./components/CV/footer";

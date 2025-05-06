@@ -1,0 +1,80 @@
+.CV {
+    .CV_header {
+        // Formate la taille et la couleur de l'en-tête
+        background: var(--CV_backgroundBanner);
+        height: 100pt;
+    
+        // Sépare l'espace pour les parties gauches et droites de la feuille en ratio 2 pour 5
+        display: grid;
+        grid-template-columns: 2fr 5fr;
+
+        h1 {
+            // Colore le fond et le texte pour le nom
+            color: var(--CV_bannerText);
+            background: var(--CV_backgroundBannerGlassed);
+            // Formate la taille de l'encadré
+            height: 100pt;
+            // Centre le texte et l'espace
+            padding-top: 25pt;
+            text-align: center;
+            line-height: 1.25;
+            // Formate la taille du texte et le met en majuscule
+            font-size: 185%;
+            text-transform: uppercase;
+            // Affiche le nom et prénom sur deux lignes
+            &>span {
+                display: block;
+            }
+            // Affiche le nom en gras
+            &>#nom {
+                font-weight: bold;
+            }
+        
+            // Place le conteneur devant la bande aside pour l'effet vitrifié
+            z-index: 1;
+        }
+
+        // Parties liste d'infos personnelles
+        ul {
+            // Formate la prise d'espaces
+            display: grid;
+            grid-template-columns: 1.5fr 1.5fr 1fr;
+            padding-right : 20pt;
+            height: 65pt;
+        }
+
+        // Partie infos personnelles (bloc par bloc)
+        li {
+            // Centre les informations et espace le texte
+            padding: 20pt 0 0 15%;
+            line-height: 1.5;
+            // Réduit la tailel du textel
+            font-size: 90%;
+            // Colore le texte
+            color: var(--CV_bannerText);
+        }
+
+        // Partie titre des blocs d'infos
+        strong {
+            // Affichage sur une ligne
+            display: block;
+            // Mise en majuscule
+            text-transform: uppercase;
+            // Coloration
+            color: var(--CV_bannerText);
+        }
+
+        // Titre principal du CV (intitulé de poste)
+        .main-title {
+            // Coloration et ombrage
+            color: var(--CV_bannerText);
+            text-shadow: 1pt 1pt 2pt var(--CV_bannerTextShadow);
+            // Taille du texte et mise en majuscule
+            font-size: 230%;
+            text-transform: uppercase;
+            // Centrage
+            text-align: center;
+            margin-right: 20pt;
+        }
+    }
+}

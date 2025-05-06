@@ -1,0 +1,32 @@
+@use 'sass:color';
+
+$CV_backgroundBanner : #0345a8;
+$CV_backgroundBannerGlassed: rgba(color.adjust($CV_backgroundBanner, $lightness: 10%), 0.7);
+$CV_backgroundAside: rgba(color.adjust($CV_backgroundBanner, $lightness : 50%), 0.5);
+$CV_mainTitleShadow: rgba(color.adjust($CV_backgroundBanner, $lightness: 80%), 0.5);
+
+
+$CV_bannerText : #ffffff;
+@if (color.lightness($CV_backgroundAside) >95%) {
+    $CV_bannerText : #000000;
+}
+
+$CV_borderAside : #ffffff;
+
+// Choix des couleurs de la page
+:root {
+    --CV_backpage: #cacaca;
+    --CV_backpageShadow: #8a8a8a;
+    --CV_borderDark: #aaa;
+    --CV_borderLight: #cecece;
+    --CV_borderAside: #{$CV_borderAside};
+
+    --CV_background: #fff;
+    --CV_backgroundBanner: #{$CV_backgroundBanner};
+    --CV_backgroundBannerGlassed: #{$CV_backgroundBannerGlassed};
+    --CV_backgroundAside: #{$CV_backgroundAside};
+    
+    --CV_text: #111111;
+    --CV_bannerText: #{$CV_bannerText};
+    --CV_bannerTextShadow: #{$CV_mainTitleShadow};
+}

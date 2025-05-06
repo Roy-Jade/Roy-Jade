@@ -12,9 +12,9 @@ import experiences from "../../assets/data/experiences.js";
 
 export default function App() {
     return (
-        <>
+        <div className="CV">
             <Header infos={personalInfos} />
-            <main className="container">
+            <main className="CV_main container">
                 <Aside skills={skills.hard.coding} langages={skills.hard.langages} hobbies={skills.hobbies} />
                 <div className="container main-content position-right">
                     <Presentation />
@@ -23,6 +23,6 @@ export default function App() {
                 </div>
             </main>
             <Footer />
-        </>
+        </div>
     )
 }

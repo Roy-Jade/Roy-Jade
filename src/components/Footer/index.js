@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer>
+        <footer className="CV_footer">
             <h2 className="position-left">Sur les réseaux :</h2>
             <ul className="container position-right">
                 {/* <li>Sur les réseaux:</li> */}

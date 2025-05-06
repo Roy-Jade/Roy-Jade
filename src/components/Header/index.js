@@ -1,6 +1,6 @@
 export default function Header({infos}) {
     return (
-        <header>
+        <header className="CV_header">
             <h1 className="position-left">
                 <span id="prenom">Grégoire</span> 
                 <span id="nom">Portier</span>
