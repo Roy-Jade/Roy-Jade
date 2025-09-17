@@ -36,17 +36,17 @@
         }
 
         // Element de liste des sections
-        li {
+        .event {
             // Définit une place pour la partie date et pour le reste
             display: grid;
             grid-template-columns: 70pt auto;
             // Espace les éléments
-            margin-bottom: 15pt;
+            margin-top: 11pt;
         
             // Partie date
             .periode{
                 // Applique la bordure droite
-                border-right: 1px solid var(--CV_borderDark);;
+                border-right: 1px solid var(--CV_borderDark);
                 // Graissage
                 font-weight: bold;
                 // Centrage
@@ -69,6 +69,12 @@
                     font-weight: bold;   
                 }
             }
+        }
+
+        .event-skills {
+            font-size: smaller;
+            font-style: italic;
+            padding-left: 100pt;
         }
     }
 }

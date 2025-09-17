@@ -1,7 +1,7 @@
 export default {
-    adress:"125 avenue Joseph Kessel",
-    town: "Guyancourt",
-    postalCode: "78280",
+    adress:"9 rue Albert Einstein",
+    town: "Châteaubriant",
+    postalCode: "44110",
     phone:"06.99.27.30.96",
     email:"gregoire.portier@icloud.com",
 }

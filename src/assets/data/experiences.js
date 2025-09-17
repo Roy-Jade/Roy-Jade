@@ -1,11 +1,18 @@
 export default [
     {
-        title : "Stage développeur full-stack",
+        title : "Développeur full-stack",
         date : "2025",
         duration : "2 mois",
         compagny : "Tritons",
         content : "Développement back-end en python FastAPI et front-end en VueJS. Création et maintenance d'infrastructures via Kubermetes. Développement de compétences en architecture logicielle, technique et en méthodologie Agile.",
         domain : "Informatique et développement",
+        skills : [
+            "Développement par TDD en VueJS/Python",
+            "Automatisation, CI/CD et déploiement Kubernetes",
+            "Création d'un site de tracking interne avec indentification OIDC", 
+            "Refonte du site legacy de l'entreprise, passage sur une architecture DDD en Event Sourcing",
+            "Communication asynchrone, gestion du temps, curiosité"
+        ],
     },
     {
         title : "Technicien d'analyse en agro-alimentaire",
@@ -14,6 +21,7 @@ export default [
         compagny : "Wessling France",
         content : "Développement de méthodes d'analyse de métaux lourds sur des matrices alimentaires et  validation de ces méthodes. Une fois les méthodes validées, mise en application pour des analyses de routines. Participation active à l'amélioration continue du laboratoire, au respect des règles de sécurités, et aux activités parallèles au laboratoire lors de besoins ponctuels de renforts.",
         domain : "Science analytique",
+        skills : ["Autonomie, analyse du besoin client, résolution des problématiques"],
     },
     {
         title : "Technicien radioprotection",
@@ -22,6 +30,7 @@ export default [
         compagny : "Cerap Prévention",
         content : "Prestation de vérification des derniers niveaux de filtration en installation nucléaire de base, et analyse des écnahtillons récupérés. Suivi stricte des règles de radioprotection et des processus de validations.",
         domain : "Physique nucléaire",
+        skills : ["Communication, planification, remise en question"],
     },
     {
         title : "Technicien d'analyse en laboratoire routier",
@@ -30,6 +39,7 @@ export default [
         compagny : "Colas Ile-De-France-Nord",
         content : "Prélèvement sur site de matériaux de constructions, et analyses en laboratoire de ces matériaux (conformité et détection de corps indésirables pour le bétonnage). Développement de méthodes d'analyses rapides in-situ, et tests de conformités des compactages de sols. Réécriture des documents techniques vieillissants du laboratoire et des protocoles.",
         domain : "Science analytique",
+        skills : ["Formation d'équipe, adaptation, empathie"],
     },
     {
         title : "Technicien data maintenance",
@@ -38,6 +48,7 @@ export default [
         compagny : "GSK Évreux",
         content : "Création de nouvelles méthodes d'analyses et de leurs paramètres sur le système de gestion de l'information du laboratoire (lims), et modification et maintenances de données déjà présentes. Mise à jour d'anciennes méthodes dans le cadre de l'amélioration de la traçabilité et de la data integrity des laboratoires du site. Création de bases de données pour soutenir la suite de l'activité de l'équipe en fin de mission.",
         domain : "Science analytique",
+        skills : ["Transcription d'un besoin en outil logiciel, tests systématiques"],
     },
     {
         title : "Technicien chimiste",
@@ -46,6 +57,7 @@ export default [
         compagny : "Eurofins Hydrologie Est",
         content : "Analyse sur ICP AES, ICP couplé masse et LC à détection fluorescente/ultraviolet d'échantillons d'eaux propres et résiduraires, puis exploitation des résultats et transmission dans les bases de données. Optimisation des méthodes et des zéones de travail (suivi du 5S), et suivi qualité selon les normes en vigueurs.",
         domain : "Science analytique",
+        skills : ["Communication asynchrone, adaptation, autonomie"],
     },
     {
         title : "Stage technicien de laboratoire",

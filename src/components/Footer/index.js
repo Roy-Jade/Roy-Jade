@@ -9,7 +9,7 @@ export default function Footer() {
                         <img src="/img/github-mark.png" alt="logo Github" /> Roy-Jade</a>
                 </li>
                 <li>
-                    <a href="https://www.linkedin.com/in/grégoire-portier-0b6775a7">
+                    <a href="https://www.linkedin.com/in/gregoire-portier">
                         <img src="/img/LI-In-Bug.png" alt="logo Linkedin" /> Grégoire Portier</a>
                 </li>
             </ul>
