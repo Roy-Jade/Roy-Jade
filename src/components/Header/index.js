@@ -20,7 +20,7 @@ export default function Header({infos}) {
                         <a href={"mailto:"+infos.email}>{infos.email}</a>
                     </li >
                 </ul>
-                <h2 className="main-title">Alternant Architecte Logiciel</h2>
+                <h2 className="main-title">Développeur web FullStack</h2>
             </div>
         </header>
     )

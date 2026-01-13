@@ -2,10 +2,10 @@ export default function Presentation() {
     return (
         <section>
             <h2>Présentation</h2>
-            <p>Comprendre, réaliser, optimiser</p>
-            <p>Je suis un développeur plutôt orienté backend, en reconversion depuis le milieu scientifique. Mon ambition : devenir architecte logiciel.</p>
-            <p>Pour cela, je cherche une alternance où donner libre court à ma curiosité. Mes cours m'amèneront à découvrir Java et Angular, mais je suis ouvert à d'autres langages et frameworks.</p>
-            <p>Je veux comprendre mes clients, créer avec eux et pour eux les outils de leurs quotidiens. Je veux avancer avec mes collègues, coopérer pour construire des projets qui ont du sens.</p>
+            {/* <p>Comprendre, réaliser, optimiser</p> */}
+            <p>Je suis un développeur fullstack avec un fort bagage scientifique et une curiosité débordante.</p>
+            <p>Mon expérience en compréhension des besoin clients, en élaboration de solutions adaptées et en vulgarisation de sujets complexes me permet d'accompagner efficacement mes clients et de fournir un résultat impactant.</p>
+            <p>Je veux comprendre avant de coder, réaliser pour l'utilisateur final, optimiser en challengeant l'existant. Je suis un partenaire stratégique, là pour vous aider à avancer.</p>
         </section>
     )
 }
