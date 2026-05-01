@@ -1,0 +1,1 @@
+export const levels = ["notions", "courant", "maitrise"]
