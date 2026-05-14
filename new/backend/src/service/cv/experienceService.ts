@@ -1,4 +1,7 @@
 import db from "../../config/db.js";
+import { Experience, ExperienceKeyList } from "../../schema/cv/experience.js";
+import { getExperienceById } from "../../utils/getExperienceById.js";
+import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
 
 export async function fetchExperience(keyValueTable:{domain:string, type:'detail'|'summary'}[]) {
 
@@ -25,17 +28,17 @@ export async function fetchExperience(keyValueTable:{domain:string, type:'detail
                 "level", hard.level, 
                 "category", hard.category, 
                 "sub_category", hard.sub_category)) AS hardskills
-            FROM experience exp
-            LEFT JOIN experience_task task ON task.experience_id = exp.id
-            LEFT JOIN experience_hardskill hardexp ON hardexp.experience_id = exp.id
-            LEFT JOIN hardskill hard ON hardexp.hardskill_id = hard.id
-            LEFT JOIN experience_softskill softexp ON softexp.experience_id = exp.id
-            LEFT JOIN softskill soft ON softexp.softskill_id = soft.id
-            INNER JOIN experience_domain domexp ON domexp.experience_id = exp.id
-            INNER JOIN domain dom ON domexp.domain_id = dom.id
-            WHERE dom.slug = $1 AND exp.type = $2
-            GROUP BY exp.id
-            `, [pair.domain, pair.type]));
+        FROM experience exp
+        LEFT JOIN experience_task task ON task.experience_id = exp.id
+        LEFT JOIN experience_hardskill hardexp ON hardexp.experience_id = exp.id
+        LEFT JOIN hardskill hard ON hardexp.hardskill_id = hard.id
+        LEFT JOIN experience_softskill softexp ON softexp.experience_id = exp.id
+        LEFT JOIN softskill soft ON softexp.softskill_id = soft.id
+        INNER JOIN experience_domain domexp ON domexp.experience_id = exp.id
+        INNER JOIN domain dom ON domexp.domain_id = dom.id
+        WHERE dom.slug = $1 AND exp.type = $2
+        GROUP BY exp.id
+        `, [pair.domain, pair.type]));
     
 
     const promiseAllResults = await Promise.all(promises);
@@ -46,4 +49,102 @@ export async function fetchExperience(keyValueTable:{domain:string, type:'detail
         throw new Error("Aucune donnée trouvée")
     }
     return results
+}
+
+export async function addExperience(data:Experience, domain:number[], tasks:string[], hardskill:number[], softskill:number[]) {
+    
+    const insertExperience = await db.query(`
+        INSERT INTO experience (slug, type, title, company, location, start_date, end_date, description)
+        VALUES ($1, 'detail', $2, $3, $4, $5, $6, $7)
+        RETURNING id
+        `, [
+            data.slug, 
+            data.title, 
+            data.company?data.company:null, 
+            data.location?data.location:null, 
+            data.start_date?data.start_date:null, 
+            data.end_date?data.end_date:null, 
+            data.description?data.description:null
+        ]);
+
+
+    const domainPlaceholder = domain.map((_, i) => `($1, $${i+2})`).join(', ');
+    const completeDomainParams = [insertExperience.rows[0].id, ...domain];
+    const insertDomain = db.query(`
+        INSERT INTO experience_domain (experience_id, domain_id)
+        VALUES ${domainPlaceholder}
+        `, completeDomainParams)
+
+    const hardskillPlaceholder = hardskill.map((_, i) => `($1, $${i+2})`).join(', ');;
+    const completeHardskillParams = [insertExperience.rows[0].id, ...hardskill];
+    const insertHardskill = db.query(`
+        INSERT INTO experience_hardskill (experience_id, hardskill_id)
+        VALUES ${hardskillPlaceholder}
+        `, completeHardskillParams);
+
+
+    const softskillPlaceholder = softskill.map((_, i) => `($1, $${i+2})`).join(', ');;
+    const completeSoftskillParams = [insertExperience.rows[0].id, ...softskill];
+    const insertSoftskill = db.query(`
+        INSERT INTO experience_softskill (experience_id, softskill_id)
+        VALUES ${softskillPlaceholder}
+        `, completeSoftskillParams);
+
+    await Promise.all([insertDomain, insertTasks("experience", insertExperience.rows[0].id, tasks), insertHardskill, insertSoftskill])
+
+    const addedExperience = await getExperienceById(insertExperience.rows[0].id)
+
+    return addedExperience
+}
+
+export async function editExperience(
+    id:number, 
+    experienceData:Partial<Experience>|null,
+    domainData:number[]|null, 
+    hardskillData:number[]|null, 
+    softskillData:number[]|null, 
+    taskData:string[]|null
+) {
+    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
+    if (!experienceData && !domainData && !hardskillData && !softskillData && !taskData) {
+        throw new Error("Erreur : aucune donnée à modifier n'a été fourni")
+    };
+
+    if(experienceData) {
+        if (!Object.keys(experienceData).every((key) => ExperienceKeyList.includes(key))) {
+            throw new Error("Erreur : au moins l'un des champs à modifier n'existe pas")
+        };
+
+        const setValues = Object.entries(experienceData).map(([key], i) => `${key} = $${i+2}`).join(', ');
+        const params = [id, ...Object.values(experienceData)];
+        await db.query(`
+            UPDATE experience SET ${setValues}
+            WHERE id = $1`,
+            params);
+    }
+
+    if (domainData) {
+        await deleteInJunctionTable("experience", "domain", id);
+        await insertInJunctionTable("experience", "domain", id, domainData);
+    };
+
+    if (hardskillData) {
+        await deleteInJunctionTable("experience", "hardskill", id);
+        await insertInJunctionTable("experience", "hardskill", id, hardskillData);
+    };
+
+    if (softskillData) {
+        await deleteInJunctionTable("experience", "softskill", id);
+        await insertInJunctionTable("experience", "softskill", id, softskillData);
+    };
+
+    if (taskData) {
+        await deleteInJunctionTable("experience", "task", id);
+        await insertTasks("experience", id, taskData);
+    }
+
+    const editedExperience = await getExperienceById(id);
+
+    return editedExperience
+
 }

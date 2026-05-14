@@ -114,7 +114,7 @@ describe('fetchFormation', () => {
             INNER JOIN formation_domain domexp ON domexp.formation_id = form.id
             INNER JOIN domain dom ON domexp.domain_id = dom.id
             WHERE dom.slug = ANY($1)
-            GROUP BY for.id
+            GROUP BY form.id
             `, [["hylien"]]);
     });
 
