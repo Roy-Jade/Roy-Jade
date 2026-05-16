@@ -67,30 +67,12 @@ export async function addExperience(data:Experience, domain:number[], tasks:stri
             data.description?data.description:null
         ]);
 
-
-    const domainPlaceholder = domain.map((_, i) => `($1, $${i+2})`).join(', ');
-    const completeDomainParams = [insertExperience.rows[0].id, ...domain];
-    const insertDomain = db.query(`
-        INSERT INTO experience_domain (experience_id, domain_id)
-        VALUES ${domainPlaceholder}
-        `, completeDomainParams)
-
-    const hardskillPlaceholder = hardskill.map((_, i) => `($1, $${i+2})`).join(', ');;
-    const completeHardskillParams = [insertExperience.rows[0].id, ...hardskill];
-    const insertHardskill = db.query(`
-        INSERT INTO experience_hardskill (experience_id, hardskill_id)
-        VALUES ${hardskillPlaceholder}
-        `, completeHardskillParams);
-
-
-    const softskillPlaceholder = softskill.map((_, i) => `($1, $${i+2})`).join(', ');;
-    const completeSoftskillParams = [insertExperience.rows[0].id, ...softskill];
-    const insertSoftskill = db.query(`
-        INSERT INTO experience_softskill (experience_id, softskill_id)
-        VALUES ${softskillPlaceholder}
-        `, completeSoftskillParams);
-
-    await Promise.all([insertDomain, insertTasks("experience", insertExperience.rows[0].id, tasks), insertHardskill, insertSoftskill])
+    await Promise.all([
+        insertInJunctionTable("experience", "domain", insertExperience.rows[0].id, domain), 
+        insertTasks("experience", insertExperience.rows[0].id, tasks), 
+        insertInJunctionTable("experience", "hardskill", insertExperience.rows[0].id, hardskill), 
+        insertInJunctionTable("experience", "softskill", insertExperience.rows[0].id, softskill)
+    ])
 
     const addedExperience = await getExperienceById(insertExperience.rows[0].id)
 
@@ -146,5 +128,4 @@ export async function editExperience(
     const editedExperience = await getExperienceById(id);
 
     return editedExperience
-
 }

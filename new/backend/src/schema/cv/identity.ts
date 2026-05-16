@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-const IdentitySchema = z.object({
+export const IdentitySchema = z.object({
     id: z.number(),
     firstname: z.string(),
     lastname: z.string(),
@@ -10,5 +10,7 @@ const IdentitySchema = z.object({
     gitlab_link: z.string(),
     linkedin_link: z.string(),
 });
+
+export const IdentityKeyList = Object.keys(IdentitySchema.omit({id: true}).shape)
 
 export type Identity = z.infer<typeof IdentitySchema>
