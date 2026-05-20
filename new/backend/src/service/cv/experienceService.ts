@@ -2,10 +2,11 @@ import db from "../../config/db.js";
 import { Experience, ExperienceKeyList } from "../../schema/cv/experience.js";
 import { getExperienceById } from "../../utils/getExperienceById.js";
 import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
+import { AppError } from "../../utils/AppError.js";
 
-export async function fetchExperience(keyValueTable:{domain:string, type:'detail'|'summary'}[]) {
+export async function fetchExperience(data:{domain:string, type:'detail'|'summary'}[]) {
 
-    const promises = keyValueTable.map(pair=>db.query(`
+    const promises = data.map(pair=>db.query(`
         SELECT 
             exp.id,
             exp.slug,
@@ -46,7 +47,7 @@ export async function fetchExperience(keyValueTable:{domain:string, type:'detail
     const results = promiseAllResults.flatMap(result => result.rows)
 
     if(results[0]===undefined) {
-        throw new Error("Aucune donnée trouvée")
+        throw new AppError(404, "Aucune donnée trouvée")
     }
     return results
 }
@@ -87,14 +88,14 @@ export async function editExperience(
     softskillData:number[]|null, 
     taskData:string[]|null
 ) {
-    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
+    if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!experienceData && !domainData && !hardskillData && !softskillData && !taskData) {
-        throw new Error("Erreur : aucune donnée à modifier n'a été fourni")
+        throw new AppError(400, "Erreur : aucune donnée à modifier n'a été fourni")
     };
 
     if(experienceData) {
         if (!Object.keys(experienceData).every((key) => ExperienceKeyList.includes(key))) {
-            throw new Error("Erreur : au moins l'un des champs à modifier n'existe pas")
+            throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
         };
 
         const setValues = Object.entries(experienceData).map(([key], i) => `${key} = $${i+2}`).join(', ');

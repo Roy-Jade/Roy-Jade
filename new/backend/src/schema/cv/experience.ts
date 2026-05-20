@@ -15,3 +15,8 @@ export const ExperienceSchema = z.object({
 export const ExperienceKeyList = Object.keys(ExperienceSchema.omit({id: true}).shape)
 
 export type Experience = z.infer<typeof ExperienceSchema>
+
+export const ExperienceFilterSchema = z.array(z.object({
+    domain: z.string(),
+    type: z.enum(["detail", "summary"])
+}))

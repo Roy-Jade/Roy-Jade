@@ -1,12 +1,13 @@
 import db from "../../config/db.js";
 import { Hardskill, HardskillKeyList } from "../../schema/cv/skill.js";
+import { AppError } from "../../utils/AppError.js";
 import { getHardskillById } from "../../utils/getHardskillById.js";
 import { levels } from "../../utils/levels.js";
 
 export async function fetchHardskill(category:string[], level:string) {
 
     if(!levels.includes(level)) {
-        throw new Error("Le niveau demandé n'existe pas")
+        throw new AppError(400, "Le niveau demandé n'existe pas")
     }
     const levelTable = levels.slice(levels.indexOf(level))
 
@@ -24,7 +25,7 @@ export async function fetchHardskill(category:string[], level:string) {
             `, [category, levelTable]);
     
     if(results.rows[0]===undefined) {
-        throw new Error("Aucune donnée trouvée")
+        throw new AppError(404, "Aucune donnée trouvée")
     }
     return results.rows
 }
@@ -50,9 +51,9 @@ export async function addHardskill(data:Hardskill) {
 export async function editHardskill(id:number, data:Partial<Hardskill>) {
     const dataKeys = Object.keys(data);
 
-    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
-    if (dataKeys.length === 0) {throw new Error("Erreur : aucun champ à modifier n'a été fourni")};
-    if (!dataKeys.every((dataKey) => HardskillKeyList.includes(dataKey))) {throw new Error("Erreur : au moins l'un des champs à modifier n'existe pas")};
+    if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
+    if (dataKeys.length === 0) {throw new AppError(400, "Erreur : aucun champ à modifier n'a été fourni")};
+    if (!dataKeys.every((dataKey) => HardskillKeyList.includes(dataKey))) {throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")};
 
     const setValues = Object.entries(data).map(([key], i) => `${key} = $${i+2}`).join(', ');
     const params = [id, ...Object.values(data)];

@@ -1,11 +1,12 @@
 import db from "../config/db.js";
+import { AppError } from "./AppError.js";
 import { junctionTable } from "./junctionTables.js";
 
 export const deleteInJunctionTable = async (refTable:string, secondTable:string, id:number) => {
 
-    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
+    if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!junctionTable.some(([ref, second]) => ref ===refTable && second === secondTable)) {
-        throw new Error("Erreur : la table de liaison cible n'existe pas")
+        throw new AppError(400, "Erreur : la table de liaison cible n'existe pas")
     }
 
     const response = await db.query(`
@@ -16,12 +17,12 @@ export const deleteInJunctionTable = async (refTable:string, secondTable:string,
 
 export const insertInJunctionTable = async (refTable:string, secondTable:string, id:number, addedElement:number[]) => {
 
-    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
+    if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!junctionTable.some(([ref, second]) => ref ===refTable && second === secondTable)) {
-        throw new Error("Erreur : la table de liaison cible n'existe pas")
+        throw new AppError(400, "Erreur : la table de liaison cible n'existe pas")
     }
     if (addedElement.length <1) {
-        throw new Error("Erreur : aucun élément à ajouter n'a été fourni")
+        throw new AppError(400, "Erreur : aucun élément à ajouter n'a été fourni")
     }
 
     const placeholder = addedElement.map((_, i) => `($1, $${i+2})`).join(', ');
@@ -37,12 +38,12 @@ export const insertInJunctionTable = async (refTable:string, secondTable:string,
 
 export const insertTasks = async (refTable:string, id:number, tasks:string[]) => {
 
-    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
+    if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!junctionTable.some(([ref, second]) => ref ===refTable && second === "task")) {
-        throw new Error("Erreur : la table de liaison cible n'existe pas")
+        throw new AppError(400, "Erreur : la table de liaison cible n'existe pas")
     }
     if (tasks.length <1) {
-        throw new Error("Erreur : aucun élément à ajouter n'a été fourni")
+        throw new AppError(400, "Erreur : aucun élément à ajouter n'a été fourni")
     }
 
 

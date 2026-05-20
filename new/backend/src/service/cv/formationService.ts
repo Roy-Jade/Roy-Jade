@@ -2,8 +2,9 @@ import db from "../../config/db.js";
 import { Formation, FormationKeyList } from "../../schema/cv/formation.js";
 import { getFormationById } from "../../utils/getFormationById.js";
 import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
+import { AppError } from "../../utils/AppError.js";
 
-export async function fetchFormation(slugTable:string[]) {
+export async function fetchFormation(data:string[]) {
 
     const results = await db.query(`
         SELECT 
@@ -32,11 +33,11 @@ export async function fetchFormation(slugTable:string[]) {
             INNER JOIN domain dom ON domexp.domain_id = dom.id
             WHERE dom.slug = ANY($1)
             GROUP BY form.id
-            `, [slugTable]);
+            `, [data]);
     
 
     if(results.rows[0]===undefined) {
-        throw new Error("Aucune donnée trouvée")
+        throw new AppError(404, "Aucune donnée trouvée")
     }
     return results.rows
 }
@@ -76,14 +77,14 @@ export async function editFormation(
     hardskillData:number[]|null,
     taskData:string[]|null
 ) {
-    if (id<1) {throw new Error(("Erreur : aucun id n'a été fourni"))};
+    if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!formationData && !domainData && !hardskillData && !taskData) {
-        throw new Error("Erreur : aucune donnée à modifier n'a été fourni")
+        throw new AppError(400, "Erreur : aucune donnée à modifier n'a été fourni")
     };
 
     if(formationData) {
         if (!Object.keys(formationData).every((key) => FormationKeyList.includes(key))) {
-            throw new Error("Erreur : au moins l'un des champs à modifier n'existe pas")
+            throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
         };
 
         const setValues = Object.entries(formationData).map(([key], i) => `${key} = $${i+2}`).join(', ');
