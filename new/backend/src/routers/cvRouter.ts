@@ -4,6 +4,7 @@ import { getHardskill } from "../controller/cv/hardskillController.js";
 import { getExperience } from "../controller/cv/experienceController.js";
 import { getFormation } from "../controller/cv/formationController.js";
 import { getProfile } from "../controller/cv/profileController.js"
+import { getFilters } from "../controller/cv/filtersController.js"
 
 const cvRouter = express.Router()
 
@@ -12,5 +13,6 @@ cvRouter.get('/hardskill', getHardskill);
 cvRouter.get('/profile', getProfile);
 cvRouter.get('/experience', getExperience)
 cvRouter.get('/formation', getFormation)
+cvRouter.get('/filters', getFilters)
 
 export default cvRouter

@@ -1,0 +1,82 @@
+services:
+  # nom du service
+  backend:
+    # construction de notre image
+    build:
+      # à partir du répertoire ./backend
+      context: ./backend
+      # on utilise le fichier Dockerfile.backend
+      dockerfile: Dockerfile.backend
+    # on expose le port 3000 du conteneur sur notre port 3000
+    ports:
+      - 3000:3000
+    # le service backend dépend du service db
+    depends_on:
+      db:
+        condition: service_healthy
+    # on nomme le conteneur parce qu'on fait les choses proprement
+    container_name: portfolio-backend
+    # on indique les volumes pour actualiser en direct le container allumé, sauf pour le dossier node_module qui est compilé différemment suivant le système d'exploitation
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - portfolio
+
+  # nom du service
+  frontend:
+    # construction de l'image du service
+    build:
+      # à partir du répertoire ./frontend
+      context: ./frontend
+      # on utilise le fichier Dockerfile.frontend
+      dockerfile: Dockerfile.frontend
+    # on expose le port 5173 du conteneur sur notre port 5173
+    ports:
+      - 5173:5173
+    # notre service ne démarre que quand le service backend est prêt
+    depends_on:
+      - backend
+    # on nomme notre conteneur pour savoir qui il est
+    container_name: portfolio-frontend
+    # on indique les volumes pour actualiser en direct le container allumé, sauf pour le dossier node_module qui est compilé différemment suivant le système d'exploitation
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - portfolio
+
+  # nom du service
+  db:
+    # on utilise l'image postgre
+    image: postgres
+    # nom du conteneur
+    container_name: portfolio-database
+    # environnement : on déclare les infos nécessaires à notre BDD
+    environment:
+      - POSTGRES_USER=portfolio
+      - POSTGRES_PASSWORD=portfolio
+      - POSTGRES_DB=portfolio
+    # le healthcheck vérifie que le container tourne avant de continuer
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # on monte les volumes
+    volumes:
+      # répertoire des scripts d'initialisation
+      - ./backend/conception:/docker-entrypoint-initdb.d
+      # volume de persistance des données
+      - pg-portfolio:/var/lib/postgresql
+    networks:
+      - portfolio
+
+# ne pas oublier les volumes de persistance utilisés
+volumes:
+  pg-portfolio:
+
+networks:
+  portfolio:
+    driver: bridge
+

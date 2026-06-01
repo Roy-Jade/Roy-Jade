@@ -1,11 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "DBinit": "dotenv -e .env -- bash -c 'PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -d $DB_NAME -f conception/migration.sql -f conception/seeding.sql'",
+    "start": "nodemon index.js",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +33,7 @@
     "@types/express-session": "^1.19.0",
     "@types/node": "^25.6.0",
     "@types/pg": "^8.20.0",
+    "dotenv-cli": "^11.0.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"

@@ -22,18 +22,59 @@ Site vitrine personnel avec deux fonctionnalités principales :
 
 ```
 Roy-Jade/
-├── old/          # Ancienne version : CV site web vanilla JS + Parcel (référence)
+├── old/                  # Ancienne version : CV site web vanilla JS + Parcel (référence)
 │   └── src/
-│       ├── assets/data/    # experiences.js, skills.js, courses.js, personalInfos.js
-│       └── components/     # App, Aside, Courses, Experiences, Footer, Header, Presentation
+│       ├── assets/data/  # experiences.js, skills.js, courses.js, personalInfos.js
+│       └── components/   # App, Aside, Courses, Experiences, Footer, Header, Presentation
+├── data.js               # Données CV structurées (référence pour migration SQL)
 └── new/
-    └── frontend/           # Réécriture — React 19 + TypeScript + Vite + pnpm
+    ├── docker-compose.yml
+    ├── backend/
+    │   ├── API.md                  # Documentation des endpoints
+    │   ├── conception/
+    │   │   ├── migration.sql       # Schéma de la BDD
+    │   │   └── seeding.sql         # Données initiales (gitignored)
+    │   └── src/
+    │       ├── config/             # db.ts, env.ts
+    │       ├── controller/
+    │       │   ├── authController.ts
+    │       │   └── cv/             # dashboard, experience, formation, hardskill, identity, profile, softskill
+    │       ├── middleware/         # checkAuth.ts
+    │       ├── routers/            # authRouter, cvRouter, dashboardRouter
+    │       ├── schema/cv/          # Schémas Zod + types + keylists
+    │       ├── service/
+    │       │   ├── authService.ts
+    │       │   └── cv/             # dashboard, experience, formation, hardskill, identity, profile, softskill
+    │       ├── types/              # session.d.ts (augmentation express-session)
+    │       ├── utils/              # AppError, editInJunctionTable, getXxxById, junctionTables, levels
+    │       └── tests/              # Miroir de src/ — service/, utils/, middleware/, controller/
+    └── frontend/
         └── src/
             └── functions/
                 └── core/
-                    ├── components/  # Header, Footer
-                    └── pages/       # Home
+                    ├── components/ # Header, Footer
+                    └── pages/      # Home
 ```
+
+## Stack `new/backend`
+
+- **Node.js** + **Express** + **TypeScript** (strict)
+- **PostgreSQL** — driver `pg`
+- **Zod** — validation des body entrants
+- **bcrypt** — hashage du mot de passe admin
+- **express-session** — authentification par cookie (httpOnly, 30 min)
+- **helmet** + **cors** — sécurité HTTP
+- **Vitest** — tests unitaires (Detroit TDD : seul le boundary DB est mocké)
+- **pnpm**
+
+## Architecture backend
+
+Couches : `router → controller → service → utils/db`
+
+- **AppError(statusCode, message)** — levée par les services pour les erreurs client (4xx) ; les `Error` génériques remontent en 500 dans le controller.
+- **ZodError** — catchée séparément dans les controllers (→ 400).
+- **Tables de liaison** — pattern DELETE ALL + INSERT ALL (pas de diff). La whitelist `junctionTable` dans `utils/junctionTables.ts` prévient l'injection SQL via les noms de tables.
+- **Auth** — `req.session.isAdmin = true` à la connexion ; middleware `checkAuth` en amont des routes protégées.
 
 ## Stack `new/frontend`
 
@@ -43,19 +84,24 @@ Roy-Jade/
 - **pnpm** (gestionnaire de paquets)
 - SCSS pour les styles
 
-## Données CV
+## Base de données
 
-Le fichier `data.js` (racine du repo) contient la structure complète des données CV, pensée pour une migration SQL :
+Tables : `admin`, `identity`, `profile`, `domain`, `softskill`, `hardskill`, `experience`, `experience_task`, `formation`, `formation_task` + tables de liaison m2m (`experience_domain`, `experience_hardskill`, `experience_softskill`, `formation_domain`, `formation_hardskill`).
+
+Le fichier `data.js` (racine du repo) contient les données de référence utilisées pour le seeding :
 - `profiles` — accroches par cible (labo, alternance, générique)
-- `experiences` — expériences pro avec `type: "detail" | "summary"`, `domain`, `hardSkills`, `softSkills`
-- `formations` — diplômes et formations
-- `skills` — compétences hard et soft avec `category`, `level`, `domain`
+- `experiences` — avec `type: "detail" | "summary"`, `domain`, `hardSkills`, `softSkills`
+- `formations`, `skills`
 
-Tables SQL prévues : `experiences`, `skills`, `experience_hardskills` (m2m), `experience_softskills` (m2m), `experience_domains` (m2m).
+## Docker
+
+`new/docker-compose.yml` — trois services : `backend` (port 3000), `frontend` (port 5173), `db` (postgres).
+Volume PostgreSQL : `/var/lib/postgresql` (sans `/data` — comportement de l'image postgres actuelle).
+Les scripts SQL dans `backend/conception/` sont exécutés automatiquement au démarrage du container via `docker-entrypoint-initdb.d`.
 
 ## Conventions
 
 - Pas de commentaires sauf si le *pourquoi* est non-évident.
 - TypeScript strict — pas de `any`.
 - Commits en français, conventionnels.
-- Organisation par feature dans `src/functions/`.
+- Organisation par feature dans `src/functions/` (frontend).

@@ -8,11 +8,11 @@ SET CLIENT_ENCODING TO 'UTF-8';
 CREATE TABLE admin (
     pseudonyme      VARCHAR(20),
     hashed_password VARCHAR (255),
-    email           VarCHAr(255)
-)
+    email           VARCHAR(255)
+);
 
 CREATE TABLE identity (
-    id              SERIAL PRIMARY KEY default(1)
+    id              SERIAL PRIMARY KEY
     firstname       VARCHAR(20),
     lastname        VARCHAR(20),
     email           VARCHAR(255),
@@ -21,7 +21,7 @@ CREATE TABLE identity (
     gitlab_link     VARCHAR(100),
     linkedin_link   VARCHAR(100),
     CONSTRAINT unique_id CHECK(id=1)
-)
+);
 
 CREATE TABLE profile (
     id          SERIAL PRIMARY KEY,
