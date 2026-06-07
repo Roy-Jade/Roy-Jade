@@ -16,6 +16,8 @@ services:
         condition: service_healthy
     # on nomme le conteneur parce qu'on fait les choses proprement
     container_name: portfolio-backend
+    # on indique où se trouve le fichier contenant les variables d'environnement
+    env_file: ./backend/.env
     # on indique les volumes pour actualiser en direct le container allumé, sauf pour le dossier node_module qui est compilé différemment suivant le système d'exploitation
     volumes:
       - ./backend:/usr/src/app
@@ -39,6 +41,8 @@ services:
       - backend
     # on nomme notre conteneur pour savoir qui il est
     container_name: portfolio-frontend
+    # on indique où se trouve le fichier contenant les variables d'environnement
+    env_file: ./frontend/.env
     # on indique les volumes pour actualiser en direct le container allumé, sauf pour le dossier node_module qui est compilé différemment suivant le système d'exploitation
     volumes:
       - ./frontend:/usr/src/app

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import './index.css';
+// import './index.css';
 import {Link, NavLink} from 'react-router';
 import MenuIcon from '../../../../assets/menu.svg?react';
 // Note : NavLink est un Link qui gère le aria-current="page" automatiquement.

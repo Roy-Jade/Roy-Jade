@@ -1,1 +1,1 @@
-export const levels = ["notions", "courant", "maitrise"]
+export const levels = ["notions", "courant", "maîtrise"]

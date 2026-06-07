@@ -15,9 +15,10 @@ describe('fetchExperience', () => {
     });
 
 
-    it('cas fonctionnel : données récupérées', async () => {
+    it('cas fonctionnel : données récupérées en une seule requête, sans doublon', async () => {
         (db.query as Mock).mockResolvedValueOnce({
-            rows: [{ 
+            rows: [
+                {
                     id:1,
                     slug:"ranger",
                     type:"detail",
@@ -37,34 +38,32 @@ describe('fetchExperience', () => {
                     hardskills: [
                         {slug:"traque-urbain", label:"Capacités de traque en milieu urbain", level:"expert", category:"Survie", sub_category:"Pistage"}
                     ]
-                }]});
-                
-        (db.query as Mock).mockResolvedValueOnce({
-            rows: [{ 
-                id:2,
-                slug:"occultiste",
-                type:"detail",
-                title:"Occultiste de la Grande Fée Verte",
-                company:"Cour de la Fée Verte",
-                location:"Domaine Féérique vert",
-                start_date:"1402 DR",
-                end_date:"1406 DR",
-                description:"Au sein de la cour de la Grande Fée Verte, réduction des menaces invasives qui se développement dans le domaine féérique.",
-                tasks :[
-                    {content:"Suppression des menaces invasives", position:1},
-                    {content:"Entrainement des jeunes recrues", position:2},
-                ],
-                softskills: [
-                    {slug:"empathie", label:"Empathie"},
-                    {slug:"formation", label:"Formation"}
-                ],
-                hardskills: [
-                    {slug:"occultisme", label:"Compétences de combat d'occultiste", level:"intermédiaire", category:"Magie", sub_category:"Occultisme"}
-                ]
-            }]
-        });
+                },
+                {
+                    id:2,
+                    slug:"occultiste",
+                    type:"detail",
+                    title:"Occultiste de la Grande Fée Verte",
+                    company:"Cour de la Fée Verte",
+                    location:"Domaine Féérique vert",
+                    start_date:"1402 DR",
+                    end_date:"1406 DR",
+                    description:"Au sein de la cour de la Grande Fée Verte, réduction des menaces invasives qui se développement dans le domaine féérique.",
+                    tasks :[
+                        {content:"Suppression des menaces invasives", position:1},
+                        {content:"Entrainement des jeunes recrues", position:2},
+                    ],
+                    softskills: [
+                        {slug:"empathie", label:"Empathie"},
+                        {slug:"formation", label:"Formation"}
+                    ],
+                    hardskills: [
+                        {slug:"occultisme", label:"Compétences de combat d'occultiste", level:"intermédiaire", category:"Magie", sub_category:"Occultisme"}
+                    ]
+                }
+            ]});
 
-        await expect(fetchExperience([{"domain":"combattant", "type":"detail"}, {"domain":"magicien", "type":"detail"}])).resolves.toEqual([
+        await expect(fetchExperience([{"domains":["combattant", "magicien"], "type":"detail"}])).resolves.toEqual([
                 { 
                     id:1,
                     slug:"ranger",
@@ -109,6 +108,12 @@ describe('fetchExperience', () => {
                     ]
                 },
             ]);
+
+        expect(db.query).toHaveBeenCalledTimes(1);
+        expect(db.query).toHaveBeenCalledWith(
+            expect.stringContaining('dom.slug = ANY($1)'),
+            [["combattant", "magicien"], "detail"]
+        );
     });
 
     it('cas dysfonctionnel : pas de données dans la BDD', async () => {
@@ -116,12 +121,12 @@ describe('fetchExperience', () => {
             rows: []
         });
 
-        await expect(fetchExperience([{"domain":"voleur", "type":"summary"}])).rejects.toThrow('Aucune donnée trouvée');
+        await expect(fetchExperience([{"domains":["voleur"], "type":"summary"}])).rejects.toThrow('Aucune donnée trouvée');
     })
 
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(fetchExperience([{"domain":"voleur", "type":"summary"}])).rejects.toThrow('Connexion BDD perdue');
+        await expect(fetchExperience([{"domains":["voleur"], "type":"summary"}])).rejects.toThrow('Connexion BDD perdue');
     });
 })

@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY ./package.json ./pnpm-lock.yaml ./
 
 # On lance NPM pour l'installation des dépendances
-RUN pnpm install
+RUN npm install
 
 # Copie du code dans le conteneur
 COPY . .

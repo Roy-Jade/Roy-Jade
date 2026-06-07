@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router';
-import './index.css';
+// import './index.css';
 import { useQuery } from '@tanstack/react-query';
-import { getIdentity } from '../../../../api/cv';
+import { getIdentity } from '../../../../api/cvApi';
 
 export default function Footer() {
 
@@ -24,9 +24,9 @@ export default function Footer() {
                 isError ? <p>Erreur à la récupération des données</p> :
                 <address>
                     {data.firstname} {data.lastname}<br/>
-                    <a href="{data.github_link}">Github</a>
-                    <a href="{data.gitlab_link}">Gitlab</a>
-                    <a href="{data.linkedin_link}">LinkedIn</a>
+                    {data.github_link && <a href={data.github_link}>Github</a>}
+                    {data.gitlab_link && <a href={data.gitlab_link}>Gitlab</a>}
+                    {data.linkedin_link && <a href={data.linkedin_link}>LinkedIn</a>}
                 </address>
             }
         </footer>

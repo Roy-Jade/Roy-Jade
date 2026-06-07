@@ -22,7 +22,7 @@ describe('fetchHardskill', () => {
                     id: 1,
                     slug: "dressage",
                     label: "Dressage Pokémon",
-                    level: "maitrise",
+                    level: "maîtrise",
                     category: "terrain",
                     sub_category: "capture"
                 },
@@ -49,7 +49,7 @@ describe('fetchHardskill', () => {
                 id: 1,
                 slug: "dressage",
                 label: "Dressage Pokémon",
-                level: "maitrise",
+                level: "maîtrise",
                 category: "terrain",
                 sub_category: "capture"
             },
@@ -81,7 +81,7 @@ describe('fetchHardskill', () => {
             FROM hardskill hard
             WHERE hard.category = ANY($1)
             AND hard.level = ANY($2)
-            `, [["dressage", "soins-pokemon"], ["notions", "courant", "maitrise"]]);
+            `, [["dressage", "soins-pokemon"], ["notions", "courant", "maîtrise"]]);
     });
 
     it('cas dysfonctionnel : level invalide', async () => {
@@ -97,7 +97,7 @@ describe('fetchHardskill', () => {
             rows: []
         });
 
-        await expect(fetchHardskill(["combat", "exploration"], "maitrise")).rejects.toThrow('Aucune donnée trouvée');
+        await expect(fetchHardskill(["combat", "exploration"], "maîtrise")).rejects.toThrow('Aucune donnée trouvée');
     })
 
     it('cas dysfonctionnel : erreur BDD', async () => {
@@ -124,16 +124,16 @@ describe('addHardskill', () => {
                     id: 1,
                     slug: "dressage",
                     label: "Dressage Pokémon",
-                    level: "maitrise",
+                    level: "maîtrise",
                     category: "terrain",
                     sub_category: "capture"
                 }]});
 
-        await expect(addHardskill({slug:"dressage", label:"Dressage Pokémon", level:"maitrise", category:"terrain", sub_category:"capture"})).resolves.toEqual({
+        await expect(addHardskill({slug:"dressage", label:"Dressage Pokémon", level:"maîtrise", category:"terrain", sub_category:"capture"})).resolves.toEqual({
                     id: 1,
                     slug: "dressage",
                     label: "Dressage Pokémon",
-                    level: "maitrise",
+                    level: "maîtrise",
                     category: "terrain",
                     sub_category: "capture"
                 });
@@ -142,7 +142,7 @@ describe('addHardskill', () => {
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(addHardskill({slug:"dressage", label:"Dressage Pokémon", level:"maitrise", category:"terrain", sub_category:"capture"})).rejects.toThrow('Connexion BDD perdue');
+        await expect(addHardskill({slug:"dressage", label:"Dressage Pokémon", level:"maîtrise", category:"terrain", sub_category:"capture"})).rejects.toThrow('Connexion BDD perdue');
     });
 })
 
@@ -163,7 +163,7 @@ describe('editHardskill', () => {
                     id: 1,
                     slug: "dressage",
                     label: "Dressage Pokémon",
-                    level: "maitrise",
+                    level: "maîtrise",
                     category: "terrain",
                     sub_category: "capture"
                 }]});
@@ -172,7 +172,7 @@ describe('editHardskill', () => {
                     id: 1,
                     slug: "dressage",
                     label: "Dressage Pokémon",
-                    level: "maitrise",
+                    level: "maîtrise",
                     category: "terrain",
                     sub_category: "capture"
                 });

@@ -17,14 +17,14 @@ export async function fetchFormation(data:string[]) {
             form.description,
             form.level,
             JSON_AGG(DISTINCT jsonb_build_object(
-                "content", task.content, 
-                "position", task.position)) AS tasks, 
+                'content', task.content, 
+                'position', task.position)) AS tasks, 
             JSON_AGG(DISTINCT jsonb_build_object(
-                "slug", hard.slug, 
-                "label", hard.label, 
-                "level", hard.level, 
-                "category", hard.category, 
-                "sub_category", hard.sub_category)) AS hardskills
+                'slug', hard.slug, 
+                'label', hard.label, 
+                'level', hard.level, 
+                'category', hard.category, 
+                'sub_category', hard.sub_category)) AS hardskills
             FROM formation form
             LEFT JOIN formation_task task ON task.formation_id = form.id
             LEFT JOIN formation_hardskill hardexp ON hardexp.formation_id = form.id

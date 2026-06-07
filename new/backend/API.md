@@ -151,6 +151,28 @@ Retourne les formations, filtrées optionnellement par domaine.
 
 ---
 
+### GET /api/cv/aside
+Retourne les langues et les hobbies. Aucun paramètre requis.
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 200 | `{ result: { language, hobby } }` |
+| 404 | `{ message: "Aucune donnée trouvée" }` |
+| 500 | `{ message: "Erreur lors de la récupération des données" }` |
+
+**Forme du résultat**
+```json
+{
+  "result": {
+    "language": [{ "id": 1, "slug": "anglais", "label": "Anglais", "level": "courant" }],
+    "hobby": [{ "id": 1, "slug": "modelisme", "label": "Modélisme", "supplement": "Montage et peinture de figurines" }]
+  }
+}
+```
+
+---
+
 ## Dashboard (authentification requise)
 
 ### GET /api/cv/dashboard
@@ -356,5 +378,85 @@ Modifie une compétence comportementale. Tous les champs sont optionnels.
 | Code | Corps |
 |------|-------|
 | 200 | `{ result: { id, slug, label } }` |
+| 400 | `{ message: "..." }` (ZodError ou AppError) |
+| 500 | `{ message: "Erreur lors de la modification des données" }` |
+
+---
+
+### POST /api/cv/dashboard/language
+Ajoute une langue.
+
+**Body**
+```json
+{
+  "data": { "slug": "string", "label": "string", "level": "string?" }
+}
+```
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 201 | `{ result: { id, slug, label, level } }` |
+| 400 | `{ message: "..." }` (ZodError ou AppError) |
+| 500 | `{ message: "Erreur lors de la modification des données" }` |
+
+---
+
+### PATCH /api/cv/dashboard/language/:id
+Modifie une langue. Tous les champs sont optionnels.
+
+**Params** : `id` — identifiant de la langue
+
+**Body**
+```json
+{
+  "data": { "slug": "string?", "label": "string?", "level": "string?" }
+}
+```
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 200 | `{ result: { id, slug, label, level } }` |
+| 400 | `{ message: "..." }` (ZodError ou AppError) |
+| 500 | `{ message: "Erreur lors de la modification des données" }` |
+
+---
+
+### POST /api/cv/dashboard/hobby
+Ajoute un hobby.
+
+**Body**
+```json
+{
+  "data": { "slug": "string", "label": "string", "supplement": "string?" }
+}
+```
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 201 | `{ result: { id, slug, label, supplement } }` |
+| 400 | `{ message: "..." }` (ZodError ou AppError) |
+| 500 | `{ message: "Erreur lors de la modification des données" }` |
+
+---
+
+### PATCH /api/cv/dashboard/hobby/:id
+Modifie un hobby. Tous les champs sont optionnels.
+
+**Params** : `id` — identifiant du hobby
+
+**Body**
+```json
+{
+  "data": { "slug": "string?", "label": "string?", "supplement": "string?" }
+}
+```
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 200 | `{ result: { id, slug, label, supplement } }` |
 | 400 | `{ message: "..." }` (ZodError ou AppError) |
 | 500 | `{ message: "Erreur lors de la modification des données" }` |

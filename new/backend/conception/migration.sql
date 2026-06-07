@@ -12,7 +12,7 @@ CREATE TABLE admin (
 );
 
 CREATE TABLE identity (
-    id              SERIAL PRIMARY KEY
+    id              SERIAL PRIMARY KEY,
     firstname       VARCHAR(20),
     lastname        VARCHAR(20),
     email           VARCHAR(255),
@@ -21,6 +21,20 @@ CREATE TABLE identity (
     gitlab_link     VARCHAR(100),
     linkedin_link   VARCHAR(100),
     CONSTRAINT unique_id CHECK(id=1)
+);
+
+CREATE TABLE language (
+    id      SERIAL PRIMARY KEY,
+    slug    VARCHAR(100) UNIQUE NOT NULL, 
+    label   VARCHAR(100) NOT NULL,
+    level   VARCHAR(50)
+);
+
+CREATE TABLE hobby (
+    id      SERIAL PRIMARY KEY,
+    slug    VARCHAR(100) UNIQUE NOT NULL,
+    label   VARCHAR(100) NOT NULL,
+    supplement   VARCHAR(200)
 );
 
 CREATE TABLE profile (

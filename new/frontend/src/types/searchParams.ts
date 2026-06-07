@@ -1,6 +1,6 @@
-type ExperienceFilter = { domain: string; type: "detail" | "summary" };
+export type ExperienceFilter = { domain: string; type: "detail" | "summary" };
 
-export interface CvFilters {
+export interface CvFiltersParams {
     context: string;
     experienceFilters: ExperienceFilter[];
     hardskillCategories: string[];

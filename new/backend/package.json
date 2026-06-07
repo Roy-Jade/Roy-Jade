@@ -2,10 +2,10 @@
   "name": "backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "DBinit": "dotenv -e .env -- bash -c 'PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -d $DB_NAME -f conception/migration.sql -f conception/seeding.sql'",
-    "start": "nodemon index.js",
+    "start": "tsx watch src/index.ts",
     "test": "vitest"
   },
   "keywords": [],

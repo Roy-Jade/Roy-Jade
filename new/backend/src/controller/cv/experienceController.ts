@@ -3,14 +3,16 @@ import { ZodError } from "zod";
 import { AppError } from "../../utils/AppError.js";
 import { fetchExperience, addExperience, editExperience } from "../../service/cv/experienceService.js";
 import { ExperienceSchema, ExperienceFilterSchema } from "../../schema/cv/experience.js";
+import { groupExperienceFilters } from "../../utils/groupExperienceFilters.js";
  
 
 export const getExperience = async (req:Request, res:Response) => {
     try {
         const rawData = typeof req.query.data === "string" ? JSON.parse(req.query.data) : ""
-        const data = ExperienceFilterSchema.parse(rawData) 
+        const data = ExperienceFilterSchema.parse(rawData)
+        const groupedData = groupExperienceFilters(data);
 
-        const result = await fetchExperience(data);
+        const result = await fetchExperience(groupedData);
         return res.status(200).json({result})
 
     } catch (error) {
