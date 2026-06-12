@@ -4,3 +4,4 @@ backend/.env
 frontend/dist
 frontend/.env
 backend/conception/seeding.sql
+frontend/src/assets/photo.jpg

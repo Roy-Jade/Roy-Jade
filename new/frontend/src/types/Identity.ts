@@ -5,7 +5,6 @@ export type Identity = {
     town: string;
     phone: string;
     email: string;
-    photo: string | null;
     github_link: string | null;
     gitlab_link: string | null;
     linkedin_link: string | null;

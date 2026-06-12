@@ -37,6 +37,10 @@ export const getHardskill = async (level: string, categories: string[]) => {
     return cvApi(`hardskill?${params.toString()}`);
 };
 
+export const getAside = async () => {
+    return cvApi("aside");
+};
+
 export const getFormation = async (domains: string[]) => {
     const params = new URLSearchParams();
     domains.forEach(d => params.append('data', d));

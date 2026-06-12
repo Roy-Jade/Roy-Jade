@@ -1,15 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { getHardskill } from '../../../../../api/cvApi';
+import { getAside, getHardskill } from '../../../../../api/cvApi';
 import type { Hardskill } from '../../../../../types/Hardskill';
+import type { Language } from '../../../../../types/Language';
+import type { Hobby } from '../../../../../types/Hobby';
+import photo from '../../../../../assets/photo.jpg';
 // import './CvAside.scss';
 
 interface Props {
     level: string;
     categories: string[];
-    photo: string | null;
 }
 
-export default function CvAside({ level, categories, photo }: Props) {
+export default function CvAside({ level, categories }: Props) {
     const { data: hardskills = [], isLoading, isError } = useQuery<Hardskill[]>({
         queryKey: ['hardskill', level, categories],
         queryFn: () => getHardskill(level, categories),
@@ -17,28 +19,52 @@ export default function CvAside({ level, categories, photo }: Props) {
         enabled: !!level,
     });
 
-    const grouped = hardskills.reduce<Record<string, Hardskill[]>>((acc, skill) => {
-        (acc[skill.category] ??= []).push(skill);
-        return acc;
-    }, {});
+    const { data: aside, isLoading: isAsideLoading, isError: isAsideError } = useQuery<{ language: Language[]; hobby: Hobby[] }>({
+        queryKey: ['aside'],
+        queryFn: getAside,
+        staleTime: 20 * 60 * 1000,
+    });
+    const { language = [], hobby = [] } = aside ?? {};
 
     return (
         <aside className="cv-aside">
-            {photo && <img src={photo} alt="Photo de profil" className="cv-aside__photo" />}
+            <img src={photo} alt="Photo de profil" className="cv-aside__photo" />
 
-            {isLoading && <p>…</p>}
-            {isError && <p>Erreur</p>}
+            {(isLoading || isAsideLoading) && <p>…</p>}
+            {(isError || isAsideError) && <p>Erreur</p>}
 
-            {Object.entries(grouped).map(([category, skills]) => (
-                <article key={category}>
-                    <h2>{category}</h2>
+            {hardskills.length > 0 && (
+                <article>
+                    <h2>Compétences</h2>
                     <ul>
-                        {skills.map(skill => (
+                        {hardskills.map(skill => (
                             <li key={skill.id}>{skill.label}</li>
                         ))}
                     </ul>
                 </article>
-            ))}
+            )}
+
+            {language.length > 0 && (
+                <article>
+                    <h2>Langues</h2>
+                    <ul>
+                        {language.map(item => (
+                            <li key={item.id}>{item.label}</li>
+                        ))}
+                    </ul>
+                </article>
+            )}
+
+            {hobby.length > 0 && (
+                <article>
+                    <h2>Centres d'intérêts</h2>
+                    <ul>
+                        {hobby.map(item => (
+                            <li key={item.id}>{item.label}</li>
+                        ))}
+                    </ul>
+                </article>
+            )}
         </aside>
     );
 }

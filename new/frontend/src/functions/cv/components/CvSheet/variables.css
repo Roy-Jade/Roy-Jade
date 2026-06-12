@@ -1,0 +1,19 @@
+:root {
+    --cv-color-backpage: #cacaca;
+    --cv-color-backpage-shadow: #8a8a8a;
+    --cv-color-border-dark: #aaa;
+    --cv-color-border-light: #cecece;
+    --cv-color-border-aside: #ffffff;
+
+    --cv-color-background: #fff;
+    --cv-color-banner: #0345a8;
+    --cv-color-banner-glassed: rgba(4, 90, 218, 0.7);
+    --cv-color-aside: rgba(172, 205, 254, 0.5);
+
+    --cv-color-text: #111111;
+    --cv-color-banner-text: #ffffff;
+    --cv-color-banner-text-shadow: rgba(255, 255, 255, 0.5);
+
+    --cv-font-family: Arial;
+    --cv-font-size: 11pt;
+}

@@ -5,9 +5,10 @@ import type { FormationItem } from '../../../../../types/Formation';
 
 interface Props {
     domains: string[];
+    max: number;
 }
 
-export default function CvFormations({ domains }: Props) {
+export default function CvFormations({ domains, max }: Props) {
     const { data: formations = [], isLoading, isError } = useQuery<FormationItem[]>({
         queryKey: ['formation', domains],
         queryFn: () => getFormation(domains),
@@ -21,22 +22,22 @@ export default function CvFormations({ domains }: Props) {
         <section className="cv-formations">
             <h2>Formations et diplômes</h2>
             <ul>
-                {formations.map(formation => (
-                    <li key={formation.id} className="cv-formation">
-                        <p className="cv-formation__header">
-                            <span className="cv-formation__date">{formation.obtention_date}</span>
-                            <span className="cv-formation__title">
+                {formations.slice(0, max).map(formation => (
+                    <li key={`form ${formation.id}`} className="cv-formation">
+                        <span className="cv-formation__date">{formation.obtention_date}</span>
+                        <div className="cv-formation__content">
+                            <p className="cv-formation__title">
                                 <strong>{formation.title}</strong>
                                 {formation.institution && `, ${formation.institution}`}
                                 {formation.location && ` (${formation.location})`}
-                            </span>
-                        </p>
-                        {formation.description && <p className="cv-formation__desc">{formation.description}</p>}
-                        {formation.tasks.length > 0 && (
-                            <ul className="cv-formation__tasks">
-                                {formation.tasks.map((task, i) => <li key={i}>{task}</li>)}
-                            </ul>
-                        )}
+                            </p>
+                            {formation.description && <p className="cv-formation__desc">{formation.description}</p>}
+                            {formation.tasks.length > 0 && (
+                                <ul className="cv-formation__tasks">
+                                    {formation.tasks.map((task) => <li key={`task ${task.position}`}>{task.content}</li>)}
+                                </ul>
+                            )}
+                        </div>
                     </li>
                 ))}
             </ul>

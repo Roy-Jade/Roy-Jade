@@ -6,9 +6,10 @@ import type { ExperienceItem } from '../../../../../types/Experience';
 
 interface Props {
     filters: ExperienceFilter[];
+    max: number;
 }
 
-export default function CvExperiences({ filters }: Props) {
+export default function CvExperiences({ filters, max }: Props) {
     const { data: experiences = [], isLoading, isError } = useQuery<ExperienceItem[]>({
         queryKey: ['experience', filters],
         queryFn: () => getExperience(filters),
@@ -23,29 +24,29 @@ export default function CvExperiences({ filters }: Props) {
         <section className="cv-experiences">
             <h2>Expériences professionnelles</h2>
             <ul>
-                {experiences.map(exp => (
+                {experiences.slice(0, max).map(exp => (
                     <li key={`exp ${exp.id}`} className={`cv-experience cv-experience--${exp.type}`}>
-                        <p className="cv-experience__header">
-                            <span className="cv-experience__dates">
-                                {exp.start_date}{exp.end_date ? ` – ${exp.end_date}` : ''}
-                            </span>
-                            <span className="cv-experience__title">
+                        <span className="cv-experience__dates">
+                            <span>{exp.start_date}</span>
+                            {exp.end_date && exp.end_date !== exp.start_date && <span>{exp.end_date}</span>}
+                        </span>
+                        <div className="cv-experience__content">
+                            <p className="cv-experience__title">
                                 <strong>{exp.title}</strong>
                                 {exp.company && `, ${exp.company}`}
                                 {exp.location && ` (${exp.location})`}
-                            </span>
-                        </p>
-                        <p>Exp.id = ${exp.id}</p>
-                        {exp.type === 'detail' && (
-                            <>
-                                {exp.description && <p className="cv-experience__desc">{exp.description}</p>}
-                                {exp.tasks.length > 0 && (
-                                    <ul className="cv-experience__tasks">
-                                        {exp.tasks.map((task) => <li key={`task ${task.position}`}>{task.content}</li>)}
-                                    </ul>
-                                )}
-                            </>
-                        )}
+                            </p>
+                            {exp.type === 'detail' && (
+                                <>
+                                    {exp.description && <p className="cv-experience__desc">{exp.description}</p>}
+                                    {exp.tasks.length > 0 && (
+                                        <ul className="cv-experience__tasks">
+                                            {exp.tasks.map((task) => <li key={`task ${task.position}`}>{task.content}</li>)}
+                                        </ul>
+                                    )}
+                                </>
+                            )}
+                        </div>
                     </li>
                 ))}
             </ul>

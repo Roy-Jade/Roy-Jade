@@ -6,4 +6,6 @@ export interface CvFiltersParams {
     hardskillCategories: string[];
     hardskillLevel: string;
     formationDomains: string[];
+    maxExperiences: number;
+    maxFormations: number;
 }

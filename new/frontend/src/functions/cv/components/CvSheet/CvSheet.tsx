@@ -8,7 +8,8 @@ import CvAside from './CvAside/CvAside';
 import CvExperiences from './CvExperiences/CvExperiences';
 import CvFormations from './CvFormations/CvFormations';
 import CvFooter from './CvFooter/CvFooter';
-// import './CvSheet.scss';
+import './variables.css';
+import './templatesCSS/default.scss';
 import type { Identity } from '../../../../types/Identity';
 
 interface Props {
@@ -31,12 +32,11 @@ export default function CvSheet({ filters, identity }: Props) {
                             <CvAside
                                 level={filters.hardskillLevel}
                                 categories={filters.hardskillCategories}
-                                photo={identity?.photo ?? null}
                             />
                             <section className="cv-content">
                                 <CvPresentation context={filters.context} />
-                                <CvExperiences filters={filters.experienceFilters} />
-                                {/* <CvFormations domains={filters.formationDomains} /> */}
+                                <CvExperiences filters={filters.experienceFilters} max={filters.maxExperiences} />
+                                <CvFormations domains={filters.formationDomains} max={filters.maxFormations} />
                             </section>
                         </main>
                         <CvFooter identity={identity} />

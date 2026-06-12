@@ -20,8 +20,8 @@ export default function CvHeader({ identity, context }: Props) {
     return (
         <header className="cv-header">
             <h1>
-                <span>{identity?.firstname}</span>
-                <span>{identity?.lastname}</span>
+                <span className='cv-header__firstname'>{identity?.firstname}</span>
+                <span className='cv-header__lastname'>{identity?.lastname}</span>
             </h1>
             <div className="cv-header__right">
                 <ul className="cv-header__contact">

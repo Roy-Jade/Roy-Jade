@@ -7,7 +7,7 @@ export type FormationItem = {
     obtention_date: string | null;
     description: string | null;
     level: string | null;
-    tasks: string[];
+    tasks: { content: string; position: number }[];
     hardskills: string[];
     domains: string[];
 };

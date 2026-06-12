@@ -21,6 +21,8 @@ export default function CV() {
         hardskillCategories: searchParams.getAll('category'),
         hardskillLevel: searchParams.get('level') ?? '',
         formationDomains: searchParams.getAll('formationDomain'),
+        maxExperiences: Number(searchParams.get('maxExperiences')),
+        maxFormations: Number(searchParams.get('maxFormations')),
     };
 
     const filtersReady = !!searchParams.get('context');
