@@ -32,12 +32,12 @@ export default function CvFormations({ domains, max }: Props) {
                                 {formation.location && ` (${formation.location})`}
                             </p>
                             {formation.description && <p className="cv-formation__desc">{formation.description}</p>}
-                            {formation.tasks.length > 0 && (
-                                <ul className="cv-formation__tasks">
-                                    {formation.tasks.map((task) => <li key={`task ${task.position}`}>{task.content}</li>)}
-                                </ul>
-                            )}
                         </div>
+                        {formation.tasks.length > 0 && (
+                            <ul className="cv-formation__tasks">
+                                {formation.tasks.map((task) => <li key={`task ${task.position}`}>{`> ${task.content}`}</li>)}
+                            </ul>
+                        )}
                     </li>
                 ))}
             </ul>

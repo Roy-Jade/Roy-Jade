@@ -14,6 +14,8 @@ describe('fetchDashboard', () => {
 
     it('cas fonctionnel : données récupérées', async () => {
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, first_name: "Roy-Jade" }] });
+        (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: "anglais" }] });
+        (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: "modelisme" }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: "generique" }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: "web" }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: "autonomie" }] });
@@ -23,6 +25,8 @@ describe('fetchDashboard', () => {
 
         await expect(fetchDashboard()).resolves.toEqual({
             identity: { id: 1, first_name: "Roy-Jade" },
+            language: [{ id: 1, slug: "anglais" }],
+            hobby: [{ id: 1, slug: "modelisme" }],
             profile: [{ id: 1, slug: "generique" }],
             domain: [{ id: 1, slug: "web" }],
             softskill: [{ id: 1, slug: "autonomie" }],

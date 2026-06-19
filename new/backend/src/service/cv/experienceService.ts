@@ -106,24 +106,24 @@ export async function editExperience(
             params);
     }
 
-    if (domainData) {
+    if (domainData !== null) {
         await deleteInJunctionTable("experience", "domain", id);
-        await insertInJunctionTable("experience", "domain", id, domainData);
+        if (domainData.length > 0) await insertInJunctionTable("experience", "domain", id, domainData);
     };
 
-    if (hardskillData) {
+    if (hardskillData !== null) {
         await deleteInJunctionTable("experience", "hardskill", id);
-        await insertInJunctionTable("experience", "hardskill", id, hardskillData);
+        if (hardskillData.length > 0) await insertInJunctionTable("experience", "hardskill", id, hardskillData);
     };
 
-    if (softskillData) {
+    if (softskillData !== null) {
         await deleteInJunctionTable("experience", "softskill", id);
-        await insertInJunctionTable("experience", "softskill", id, softskillData);
+        if (softskillData.length > 0) await insertInJunctionTable("experience", "softskill", id, softskillData);
     };
 
-    if (taskData) {
+    if (taskData !== null) {
         await deleteInJunctionTable("experience", "task", id);
-        await insertTasks("experience", id, taskData);
+        if (taskData.length > 0) await insertTasks("experience", id, taskData);
     }
 
     const editedExperience = await getExperienceById(id);

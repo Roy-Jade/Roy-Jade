@@ -181,7 +181,7 @@ Retourne l'ensemble des données de la base (sauf table admin).
 **Réponses**
 | Code | Corps |
 |------|-------|
-| 200 | `{ result: { identity, profile[], domain[], softskill[], hardskill[], experience[], formation[] } }` |
+| 200 | `{ result: { identity, language[], hobby[], profile[], domain[], softskill[], hardskill[], experience[], formation[] } }` |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
 
 ---

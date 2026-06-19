@@ -95,19 +95,19 @@ export async function editFormation(
             params);
     }
 
-    if (domainData) {
+    if (domainData !== null) {
         await deleteInJunctionTable("formation", "domain", id);
-        await insertInJunctionTable("formation", "domain", id, domainData);
+        if (domainData.length > 0) await insertInJunctionTable("formation", "domain", id, domainData);
     };
 
-    if (hardskillData) {
+    if (hardskillData !== null) {
         await deleteInJunctionTable("formation", "hardskill", id);
-        await insertInJunctionTable("formation", "hardskill", id, hardskillData);
+        if (hardskillData.length > 0) await insertInJunctionTable("formation", "hardskill", id, hardskillData);
     };
 
-    if (taskData) {
+    if (taskData !== null) {
         await deleteInJunctionTable("formation", "task", id);
-        await insertTasks("formation", id, taskData);
+        if (taskData.length > 0) await insertTasks("formation", id, taskData);
     }
 
     const editedFormation = await getFormationById(id);

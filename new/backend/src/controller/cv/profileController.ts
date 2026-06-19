@@ -44,7 +44,7 @@ export const postProfile = async (req:Request, res:Response) => {
 
 export const patchProfile = async (req:Request, res:Response) => {
     try {
-        const id = req.body.id;
+        const id: number = Number(req.params.id);
         const data = ProfileSchema.partial().parse(req.body.data);
 
         const result = await editProfile(id, data);

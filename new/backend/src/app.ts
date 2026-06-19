@@ -6,7 +6,8 @@ import helmet from 'helmet';
 import session from 'express-session';
 import cvRouter from './routers/cvRouter.js';
 import authRouter from './routers/authRouter.js';
-import dashboardRouter from './routers/dashboardRouter.js'
+import dashboardRouter from './routers/dashboardRouter.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use(session({
 
 app.use('/api/cv', cvRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/cv/dashboard', dashboardRouter)
+app.use('/api/cv/dashboard', dashboardRouter);
+
+app.use(errorHandler);
 
 export default app;

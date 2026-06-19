@@ -8,7 +8,8 @@
     --cv-color-background: #fff;
     --cv-color-banner: #0345a8;
     --cv-color-banner-glassed: rgba(4, 90, 218, 0.7);
-    --cv-color-aside: rgba(172, 205, 254, 0.5);
+    --cv-color-aside: rgba(206, 225, 255, 0.5);
+    --cv-color-aside-transparent: rgba(172, 205, 254, 0);
 
     --cv-color-text: #111111;
     --cv-color-banner-text: #ffffff;

@@ -8,6 +8,8 @@ import { patchIdentity } from "../controller/cv/identityController.js";
 import { postSoftskill, patchSoftskill } from "../controller/cv/softskillController.js";
 import { postLanguage, patchLanguage } from "../controller/cv/languageController.js";
 import { patchHobby, postHobby } from "../controller/cv/hobbyController.js";
+import { postDomain, patchDomain } from "../controller/cv/domainController.js";
+import { postProfile, patchProfile } from "../controller/cv/profileController.js";
 
 const dashboardRouter = express.Router()
 
@@ -18,6 +20,8 @@ dashboardRouter.post('/hardskill', checkAuth, postHardskill);
 dashboardRouter.post('/softskill', checkAuth, postSoftskill);
 dashboardRouter.post('/language', checkAuth, postLanguage);
 dashboardRouter.post('/hobby', checkAuth, postHobby);
+dashboardRouter.post('/domain', checkAuth, postDomain);
+dashboardRouter.post('/profile', checkAuth, postProfile);
 dashboardRouter.patch('/identity', checkAuth, patchIdentity)
 dashboardRouter.patch('/experience/:id', checkAuth, patchExperience)
 dashboardRouter.patch('/formation/:id', checkAuth, patchFormation)
@@ -25,5 +29,7 @@ dashboardRouter.patch('/hardskill/:id', checkAuth, patchHardskill)
 dashboardRouter.patch('/softskill/:id', checkAuth, patchSoftskill)
 dashboardRouter.patch('/language/:id', checkAuth, patchLanguage)
 dashboardRouter.patch('/hobby/:id', checkAuth, patchHobby)
+dashboardRouter.patch('/domain/:id', checkAuth, patchDomain)
+dashboardRouter.patch('/profile/:id', checkAuth, patchProfile)
 
 export default dashboardRouter

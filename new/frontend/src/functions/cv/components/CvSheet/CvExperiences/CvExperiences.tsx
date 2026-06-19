@@ -36,17 +36,13 @@ export default function CvExperiences({ filters, max }: Props) {
                                 {exp.company && `, ${exp.company}`}
                                 {exp.location && ` (${exp.location})`}
                             </p>
-                            {exp.type === 'detail' && (
-                                <>
-                                    {exp.description && <p className="cv-experience__desc">{exp.description}</p>}
-                                    {exp.tasks.length > 0 && (
-                                        <ul className="cv-experience__tasks">
-                                            {exp.tasks.map((task) => <li key={`task ${task.position}`}>{task.content}</li>)}
-                                        </ul>
-                                    )}
-                                </>
-                            )}
+                            {exp.description && <p className="cv-experience__desc">{exp.description}</p>}
                         </div>
+                        {exp.type === 'detail' && exp.tasks.length > 0 && (
+                            <ul className="cv-experience__tasks">
+                                {exp.tasks.map((task) => <li key={`task ${task.position}`}>{`> ${task.content}`}</li>)}
+                            </ul>
+                        )}
                     </li>
                 ))}
             </ul>
