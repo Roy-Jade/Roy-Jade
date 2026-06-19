@@ -1,3 +1,4 @@
+// ⚠️ editFormation manque de transaction : les opérations partielles sont commitées en cas d'erreur. Ne pas utiliser comme modèle pour du code transactionnel. Fix documenté dans backend/CLAUDE.md.
 import db from "../../config/db.js";
 import { Formation, FormationKeyList } from "../../schema/cv/formation.js";
 import { getFormationById } from "../../utils/getFormationById.js";

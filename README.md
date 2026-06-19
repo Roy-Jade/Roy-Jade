@@ -65,32 +65,29 @@ Interface protégée par session pour administrer les données du CV sans déplo
 
 ```
 Roy-Jade/
-├── old/                        # Ancienne version vanilla JS + Parcel (référence)
-├── data.js                     # Données CV de référence (utilisées pour le seeding SQL)
-└── new/
-    ├── docker-compose.yml
-    ├── backend/
-    │   ├── API.md              # Documentation complète des endpoints
-    │   ├── conception/
-    │   │   ├── migration.sql   # Schéma de la base
-    │   │   └── seeding.sql     # Données initiales (gitignored)
-    │   └── src/
-    │       ├── config/         # db.ts, env.ts
-    │       ├── controller/cv/  # Un controller par entité
-    │       ├── middleware/     # checkAuth.ts
-    │       ├── routers/        # authRouter, cvRouter, dashboardRouter
-    │       ├── schema/cv/      # Schémas Zod + types + keylists
-    │       ├── service/cv/     # Logique métier
-    │       ├── utils/          # AppError, gestion des tables de liaison
-    │       └── tests/          # Miroir de src/
-    └── frontend/
-        └── src/
-            ├── api/            # Fonctions fetch (cvApi, dashboardApi, privateApi)
-            ├── types/          # Types partagés
-            └── functions/
-                ├── core/       # Header, Footer, page Home
-                ├── cv/         # Éditeur de CV (CvFilters, CvSheet et ses sous-composants)
-                └── admin/      # Login, Dashboard et ses 9 sections
+├── docker-compose.yml
+├── backend/
+│   ├── API.md              # Documentation complète des endpoints
+│   ├── conception/
+│   │   ├── migration.sql   # Schéma de la base
+│   │   └── seeding.sql     # Données initiales (gitignored)
+│   └── src/
+│       ├── config/         # db.ts, env.ts
+│       ├── controller/cv/  # Un controller par entité
+│       ├── middleware/     # checkAuth.ts
+│       ├── routers/        # authRouter, cvRouter, dashboardRouter
+│       ├── schema/cv/      # Schémas Zod + types + keylists
+│       ├── service/cv/     # Logique métier
+│       ├── utils/          # AppError, gestion des tables de liaison
+│       └── tests/          # Miroir de src/
+└── frontend/
+    └── src/
+        ├── api/            # Fonctions fetch (cvApi, dashboardApi, privateApi)
+        ├── types/          # Types partagés
+        └── functions/
+            ├── core/       # Header, Footer, page Home
+            ├── cv/         # Éditeur de CV (CvFilters, CvSheet et ses sous-composants)
+            └── admin/      # Login, Dashboard et ses 9 sections
 ```
 
 ---
@@ -148,7 +145,7 @@ Couches : `router → controller → service → utils/db`
 
 La Clean Architecture préconise une couche **Use Case** entre controller et service, qui isolerait l'orchestration métier du transport HTTP. Ce projet n'en a pas : chaque controller appelle un seul service, il n'y a pas d'orchestration multi-service à isoler. YAGNI s'applique — la couche serait introduite sur un projet futur dès que la complexité le justifie.
 
-Documentation complète des endpoints : [`new/backend/API.md`](new/backend/API.md)
+Documentation complète des endpoints : [`backend/API.md`](backend/API.md)
 
 ### Base de données
 
@@ -156,7 +153,7 @@ Tables principales : `admin`, `identity`, `profile`, `domain`, `softskill`, `har
 
 Tables de liaison m2m : `experience_domain`, `experience_hardskill`, `experience_softskill`, `formation_domain`, `formation_hardskill`
 
-Schéma complet : [`new/backend/conception/migration.sql`](new/backend/conception/migration.sql)
+Schéma complet : [`backend/conception/migration.sql`](backend/conception/migration.sql)
 
 ### Pourquoi pas d'ORM
 
@@ -193,7 +190,7 @@ Toutes les mises à jour de relations m2m (ex : modifier les domaines d'une exp�
 
 Pas de diff entre l'état actuel et le nouvel état. C'est plus simple, pas plus lent sur ce volume, et élimine toute possibilité de désynchronisation.
 
-**Protection contre l'injection SQL via les noms de tables** : les noms de tables (`experience_domain`, etc.) sont interpolés directement dans le SQL — on ne peut pas les paramétrer avec `$1`. Pour éviter l'injection, [`utils/junctionTables.ts`](new/backend/src/utils/junctionTables.ts) maintient une whitelist statique de toutes les combinaisons valides. Toute combinaison non listée lève une `AppError(400)` avant la requête.
+**Protection contre l'injection SQL via les noms de tables** : les noms de tables (`experience_domain`, etc.) sont interpolés directement dans le SQL — on ne peut pas les paramétrer avec `$1`. Pour éviter l'injection, [`utils/junctionTables.ts`](backend/src/utils/junctionTables.ts) maintient une whitelist statique de toutes les combinaisons valides. Toute combinaison non listée lève une `AppError(400)` avant la requête.
 
 ### Authentification — session plutôt que JWT
 
@@ -223,7 +220,6 @@ La structure des tests est un miroir de `src/` dans `src/tests/` (un fichier de 
 ## Lancer le projet
 
 ```bash
-cd new
 docker compose up
 ```
 
@@ -239,7 +235,7 @@ Le schéma et les données initiales sont injectés automatiquement au premier d
 
 ### Transactions manquantes dans les services d'édition
 
-**Fichiers :** [`experienceService.ts`](new/backend/src/service/cv/experienceService.ts), [`formationService.ts`](new/backend/src/service/cv/formationService.ts)
+**Fichiers :** [`experienceService.ts`](backend/src/service/cv/experienceService.ts), [`formationService.ts`](backend/src/service/cv/formationService.ts)
 
 **Symptôme :** Si `editExperience` ou `editFormation` échoue en cours de route (ex : erreur sur l'insertion dans une table de liaison), les opérations SQL déjà exécutées (UPDATE, DELETE) sont commitées en base malgré l'erreur retournée au client. Pas d'atomicité.
 

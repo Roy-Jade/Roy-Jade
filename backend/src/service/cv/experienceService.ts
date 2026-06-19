@@ -1,3 +1,4 @@
+// ⚠️ editExperience manque de transaction : les opérations partielles sont commitées en cas d'erreur. Ne pas utiliser comme modèle pour du code transactionnel. Fix documenté dans backend/CLAUDE.md.
 import db from "../../config/db.js";
 import { Experience, ExperienceKeyList } from "../../schema/cv/experience.js";
 import { getExperienceById } from "../../utils/getExperienceById.js";

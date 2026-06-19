@@ -15,48 +15,45 @@ Tu accompagnes un développeur junior qui veut **progresser**, pas être assist�
 ## Projet
 
 Site vitrine personnel avec deux fonctionnalités principales :
-1. **Éditeur de CV** — reprend la base de `old/`, le visiteur filtre les infos affichées ; données en base.
+1. **Éditeur de CV** — le visiteur filtre les infos affichées (contexte, domaines, niveaux, type d'expérience…) ; données en base.
 2. **Dashboard admin** — interface privée pour mettre à jour la base de données (nouvelles expériences, etc.).
 
 ## Structure du repo
 
 ```
 Roy-Jade/
-├── old/                  # Ancienne version : CV site web vanilla JS + Parcel (référence)
+├── docker-compose.yml
+├── backend/
+│   ├── API.md                  # Documentation des endpoints
+│   ├── conception/
+│   │   ├── migration.sql       # Schéma de la BDD
+│   │   └── seeding.sql         # Données initiales (gitignored)
 │   └── src/
-│       ├── assets/data/  # experiences.js, skills.js, courses.js, personalInfos.js
-│       └── components/   # App, Aside, Courses, Experiences, Footer, Header, Presentation
-├── data.js               # Données CV structurées (référence pour migration SQL)
-└── new/
-    ├── docker-compose.yml
-    ├── backend/
-    │   ├── API.md                  # Documentation des endpoints
-    │   ├── conception/
-    │   │   ├── migration.sql       # Schéma de la BDD
-    │   │   └── seeding.sql         # Données initiales (gitignored)
-    │   └── src/
-    │       ├── config/             # db.ts, env.ts
-    │       ├── controller/
-    │       │   ├── authController.ts
-    │       │   └── cv/             # dashboard, experience, formation, hardskill, identity, profile, softskill
-    │       ├── middleware/         # checkAuth.ts
-    │       ├── routers/            # authRouter, cvRouter, dashboardRouter
-    │       ├── schema/cv/          # Schémas Zod + types + keylists
-    │       ├── service/
-    │       │   ├── authService.ts
-    │       │   └── cv/             # dashboard, experience, formation, hardskill, identity, profile, softskill
-    │       ├── types/              # session.d.ts (augmentation express-session)
-    │       ├── utils/              # AppError, editInJunctionTable, getXxxById, junctionTables, levels
-    │       └── tests/              # Miroir de src/ — service/, utils/, middleware/, controller/
-    └── frontend/
-        └── src/
-            └── functions/
-                └── core/
-                    ├── components/ # Header, Footer
-                    └── pages/      # Home
+│       ├── config/             # db.ts, env.ts
+│       ├── controller/
+│       │   ├── authController.ts
+│       │   └── cv/             # dashboard, experience, formation, hardskill, identity, profile, softskill
+│       ├── middleware/         # checkAuth.ts
+│       ├── routers/            # authRouter, cvRouter, dashboardRouter
+│       ├── schema/cv/          # Schémas Zod + types + keylists
+│       ├── service/
+│       │   ├── authService.ts
+│       │   └── cv/             # dashboard, experience, formation, hardskill, identity, profile, softskill
+│       ├── types/              # session.d.ts (augmentation express-session)
+│       ├── utils/              # AppError, editInJunctionTable, getXxxById, junctionTables, levels
+│       └── tests/              # Miroir de src/ — service/, utils/, middleware/, controller/
+└── frontend/
+    └── src/
+        ├── api/                # Fonctions fetch (cvApi, dashboardApi, privateApi)
+        ├── types/              # Types partagés
+        └── functions/
+            ├── core/           # Header, Footer, page Home
+            ├── cv/             # Éditeur de CV — CvFilters, CvSheet et ses sous-composants
+            ├── admin/          # Login, Dashboard et ses 9 sections
+            └── portfolio/
 ```
 
-## Stack `new/backend`
+## Stack backend
 
 - **Node.js** + **Express** + **TypeScript** (strict)
 - **PostgreSQL** — driver `pg`
@@ -76,11 +73,12 @@ Couches : `router → controller → service → utils/db`
 - **Tables de liaison** — pattern DELETE ALL + INSERT ALL (pas de diff). La whitelist `junctionTable` dans `utils/junctionTables.ts` prévient l'injection SQL via les noms de tables.
 - **Auth** — `req.session.isAdmin = true` à la connexion ; middleware `checkAuth` en amont des routes protégées.
 
-## Stack `new/frontend`
+## Stack frontend
 
 - **React 19** + **TypeScript** (strict)
 - **Vite 7** (bundler)
 - **React Router 7**
+- **TanStack Query (React Query)** — cache serveur, invalidation ciblée par `queryKey`
 - **pnpm** (gestionnaire de paquets)
 - SCSS pour les styles
 
@@ -88,16 +86,29 @@ Couches : `router → controller → service → utils/db`
 
 Tables : `admin`, `identity`, `profile`, `domain`, `softskill`, `hardskill`, `experience`, `experience_task`, `formation`, `formation_task` + tables de liaison m2m (`experience_domain`, `experience_hardskill`, `experience_softskill`, `formation_domain`, `formation_hardskill`).
 
-Le fichier `data.js` (racine du repo) contient les données de référence utilisées pour le seeding :
-- `profiles` — accroches par cible (labo, alternance, générique)
-- `experiences` — avec `type: "detail" | "summary"`, `domain`, `hardSkills`, `softSkills`
-- `formations`, `skills`
+Le seeding initial est dans `backend/conception/seeding.sql` (gitignored).
 
 ## Docker
 
-`new/docker-compose.yml` — trois services : `backend` (port 3000), `frontend` (port 5173), `db` (postgres).
+`docker-compose.yml` — trois services : `backend` (port 3000), `frontend` (port 5173), `db` (postgres).
 Volume PostgreSQL : `/var/lib/postgresql` (sans `/data` — comportement de l'image postgres actuelle).
 Les scripts SQL dans `backend/conception/` sont exécutés automatiquement au démarrage du container via `docker-entrypoint-initdb.d`.
+
+## Prochaine zone active
+
+`frontend/src/functions/portfolio/` — section en cours de construction. Prévu pour présenter les projets personnels (blablabook en premier). Ne pas traiter ce dossier vide comme abandonné.
+
+## Bugs connus
+
+### Transactions manquantes — `editExperience` / `editFormation`
+
+**Fichiers :** `backend/src/service/cv/experienceService.ts`, `backend/src/service/cv/formationService.ts`
+
+Chaque `db.query()` utilise une connexion indépendante du pool. Si une opération échoue en cours de route (UPDATE puis DELETE/INSERT sur les tables de liaison), les opérations déjà exécutées sont commitées. Pas d'atomicité.
+
+Ces deux fichiers portent un commentaire `// ⚠️` en en-tête. Ne pas les utiliser comme modèle pour du code nécessitant des transactions.
+
+**Fix prévu :** envelopper dans un `BEGIN`/`COMMIT`/`ROLLBACK` avec un client sorti du pool, et adapter `editInJunctionTable.ts` pour accepter ce client en paramètre.
 
 ## Conventions
 
@@ -105,3 +116,9 @@ Les scripts SQL dans `backend/conception/` sont exécutés automatiquement au d�
 - TypeScript strict — pas de `any`.
 - Commits en français, conventionnels.
 - Organisation par feature dans `src/functions/` (frontend).
+
+## Convention IA — qualité du code
+
+- **Absence de commentaire en en-tête = fichier supposé correct**, utilisable comme modèle.
+- **`// ⚠️` en en-tête** = bug connu ou pattern à ne pas reproduire. La raison suit immédiatement.
+- Ne jamais refactoriser un fichier sans raison explicite dans la conversation — même si une amélioration semble évidente.
