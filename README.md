@@ -219,6 +219,10 @@ La structure des tests est un miroir de `src/` dans `src/tests/` (un fichier de 
 
 ## Lancer le projet
 
+Copier les `.env.example` et nommez leur copies `.env` dans `frontend/`et `backend/`, puis complétez les variables d'environnements.
+
+Pour lancer les containers : 
+
 ```bash
 docker compose up
 ```
