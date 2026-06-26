@@ -8,6 +8,6 @@ export type FormationItem = {
     description: string | null;
     level: string | null;
     tasks: { content: string; position: number }[];
-    hardskills: string[];
+    hardskills: { slug: string, label: string, level: string, category: string, sub_category: string }[];
     domains: string[];
 };

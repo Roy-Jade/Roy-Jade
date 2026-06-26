@@ -5,7 +5,6 @@
     font-family: var(--cv-font-family);
     font-size: var(--cv-font-size);
 
-    // border: 1px solid var(--cv-color-border-dark);
     background: var(--cv-color-background);
     border-radius: 5px;
 
@@ -153,20 +152,20 @@ html {
 
     &__photo {
         width: 100%;
-        margin: 45pt auto;
+        margin: 25pt auto;
         border-radius: 50%;
         box-shadow: 0 0 5pt var(--cv-color-banner);
     }
 
     h2 {
         font-size: 110%;
-        margin-bottom: 15pt;
+        margin-bottom: 5pt;
     }
 
     ul {
         color: var(--cv-color-text);
-        margin-bottom: 22pt;
-        padding-bottom: 22pt;
+        margin-bottom: 15pt;
+        padding-bottom: 15pt;
         border-bottom: 1px solid var(--cv-color-border-aside);
         line-height: 1.4;
     }
@@ -187,16 +186,15 @@ html {
         font-size: 120%;
         display: inline-block;
         position: relative;
-        top: -7pt;
+        top: -10pt;
         background: var(--cv-color-background);
         border-right: 1px solid var(--cv-color-border-light);
         padding-right: 7pt;
-        margin-bottom: 5pt;
     }
 
     p {
         color: var(--cv-color-text);
-        line-height: 1.3;
+        line-height: 1.1;
     }
 }
 
@@ -204,7 +202,7 @@ html {
 .cv-formation {
     display: grid;
     grid-template-columns: 45pt auto;
-    margin-top: 11pt;
+    margin-bottom: 11pt;
 
     &__dates,
     &__date {
@@ -220,7 +218,6 @@ html {
     }
 
     &__desc {
-        line-height: 1.4;
         color: var(--cv-color-text);
     }
 
@@ -232,7 +229,15 @@ html {
         font-size: 75%;
         font-style: italic;
         grid-column: 1 / -1;
-        margin-left: 12pt;
+        margin-left: 8pt;
+    }
+
+    &__skills {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3pt;
+        margin-top: 1pt;
     }
 }
 
@@ -252,12 +257,20 @@ html {
         z-index: 1;
     }
 
-    &__links {
+    &__list {
         display: flex;
 
-        li {
+        &-links {
             padding-left: 30pt;
             padding-top: 10pt;
+        }
+
+        &-tag {
+            padding-right: 15pt;
+            padding-top: 0%;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
         }
 
         img {

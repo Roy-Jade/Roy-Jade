@@ -9,7 +9,7 @@ export type ExperienceItem = {
     end_date: string | null;
     description: string | null;
     tasks: { content: string; position: number }[];
-    softskills: string[];
-    hardskills: string[];
+    softskills: { slug: string, label: string }[];
+    hardskills: { slug: string, label: string, level: string, category: string, sub_category: string }[];
     domains: string[];
 };

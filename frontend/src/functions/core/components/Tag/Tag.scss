@@ -1,0 +1,31 @@
+.tag {
+    display: inline-block;
+    border-radius: 10px;
+    padding: 4px 12px;
+    font-size: 75%;
+    line-height: 1;
+    color: #111111;
+    background-color: #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.tag--cv-hardskill {
+    background-color: var(--cv-color-banner);
+    color: var(--cv-color-banner-text);
+}
+
+.tag--cv-softskill {
+    background-color: var(--cv-color-aside);
+    color: var(--cv-color-text);
+}
+
+.tag--cv-other {
+    border: 1px solid var(--cv-color-banner-text);
+    background-color: var(--cv-color-banner);
+    color: var(--cv-color-banner-text);
+}
+
+.tag--tech {
+    background-color: #e0e0e0;
+    color: #333;
+}

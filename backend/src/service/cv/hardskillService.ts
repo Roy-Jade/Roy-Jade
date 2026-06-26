@@ -1,3 +1,4 @@
+// ✅ Fichier de référence — pattern complet (fetch + add + edit), validation métier, délégation aux utils.
 import db from "../../config/db.js";
 import { Hardskill, HardskillKeyList } from "../../schema/cv/skill.js";
 import { AppError } from "../../utils/AppError.js";

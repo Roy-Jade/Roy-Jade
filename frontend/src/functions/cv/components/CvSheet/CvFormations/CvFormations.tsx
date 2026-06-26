@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getFormation } from '../../../../../api/cvApi';
 import type { FormationItem } from '../../../../../types/Formation';
+import Tag from '../../../../core/components/Tag/Tag';
 // import './CvFormations.scss';
 
 interface Props {
@@ -26,16 +27,22 @@ export default function CvFormations({ domains, max }: Props) {
                     <li key={`form ${formation.id}`} className="cv-formation">
                         <span className="cv-formation__date">{formation.obtention_date}</span>
                         <div className="cv-formation__content">
-                            <p className="cv-formation__title">
+                            <h3 className="cv-formation__title">
                                 <strong>{formation.title}</strong>
                                 {formation.institution && `, ${formation.institution}`}
                                 {formation.location && ` (${formation.location})`}
-                            </p>
+                            </h3>
                             {formation.description && <p className="cv-formation__desc">{formation.description}</p>}
                         </div>
                         {formation.tasks.length > 0 && (
                             <ul className="cv-formation__tasks">
                                 {formation.tasks.map((task) => <li key={`task ${task.position}`}>{`> ${task.content}`}</li>)}
+                                {formation.hardskills.length > 0 && 
+                                    <li key="skills" className='cv-formation__skills'>
+                                        {formation.hardskills.map(hardskill => (
+                                            <Tag key={hardskill.slug} label={hardskill.label} variant="cv-hardskill" />
+                                        ))}
+                                    </li>}
                             </ul>
                         )}
                     </li>

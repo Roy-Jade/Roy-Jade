@@ -20,6 +20,7 @@ CREATE TABLE identity (
     github_link     VARCHAR(100),
     gitlab_link     VARCHAR(100),
     linkedin_link   VARCHAR(100),
+    rqth            BOOLEAN,
     CONSTRAINT unique_id CHECK(id=1)
 );
 

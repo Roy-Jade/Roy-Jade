@@ -1,0 +1,45 @@
+# Roy-Jade — Contexte projet
+
+## Stack
+- **Backend** : Node.js + Express + TypeScript strict, PostgreSQL (driver `pg`), Zod, bcrypt, express-session, Vitest
+- **Frontend** : React 19 + TypeScript strict, Vite 7, React Router 7, TanStack Query, SCSS
+- **Infra** : Docker Compose (backend :3000, frontend :5173, db postgres)
+
+## Architecture backend
+Couches : `router → controller → service → utils/db`
+
+- **AppError(statusCode, message)** — erreurs 4xx levées par les services ; les `Error` génériques → 500 dans le controller
+- **ZodError** — catchée séparément dans les controllers (→ 400)
+- **Tables de liaison** — pattern DELETE ALL + INSERT ALL ; whitelist dans `utils/junctionTables.ts` (prévient l'injection SQL)
+- **Auth** — `req.session.isAdmin = true` à la connexion ; middleware `checkAuth` en amont des routes protégées
+
+## Structure
+```
+backend/src/
+├── config/          # db.ts, env.ts
+├── controller/cv/   # dashboard, experience, formation, hardskill, identity, profile, softskill
+├── middleware/      # checkAuth.ts
+├── routers/         # authRouter, cvRouter, dashboardRouter
+├── schema/cv/       # Schémas Zod + types + keylists
+├── service/cv/      # même découpage que controller
+└── utils/           # AppError, editInJunctionTable, getXxxById, junctionTables, levels
+
+frontend/src/
+├── api/             # cvApi, dashboardApi, privateApi
+├── types/
+└── functions/
+    ├── core/        # Header, Footer, Home
+    ├── cv/          # CvFilters, CvSheet et sous-composants
+    ├── admin/       # Login, Dashboard et 9 sections
+    └── portfolio/   # En cours de construction
+```
+
+## Conventions
+- Pas de commentaires sauf si le *pourquoi* est non-évident
+- TypeScript strict — pas de `any`
+- Commits en anglais
+- Organisation par feature dans `src/functions/` côté frontend
+
+## Fichiers à ne pas utiliser comme modèle
+- `service/cv/experienceService.ts` — pas de transaction DB (bug connu)
+- `service/cv/formationService.ts` — même raison

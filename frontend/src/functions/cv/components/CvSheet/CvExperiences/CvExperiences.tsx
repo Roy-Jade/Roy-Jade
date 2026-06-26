@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getExperience } from '../../../../../api/cvApi';
 import type { ExperienceFilter } from '../../../../../types/searchParams';
 import type { ExperienceItem } from '../../../../../types/Experience';
-// import './CvExperiences.scss';
+import Tag from '../../../../../functions/core/components/Tag/Tag';
 
 interface Props {
     filters: ExperienceFilter[];
@@ -30,17 +30,26 @@ export default function CvExperiences({ filters, max }: Props) {
                             <span>{exp.start_date}</span>
                             {exp.end_date && exp.end_date !== exp.start_date && <span>{exp.end_date}</span>}
                         </span>
-                        <div className="cv-experience__content">
-                            <p className="cv-experience__title">
+                        <div className="cv-experience__content"> 
+                            <h3 className="cv-experience__title">
                                 <strong>{exp.title}</strong>
                                 {exp.company && `, ${exp.company}`}
                                 {exp.location && ` (${exp.location})`}
-                            </p>
+                            </h3>
                             {exp.description && <p className="cv-experience__desc">{exp.description}</p>}
                         </div>
-                        {exp.type === 'detail' && exp.tasks.length > 0 && (
+                        {exp.tasks.length > 0 && (
                             <ul className="cv-experience__tasks">
                                 {exp.tasks.map((task) => <li key={`task ${task.position}`}>{`> ${task.content}`}</li>)}
+                                {(exp.hardskills.length > 0 || exp.softskills.length > 0) && 
+                                    <li key="skills" className='cv-experience__skills'>
+                                        {exp.hardskills.map(hardskill => (
+                                            <Tag key={hardskill.slug} label={hardskill.label} variant="cv-hardskill" />
+                                        ))}
+                                        {exp.softskills.map(skill => (
+                                            <Tag key={skill.slug} label={skill.label} variant="cv-softskill" />
+                                        ))}
+                                    </li>}
                             </ul>
                         )}
                     </li>

@@ -9,6 +9,7 @@ export const IdentitySchema = z.object({
     github_link: z.string(),
     gitlab_link: z.string(),
     linkedin_link: z.string(),
+    rqth: z.boolean(),
 });
 
 export const IdentityKeyList = Object.keys(IdentitySchema.omit({id: true}).shape)

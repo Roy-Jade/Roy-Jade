@@ -73,7 +73,7 @@ Retourne les informations personnelles.
 **Réponses**
 | Code | Corps |
 |------|-------|
-| 200 | `{ result: { id, firstname, lastname, email, telephone, github_link, gitlab_link, linkedin_link } }` |
+| 200 | `{ result: { id, firstname, lastname, email, telephone, github_link, gitlab_link, linkedin_link, rqth } }` |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
 
 ---
@@ -275,14 +275,14 @@ Modifie les informations personnelles (tous les champs sont optionnels).
 **Body**
 ```json
 {
-  "data": { "firstname": "string?", "lastname": "string?", "email": "string?", "telephone": "string?", "github_link": "string?", "gitlab_link": "string?", "linkedin_link": "string?" }
+  "data": { "firstname": "string?", "lastname": "string?", "email": "string?", "telephone": "string?", "github_link": "string?", "gitlab_link": "string?", "linkedin_link": "string?", "rqth": "boolean?" }
 }
 ```
 
 **Réponses**
 | Code | Corps |
 |------|-------|
-| 200 | `{ result: { id, firstname, lastname, email, telephone, github_link, gitlab_link, linkedin_link } }` |
+| 200 | `{ result: { id, firstname, lastname, email, telephone, github_link, gitlab_link, linkedin_link, rqth } }` |
 | 400 | `{ message: "..." }` (ZodError ou AppError) |
 | 500 | `{ message: "Erreur lors de la modification des données" }` |
 

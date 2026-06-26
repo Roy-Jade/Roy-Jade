@@ -2,6 +2,8 @@ import type { Identity } from '../../../../../types/Identity';
 import githubIcon from '../../../../../assets/icons/github.svg';
 import gitlabIcon from '../../../../../assets/icons/gitlab.svg';
 import linkedinIcon from '../../../../../assets/icons/linkedin.svg';
+
+import Tag from '../../../../core/components/Tag/Tag';
 // import './CvFooter.scss';
 
 const socialLinks = [
@@ -15,15 +17,16 @@ interface Props {
 }
 
 export default function CvFooter({ identity }: Props) {
+    console.log(identity)
     return (
         <footer className="cv-footer">
             <h2>Sur les réseaux :</h2>
-            <ul className="cv-footer__links">
+            <ul className="cv-footer__list">
                 {socialLinks.map(({ key, icon, label }) => {
                     const href = identity?.[key];
                     if (!href) return null;
                     return (
-                        <li key={key}>
+                        <li className="cv-footer__list-links" key={key}>
                             <a href={href} aria-label={label} target="_blank" rel="noopener noreferrer">
                                 <img src={icon} alt={label} />
                                 {label}
@@ -31,6 +34,11 @@ export default function CvFooter({ identity }: Props) {
                         </li>
                     );
                 })}
+                {identity?.rqth &&
+                    <li className="cv-footer__list-tag">
+                        <Tag label="RQTH" variant="cv-other" />
+                    </li>
+                }
             </ul>
         </footer>
     );

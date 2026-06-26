@@ -114,11 +114,12 @@ Ces deux fichiers portent un commentaire `// ⚠️` en en-tête. Ne pas les uti
 
 - Pas de commentaires sauf si le *pourquoi* est non-évident.
 - TypeScript strict — pas de `any`.
-- Commits en français, conventionnels.
+- Commits en anglais.
 - Organisation par feature dans `src/functions/` (frontend).
 
 ## Convention IA — qualité du code
 
 - **Absence de commentaire en en-tête = fichier supposé correct**, utilisable comme modèle.
+- **`// ✅` en en-tête** = fichier de référence, à utiliser comme modèle en priorité pour les nouveaux fichiers du même type.
 - **`// ⚠️` en en-tête** = bug connu ou pattern à ne pas reproduire. La raison suit immédiatement.
 - Ne jamais refactoriser un fichier sans raison explicite dans la conversation — même si une amélioration semble évidente.

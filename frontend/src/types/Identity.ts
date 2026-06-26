@@ -8,4 +8,5 @@ export type Identity = {
     github_link: string | null;
     gitlab_link: string | null;
     linkedin_link: string | null;
+    rqth: boolean | null;
 };
