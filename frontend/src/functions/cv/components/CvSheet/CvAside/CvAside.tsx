@@ -3,15 +3,21 @@ import { getAside, getHardskill } from '../../../../../api/cvApi';
 import type { Hardskill } from '../../../../../types/Hardskill';
 import type { Language } from '../../../../../types/Language';
 import type { Hobby } from '../../../../../types/Hobby';
+import type { HiddenIdField } from '../../../../../types/searchParams';
+import { isHidden } from '../../../../../utils/isHidden';
+import HoverAction from '../../../../core/components/HoverAction/HoverAction';
+import HideIcon from '../../../../../assets/icons/hide.svg?react';
 import photo from '../../../../../assets/photo.jpg';
 // import './CvAside.scss';
 
 interface Props {
     level: string;
     categories: string[];
+    hiddenHardskillIds: number[];
+    toggleHidden: (key: HiddenIdField, id: number) => void;
 }
 
-export default function CvAside({ level, categories }: Props) {
+export default function CvAside({ level, categories, hiddenHardskillIds, toggleHidden }: Props) {
     const { data: hardskills = [], isLoading, isError } = useQuery<Hardskill[]>({
         queryKey: ['hardskill', level, categories],
         queryFn: () => getHardskill(level, categories),
@@ -37,9 +43,18 @@ export default function CvAside({ level, categories }: Props) {
                 <article>
                     <h2>Compétences</h2>
                     <ul>
-                        {hardskills.map(skill => (
-                            <li key={skill.id}>{skill.label}</li>
-                        ))}
+                        {hardskills
+                            .filter(skill => !isHidden(skill.id, hiddenHardskillIds))
+                            .map(skill => (
+                                <li key={skill.id} className="hover-reveal">
+                                    {skill.label}
+                                    <HoverAction
+                                        icon={<HideIcon />}
+                                        label={`Masquer la compétence : ${skill.label}`}
+                                        onClick={() => toggleHidden('hiddenHardskillIds', skill.id)}
+                                    />
+                                </li>
+                            ))}
                     </ul>
                 </article>
             )}

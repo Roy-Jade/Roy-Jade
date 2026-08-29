@@ -1,20 +1,23 @@
-# On part d'une image existante
+# On choisi une image pour faire tourner le backend
 FROM node:22
 
-# Repertoire de travail dans le conteneur
+# On installe pnpm, qui n'existe pas par défaut sur l'image
+RUN corepack enable && corepack prepare pnpm@10.29.3 --activate
+
+# On définit le répertoire de travail
 WORKDIR /usr/src/app
 
-# Copie de package.json et package-lock.json dans le conteneur
+# On copie les packages
 COPY ./package.json ./pnpm-lock.yaml ./
 
-# On lance NPM pour l'installation des dépendances
-RUN npm install
+# On installe les dépendances
+RUN pnpm install
 
-# Copie du code dans le conteneur
+# On copie le gros du code
 COPY . .
 
-# On expose le port 3000
+# On expose le corps
 EXPOSE 3000
 
-# On lance l'application
-CMD [ "npm", "start" ]
+# On lance le serveur
+CMD [ "pnpm", "start" ]

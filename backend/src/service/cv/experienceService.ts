@@ -19,16 +19,19 @@ export async function fetchExperience(data:{domains:string[], type:'detail'|'sum
             exp.end_date,
             exp.description,
             JSON_AGG(DISTINCT jsonb_build_object(
-                'content', task.content, 
-                'position', task.position)) AS tasks, 
+                'id', task.id,
+                'content', task.content,
+                'position', task.position)) AS tasks,
             JSON_AGG(DISTINCT jsonb_build_object(
-                'slug', soft.slug, 
-                'label', soft.label)) AS softskills, 
+                'id', softexp.id,
+                'slug', soft.slug,
+                'label', soft.label)) AS softskills,
             JSON_AGG(DISTINCT jsonb_build_object(
-                'slug', hard.slug, 
-                'label', hard.label, 
-                'level', hard.level, 
-                'category', hard.category, 
+                'id', hardexp.id,
+                'slug', hard.slug,
+                'label', hard.label,
+                'level', hard.level,
+                'category', hard.category,
                 'sub_category', hard.sub_category)) AS hardskills
         FROM experience exp
         LEFT JOIN experience_task task ON task.experience_id = exp.id

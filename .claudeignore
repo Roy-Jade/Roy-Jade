@@ -1,4 +1,7 @@
 backend/.env
-frontend/.env
+backend/.env.prod
 backend/conception/seeding.sql
+frontend/.env
 frontend/src/assets/photo.jpg
+.env.db
+.env.prod.db

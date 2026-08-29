@@ -1,0 +1,58 @@
+{
+  "hash": "f3d19d49",
+  "configHash": "6ede2e22",
+  "lockfileHash": "5df049c3",
+  "browserHash": "12e2a875",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "ed56f8c2",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f8047f1c",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "6dd1ddda",
+      "needsInterop": true
+    },
+    "react-router": {
+      "src": "../../node_modules/react-router/dist/development/index.mjs",
+      "file": "react-router.js",
+      "fileHash": "dc369ea4",
+      "needsInterop": false
+    },
+    "@tanstack/react-query": {
+      "src": "../../node_modules/@tanstack/react-query/build/modern/index.js",
+      "file": "@tanstack_react-query.js",
+      "fileHash": "4772e5dc",
+      "needsInterop": false
+    },
+    "react-zoom-pan-pinch": {
+      "src": "../../node_modules/react-zoom-pan-pinch/dist/index.esm.js",
+      "file": "react-zoom-pan-pinch.js",
+      "fileHash": "44624e8e",
+      "needsInterop": false
+    },
+    "react-to-print": {
+      "src": "../../node_modules/react-to-print/dist/react-to-print.mjs",
+      "file": "react-to-print.js",
+      "fileHash": "04951041",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-IT52W4E3": {
+      "file": "chunk-IT52W4E3.js"
+    },
+    "chunk-UABJVSAO": {
+      "file": "chunk-UABJVSAO.js"
+    }
+  }
+}

@@ -110,6 +110,24 @@ Ces deux fichiers portent un commentaire `// ⚠️` en en-tête. Ne pas les uti
 
 **Fix prévu :** envelopper dans un `BEGIN`/`COMMIT`/`ROLLBACK` avec un client sorti du pool, et adapter `editInJunctionTable.ts` pour accepter ce client en paramètre.
 
+## Refactors futurs identifiés (non planifiés)
+
+### Filtre `detail`/`summary` par domaine (expériences)
+
+**Fichiers concernés :** `frontend/src/functions/cv/components/CvFilters/CvFilters.tsx`, `frontend/src/types/searchParams.ts`, `backend/src/service/cv/experienceService.ts`
+
+Repéré pendant la réflexion sur le refactor de granularité du CV (masquage granulaire par ID, voir conversation). Ce filtre par domaine (afficher une expérience en détail ou en résumé) deviendra probablement redondant une fois le masquage par item en place — l'utilisateur pourra choisir le niveau de détail par expérience individuelle plutôt que par domaine entier.
+
+Le retrait nécessite un travail d'agrégation de données plus important que le nettoyage de `maxExperiences`/`maxFormations` (regrouper detail/summary d'une même expérience). **Ne pas traiter sans revalidation explicite avec l'utilisateur** — noté ici pour référence future, pas une tâche en cours.
+
+## Documentation
+
+Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le sujet devient pertinent (pas chargés automatiquement, contrairement à ce fichier) :
+
+- [docs/refactor-cv-granularity.md](docs/refactor-cv-granularity.md) — masquage granulaire des données du CV par ID (blacklist), sans re-fetch réseau. Design validé, implémentation pas commencée.
+
+**Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
+
 ## Conventions
 
 - Pas de commentaires sauf si le *pourquoi* est non-évident.

@@ -6,6 +6,7 @@ export const IdentitySchema = z.object({
     lastname: z.string(),
     email: z.string(),
     telephone: z.string(),
+    town: z.string(),
     github_link: z.string(),
     gitlab_link: z.string(),
     linkedin_link: z.string(),

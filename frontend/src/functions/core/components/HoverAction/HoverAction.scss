@@ -1,0 +1,40 @@
+.hover-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    padding: 3px;
+    cursor: pointer;
+    color: #a1a1aa;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 4px;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: color 0.15s, background 0.15s, opacity 0.15s;
+
+    &:hover,
+    &:focus-visible {
+        color: #3b5bdb;
+        background: #eef2ff;
+    }
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.hover-reveal {
+    position: relative;
+}
+
+.hover-reveal--inline {
+    display: inline-block;
+}
+
+.hover-reveal:hover .hover-action,
+.hover-reveal:focus-within .hover-action {
+    opacity: 1;
+}

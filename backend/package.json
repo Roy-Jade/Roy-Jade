@@ -6,6 +6,8 @@
   "scripts": {
     "DBinit": "dotenv -e .env -- bash -c 'PGPASSWORD=$DB_PASSWORD psql -U $DB_USER -d $DB_NAME -f conception/migration.sql -f conception/seeding.sql'",
     "start": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start:prod": "node dist/index.js",
     "test": "vitest"
   },
   "keywords": [],

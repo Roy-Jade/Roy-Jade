@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useReactToPrint } from 'react-to-print';
-import type { CvFiltersParams } from '../../../../types/searchParams';
+import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
 import CvHeader from './CvHeader/CvHeader';
 import CvPresentation from './CvPresentation/CvPresentation';
 import CvAside from './CvAside/CvAside';
@@ -15,9 +15,10 @@ import type { Identity } from '../../../../types/Identity';
 interface Props {
     filters: CvFiltersParams;
     identity: Identity | undefined;
+    toggleHidden: (key: HiddenIdField, id: number) => void;
 }
 
-export default function CvSheet({ filters, identity }: Props) {
+export default function CvSheet({ filters, identity, toggleHidden }: Props) {
     const printRef = useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({ contentRef: printRef });
 
@@ -32,11 +33,28 @@ export default function CvSheet({ filters, identity }: Props) {
                             <CvAside
                                 level={filters.hardskillLevel}
                                 categories={filters.hardskillCategories}
+                                hiddenHardskillIds={filters.hiddenHardskillIds}
+                                toggleHidden={toggleHidden}
                             />
                             <section className="cv-content">
                                 <CvPresentation context={filters.context} />
-                                <CvExperiences filters={filters.experienceFilters} max={filters.maxExperiences} />
-                                <CvFormations domains={filters.formationDomains} max={filters.maxFormations} />
+                                <CvExperiences
+                                    filters={filters.experienceFilters}
+                                    hiddenExperienceIds={filters.hiddenExperienceIds}
+                                    hiddenExperienceDescriptionIds={filters.hiddenExperienceDescriptionIds}
+                                    hiddenExperienceTaskIds={filters.hiddenExperienceTaskIds}
+                                    hiddenExperienceHardskillIds={filters.hiddenExperienceHardskillIds}
+                                    hiddenExperienceSoftskillIds={filters.hiddenExperienceSoftskillIds}
+                                    toggleHidden={toggleHidden}
+                                />
+                                <CvFormations
+                                    domains={filters.formationDomains}
+                                    hiddenFormationIds={filters.hiddenFormationIds}
+                                    hiddenFormationDescriptionIds={filters.hiddenFormationDescriptionIds}
+                                    hiddenFormationTaskIds={filters.hiddenFormationTaskIds}
+                                    hiddenFormationHardskillIds={filters.hiddenFormationHardskillIds}
+                                    toggleHidden={toggleHidden}
+                                />
                             </section>
                         </main>
                         <CvFooter identity={identity} />

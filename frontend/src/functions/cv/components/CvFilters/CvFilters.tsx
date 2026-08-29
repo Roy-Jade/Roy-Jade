@@ -56,16 +56,6 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
                 isChanged = true;
             }
 
-            if (!prev.get('maxExperiences')) {
-                next.set('maxExperiences', '5');
-                isChanged = true;
-            }
-
-            if (!prev.get('maxFormations')) {
-                next.set('maxFormations', '3');
-                isChanged = true;
-            }
-
             return isChanged ? next : prev;
         }, { replace: true });
     }, [filtersData, setSearchParams]);
@@ -80,8 +70,6 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
     const currentExperienceFilters: ExperienceFilter[] = JSON.parse(
         searchParams.get('experienceFilters') ?? '[]'
     );
-    const currentMaxExperiences = Number(searchParams.get('maxExperiences')) || 5;
-    const currentMaxFormations = Number(searchParams.get('maxFormations')) || 3;
 
     const setContext = (value: string) =>
         setSearchParams(prev => {
@@ -128,20 +116,6 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
                 ? current.filter(d => d !== slug)
                 : [...current, slug]
             ).forEach(d => next.append('formationDomain', d));
-            return next;
-        }, { replace: true });
-
-    const setMaxExperiences = (value: number) =>
-        setSearchParams(prev => {
-            const next = new URLSearchParams(prev);
-            next.set('maxExperiences', String(value));
-            return next;
-        }, { replace: true });
-
-    const setMaxFormations = (value: number) =>
-        setSearchParams(prev => {
-            const next = new URLSearchParams(prev);
-            next.set('maxFormations', String(value));
             return next;
         }, { replace: true });
 
@@ -227,31 +201,6 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
                 ))}
             </fieldset>
 
-            <fieldset>
-                <legend>Nombre d'expériences affichées</legend>
-                <input
-                    type="number"
-                    min={1}
-                    value={currentMaxExperiences}
-                    onChange={e => {
-                        const value = Number(e.target.value);
-                        if (value >= 1) setMaxExperiences(value);
-                    }}
-                />
-            </fieldset>
-
-            <fieldset>
-                <legend>Nombre de formations affichées</legend>
-                <input
-                    type="number"
-                    min={1}
-                    value={currentMaxFormations}
-                    onChange={e => {
-                        const value = Number(e.target.value);
-                        if (value >= 1) setMaxFormations(value);
-                    }}
-                />
-            </fieldset>
         </aside>
     );
 }

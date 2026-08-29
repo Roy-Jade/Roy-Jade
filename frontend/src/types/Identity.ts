@@ -3,7 +3,7 @@ export type Identity = {
     lastname: string;
     postal_code: string;
     town: string;
-    phone: string;
+    telephone: string;
     email: string;
     github_link: string | null;
     gitlab_link: string | null;

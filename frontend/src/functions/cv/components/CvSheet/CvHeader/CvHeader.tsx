@@ -25,8 +25,8 @@ export default function CvHeader({ identity, context }: Props) {
             </h1>
             <div className="cv-header__right">
                 <ul className="cv-header__contact">
-                    <li><strong>Adresse</strong> {identity?.postal_code} {identity?.town}</li>
-                    <li><strong>Téléphone</strong> <a href={`tel:${identity?.phone}`}>{identity?.phone}</a></li>
+                    <li><strong>Adresse</strong>{identity?.town}</li>
+                    <li><strong>Téléphone</strong> <a href={`tel:${identity?.telephone}`}>{identity?.telephone}</a></li>
                     <li><strong>Mail</strong> <a href={`mailto:${identity?.email}`}>{identity?.email}</a></li>
                 </ul>
                 <h2 className="cv-header__tagline">{profile?.tagline}</h2>

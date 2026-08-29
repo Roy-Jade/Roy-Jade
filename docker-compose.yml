@@ -56,14 +56,11 @@ services:
     image: postgres
     # nom du conteneur
     container_name: portfolio-database
-    # environnement : on déclare les infos nécessaires à notre BDD
-    environment:
-      - POSTGRES_USER=portfolio
-      - POSTGRES_PASSWORD=portfolio
-      - POSTGRES_DB=portfolio
+    # on indique où se trouve le fichier contenant les variables d'environnement
+    env_file: ./.env.db
     # le healthcheck vérifie que le container tourne avant de continuer
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5

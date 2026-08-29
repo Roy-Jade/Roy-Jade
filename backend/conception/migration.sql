@@ -17,6 +17,7 @@ CREATE TABLE identity (
     lastname        VARCHAR(20),
     email           VARCHAR(255),
     telephone       VARCHAR(20),
+    town            VARCHAR(100),
     github_link     VARCHAR(100),
     gitlab_link     VARCHAR(100),
     linkedin_link   VARCHAR(100),

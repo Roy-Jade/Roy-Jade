@@ -8,8 +8,8 @@ export type ExperienceItem = {
     start_date: string | null;
     end_date: string | null;
     description: string | null;
-    tasks: { content: string; position: number }[];
-    softskills: { slug: string, label: string }[];
-    hardskills: { slug: string, label: string, level: string, category: string, sub_category: string }[];
+    tasks: { id: number; content: string; position: number }[];
+    softskills: { id: number; slug: string, label: string }[];
+    hardskills: { id: number; slug: string, label: string, level: string, category: string, sub_category: string }[];
     domains: string[];
 };

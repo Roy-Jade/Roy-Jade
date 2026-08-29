@@ -133,6 +133,16 @@ Format de `data` :
 | 400 | `{ message: "..." }` (ZodError si le format de `data` est invalide) |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
 
+**Forme de `tasks`/`softskills`/`hardskills`**
+```json
+{
+  "tasks": [{ "id": 1, "content": "...", "position": 1 }],
+  "softskills": [{ "id": 5, "slug": "autonomie", "label": "Autonomie" }],
+  "hardskills": [{ "id": 9, "slug": "react", "label": "React", "level": "avancé", "category": "frontend", "sub_category": "framework" }]
+}
+```
+`softskills[].id`/`hardskills[].id` sont les ID de la ligne de liaison (`experience_softskill`/`experience_hardskill`), pas ceux de `softskill`/`hardskill` — un même skill peut apparaître sur plusieurs expériences avec un `id` différent à chaque fois.
+
 ---
 
 ### GET /api/cv/formation
@@ -148,6 +158,15 @@ Retourne les formations, filtrées optionnellement par domaine.
 |------|-------|
 | 200 | `{ result: [{ id, slug, title, institution, location, obtention_date, description, level, tasks, hardskills, domains }] }` |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
+
+**Forme de `tasks`/`hardskills`**
+```json
+{
+  "tasks": [{ "id": 1, "content": "...", "position": 1 }],
+  "hardskills": [{ "id": 9, "slug": "react", "label": "React", "level": "avancé", "category": "frontend", "sub_category": "framework" }]
+}
+```
+`hardskills[].id` est l'ID de la ligne de liaison (`formation_hardskill`), pas celui de `hardskill` — un même skill peut apparaître sur plusieurs formations avec un `id` différent à chaque fois.
 
 ---
 

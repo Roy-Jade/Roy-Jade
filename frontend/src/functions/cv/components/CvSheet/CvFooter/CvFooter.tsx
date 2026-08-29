@@ -17,7 +17,6 @@ interface Props {
 }
 
 export default function CvFooter({ identity }: Props) {
-    console.log(identity)
     return (
         <footer className="cv-footer">
             <h2>Sur les réseaux :</h2>
@@ -25,11 +24,12 @@ export default function CvFooter({ identity }: Props) {
                 {socialLinks.map(({ key, icon, label }) => {
                     const href = identity?.[key];
                     if (!href) return null;
+                    const username = href.replace(/\/+$/, '').split('/').pop();
                     return (
                         <li className="cv-footer__list-links" key={key}>
-                            <a href={href} aria-label={label} target="_blank" rel="noopener noreferrer">
+                            <a href={href} aria-label={`${label} : ${username}`} target="_blank" rel="noopener noreferrer">
                                 <img src={icon} alt={label} />
-                                {label}
+                                {username}
                             </a>
                         </li>
                     );
