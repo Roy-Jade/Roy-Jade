@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
 import { getIdentity } from '../../../../api/cvApi';
 import { toggleId } from '../../../../utils/toggleId';
+import { clearIds } from '../../../../utils/clearIds';
 import CvFilters from '../../components/CvFilters/CvFilters';
 import CvSheet from '../../components/CvSheet/CvSheet';
+import CvHiddenPanel from '../../components/CvHiddenPanel/CvHiddenPanel';
 // import './CV.scss';
 
 export default function CV() {
@@ -40,6 +42,10 @@ export default function CV() {
         setSearchParams(prev => toggleId(prev, key, id));
     };
 
+    const clearHidden = (keys: HiddenIdField[]) => {
+        setSearchParams(prev => clearIds(prev, keys));
+    };
+
     return (
         <div className="cv-page">
             <CvFilters
@@ -52,6 +58,9 @@ export default function CV() {
                     : <p>Chargement du CV…</p>
                 }
             </section>
+            {filtersReady && (
+                <CvHiddenPanel filters={filters} toggleHidden={toggleHidden} clearHidden={clearHidden} />
+            )}
         </div>
     );
 }

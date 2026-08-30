@@ -1,6 +1,6 @@
 # Refactor CV — granularité d'affichage sans re-fetch
 
-**Statut :** design validé, implémentation pas commencée.
+**Statut :** logique et accessibilité implémentées et vérifiées (compilation, lint, tests backend, scénarios manuels via navigateur piloté). CSS/mise en forme volontairement pas traité — voir "Design restant" en bas de fichier.
 
 ## Objectif
 
@@ -66,6 +66,40 @@ Suppression de `maxExperiences`/`maxFormations` et du `.slice()` associé (`CvEx
 - **Accessibilité — décision actée :** pas de `aria-hidden` sur ces boutons (anti-pattern ARIA sur un élément focusable — règle axe-core `aria-hidden-focus` : le focus clavier resterait possible sans annonce, silence déroutant). Les items masquables (tâches, tags) sont structurés en vraies listes (`<ul>/<li>`), avec un bouton "masquer" en fin d'item façon chip amovible — pattern standard, bien supporté par les lecteurs d'écran. Le masquage visuel du bouton est purement CSS (`:hover`/`:focus-visible`), jamais retiré de l'arbre d'accessibilité. Un seul chemin d'interaction pour tout le monde, pas de parcours séparé clavier/AT vs souris.
 - Panneau latéral (côté droit, masquable) listant les éléments actuellement masqués, groupés par catégorie (compétence/expérience/formation). Un sous-élément masqué s'affiche sous le nom de son expérience/formation parente. Permet de démasquer (le CV lui-même ne le permet pas une fois masqué).
 
+## Panneau de démasquage
+
+**Objectif** : seul moyen de réafficher un élément masqué (le CV lui-même ne le permet pas une fois masqué) — sans quoi il faudrait modifier l'URL à la main ou refaire un appel complet.
+
+**Emplacement** : côté droit de la page, bouton d'ouverture/fermeture. Fermé par défaut. Désactivé (grisé, non déployable) tant que rien n'est masqué, avec une description accessible "aucun élément masqué à réafficher" (`aria-describedby`). Redevient actif dès qu'un élément est masqué quelque part.
+
+**Hiérarchie d'affichage** — 3 buckets, avec regroupement par item parent :
+- **Compétences** : uniquement les hardskills masqués depuis la liste aside (`hiddenHardskillIds`) — pas de parent, entrées à plat.
+- **Expériences** / **Formations** : un item (expérience/formation) apparaît dans le panneau dès qu'un de ses éléments est masqué (lui-même ou l'un de ses sous-éléments) :
+  - **Item entièrement masqué** (`hiddenExperienceIds`/`hiddenFormationIds`) → seul le nom + bouton "Afficher" (aucun sous-élément listé — les réafficher un par un n'aurait aucun effet visible tant que le parent reste masqué).
+  - **Seulement des sous-éléments masqués** → nom de l'item sans bouton (en-tête de regroupement seulement), puis un en-tête de sous-type non interactif et légèrement grisé par sous-type présent ("Description", "Tâches", "Compétences techniques", "Compétences comportementales"), chacun listant ses entrées avec bouton "Afficher" individuel.
+- Un item qui n'a plus aucun élément masqué disparaît du panneau (et de son bucket).
+
+**Troncature du texte** : CSS pur (`text-overflow: ellipsis` / `-webkit-line-clamp`), pas de logique JS de calcul de longueur par largeur de fenêtre — le texte complet reste dans le DOM (accessible aux lecteurs d'écran même tronqué visuellement). Pas de bouton "voir plus" : le texte complet n'est visible qu'en réaffichant l'élément sur le CV lui-même. Valeurs exactes (nb de lignes, largeur) à régler avec le reste du CSS, plus tard.
+
+**Réaffichage groupé** : un "tout réafficher" global en haut du panneau, un par bucket. Nécessite `clearIds` (utilitaire symétrique à `toggleId`, vide plusieurs clés de recherche d'un coup) plutôt que d'appeler `toggleHidden` en boucle.
+
+**Source des données affichées** (titres, contenu de tâche, libellés — pas des IDs bruts) : extraction de hooks partagés `useExperienceData(filters)` / `useFormationData(domains)` / `useHardskillData(level, categories)`, avec les mêmes `queryKey` que `CvExperiences`/`CvFormations`/`CvAside` → le panneau lit le cache React Query existant, aucun appel réseau supplémentaire, aucune donnée remontée à un ancêtre commun.
+
+**Accessibilité — gestion du focus (point critique)** : cliquer "Afficher" retire l'élément cliqué du DOM au re-render suivant (c'est le but de l'action) — le focus du navigateur, qui atterrit nativement sur le bouton cliqué avant l'exécution du `onClick`, se retrouve alors orphelin (repli sur `document.body` par défaut) si rien n'est fait. Ce n'est pas limité au dernier élément du panneau entier : réafficher le seul élément masqué d'un sous-type peut faire disparaître en cascade l'en-tête de sous-type, le nom de l'item, voire le bucket entier.
+
+Stratégie retenue, un seul mécanisme réutilisé à tous les niveaux : au clic, calculer (avant le re-render) le premier ancêtre de la hiérarchie qui va **survivre** à la disparition de l'élément cliqué (en-tête de sous-type s'il reste d'autres entrées, sinon nom de l'item, sinon en-tête de bucket, sinon le bouton d'ouverture du panneau en dernier recours — cas déjà couvert par le repli automatique du panneau vide), et y déplacer le focus explicitement après le re-render (`useEffect`). Chaque en-tête de regroupement est une cible de focus programmable (`tabIndex={-1}` + ref), pas seulement les boutons interactifs.
+
+**Statut** : implémenté et vérifié (compilation, lint, scénarios manuels — cascade complète, cascade partielle, réaffichage groupé par bucket et global). Mise en forme visuelle pas traitée, voir "Design restant" en bas de fichier.
+
+## Design restant (session future)
+
+Points de mise en forme repérés pendant les tests manuels, à traiter avec le reste du CSS, pas maintenant :
+
+- **En-tête de bucket** (`CvHiddenBucket.tsx`, `CvHiddenPanel.tsx`) : le titre du bucket (Compétences/Expériences/Formations) et son bouton "Tout réafficher" doivent s'afficher sur la même ligne — même principe que les entrées masquées, qui ont déjà leur bouton "Afficher" adjacent. Actuellement les deux sont dans le même conteneur (`.cv-hidden-bucket__header`) mais s'affichent l'un sous l'autre faute de CSS (`<h3>` est block par défaut).
+- **Icône pour les boutons "Afficher"** : `HoverAction` a déjà une icône pour "masquer" (`hide.svg`, un simple X). Pas encore d'équivalent pour "afficher" dans le panneau — à choisir (Lucide a probablement une convention établie, ex. icône "eye"). Label `aria-label` déjà en place quel que soit le choix visuel final.
+- Troncature CSS du texte des entrées (`text-overflow`/`line-clamp`) — structure posée, valeurs pas encore réglées (cf. section "Panneau de démasquage" plus haut).
+- Positionnement/CSS général du panneau (largeur, couleur active/inactive, transition d'ouverture) — rien de fait, structure HTML/logique uniquement.
+
 ## Lien avec la partie 2 (dashboard — pas commencée)
 
 Le futur dashboard admin (rendu live + édition en place, cf. objectif initial du refactor) doit réutiliser une fenêtre quasi identique à celle du CV visiteur, avec des boutons "ajouter"/"éditer" affichés selon le même mécanisme que "masquer" (icône au survol/focus, même emplacement). **À prendre en compte dès l'implémentation de la partie 1** : le mécanisme d'affichage du bouton d'action au survol (pas l'action elle-même) doit être conçu comme un composant réutilisable généraliste plutôt que spécifique à "masquer", pour éviter de le reconstruire pour la partie 2.
@@ -74,11 +108,13 @@ Le futur dashboard admin (rendu live + édition en place, cf. objectif initial d
 
 Filtre `detail`/`summary` par domaine (expérience) : probablement redondant une fois le masquage par ID en place, mais nécessite un travail d'agrégation plus important. Ne pas traiter sans revalidation explicite avec l'utilisateur — voir aussi `CLAUDE.md` § Refactors futurs identifiés.
 
-## Implémentation (à faire)
+## Implémentation
 
-- [ ] Backend : exposer les IDs manquants (tâches, liaisons hardskill/softskill) dans `experienceService.ts` et `formationService.ts`
-- [ ] Frontend : mettre à jour les types (`ExperienceItem`, `FormationItem`, etc.) avec les nouveaux champs `id`
-- [ ] Frontend : ajouter les nouveaux params à `searchParams.ts` / parsing URL
-- [ ] Frontend : fonction/hook générique réutilisé dans les 4 composants `CvSheet` enfants (ex: `isHidden(id, hiddenIds)`)
-- [ ] Frontend : supprimer `maxExperiences`/`maxFormations` et le `.slice()` associé
+- [x] Backend : IDs exposés (tâches, liaisons hardskill/softskill) dans `experienceService.ts` et `formationService.ts`, `API.md` mis à jour
+- [x] Frontend : types (`ExperienceItem`, `FormationItem`, etc.) avec les nouveaux champs `id`
+- [x] Frontend : nouveaux params dans `searchParams.ts` / parsing URL (`CV.tsx`)
+- [x] Frontend : masquage top-level et interne câblés dans les 4 composants `CvSheet` enfants (`isHidden`, `toggleId`, `toggleHidden`)
+- [x] Frontend : suppression de `maxExperiences`/`maxFormations` et du `.slice()` associé
+- [x] Frontend : panneau de démasquage complet (`CvHiddenPanel`, `CvHiddenBucket`, `CvHiddenEntryList`), gestion du focus (`useFocusRegistry`), hooks de données partagés (`useExperienceData`/`useFormationData`/`useHardskillData`), réaffichage groupé (`clearIds`)
 - [ ] Dashboard admin (`CvFilters`) : pas encore traité — à voir si une UI de masquage est nécessaire à ce stade, ou si ça se raccroche à la deuxième partie du refactor (prévisualisation dashboard, cf. conversation initiale)
+- [ ] CSS/mise en forme — voir "Design restant" plus haut

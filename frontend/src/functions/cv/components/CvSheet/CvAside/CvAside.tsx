@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAside, getHardskill } from '../../../../../api/cvApi';
-import type { Hardskill } from '../../../../../types/Hardskill';
+import { getAside } from '../../../../../api/cvApi';
 import type { Language } from '../../../../../types/Language';
 import type { Hobby } from '../../../../../types/Hobby';
 import type { HiddenIdField } from '../../../../../types/searchParams';
 import { isHidden } from '../../../../../utils/isHidden';
+import { useHardskillData } from '../../../hooks/useHardskillData';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
 import photo from '../../../../../assets/photo.jpg';
@@ -18,12 +18,7 @@ interface Props {
 }
 
 export default function CvAside({ level, categories, hiddenHardskillIds, toggleHidden }: Props) {
-    const { data: hardskills = [], isLoading, isError } = useQuery<Hardskill[]>({
-        queryKey: ['hardskill', level, categories],
-        queryFn: () => getHardskill(level, categories),
-        staleTime: 20 * 60 * 1000,
-        enabled: !!level,
-    });
+    const { data: hardskills = [], isLoading, isError } = useHardskillData(level, categories);
 
     const { data: aside, isLoading: isAsideLoading, isError: isAsideError } = useQuery<{ language: Language[]; hobby: Hobby[] }>({
         queryKey: ['aside'],

@@ -1,8 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { getFormation } from '../../../../../api/cvApi';
-import type { FormationItem } from '../../../../../types/Formation';
 import type { HiddenIdField } from '../../../../../types/searchParams';
 import { isHidden } from '../../../../../utils/isHidden';
+import { useFormationData } from '../../../hooks/useFormationData';
 import Tag from '../../../../core/components/Tag/Tag';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
@@ -25,11 +23,7 @@ export default function CvFormations({
     hiddenFormationHardskillIds,
     toggleHidden,
 }: Props) {
-    const { data: formations = [], isLoading, isError } = useQuery<FormationItem[]>({
-        queryKey: ['formation', domains],
-        queryFn: () => getFormation(domains),
-        staleTime: 20 * 60 * 1000,
-    });
+    const { data: formations = [], isLoading, isError } = useFormationData(domains);
 
     if (isLoading) return <section className="cv-formations"><p>…</p></section>;
     if (isError) return null;

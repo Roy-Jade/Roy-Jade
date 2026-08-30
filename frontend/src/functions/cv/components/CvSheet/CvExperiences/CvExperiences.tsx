@@ -1,8 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { getExperience } from '../../../../../api/cvApi';
 import type { ExperienceFilter, HiddenIdField } from '../../../../../types/searchParams';
-import type { ExperienceItem } from '../../../../../types/Experience';
 import { isHidden } from '../../../../../utils/isHidden';
+import { useExperienceData } from '../../../hooks/useExperienceData';
 import Tag from '../../../../../functions/core/components/Tag/Tag';
 import HoverAction from '../../../../../functions/core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
@@ -26,12 +24,7 @@ export default function CvExperiences({
     hiddenExperienceSoftskillIds,
     toggleHidden,
 }: Props) {
-    const { data: experiences = [], isLoading, isError } = useQuery<ExperienceItem[]>({
-        queryKey: ['experience', filters],
-        queryFn: () => getExperience(filters),
-        staleTime: 20 * 60 * 1000,
-        enabled: filters.length > 0,
-    });
+    const { data: experiences = [], isLoading, isError } = useExperienceData(filters);
 
     if (isLoading) return <section className="cv-experiences"><p>…</p></section>;
     if (isError) return null;
