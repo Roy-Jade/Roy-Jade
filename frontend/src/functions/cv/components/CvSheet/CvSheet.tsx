@@ -25,7 +25,14 @@ export default function CvSheet({ filters, identity, toggleHidden }: Props) {
     return (
         <>
             <button onClick={() => handlePrint()}>Télécharger PDF</button>
-            <TransformWrapper>
+            {/* .cv-selectable : exclusion JS (ici) ET override CSS (templatesCSS/default.scss)
+                nécessaires ensemble — la lib applique son propre user-select:none, indépendant
+                de sa logique de pan. panning ET doubleClick ont chacun leur propre `excluded` —
+                la lib ne les partage pas, les deux doivent être configurés séparément. */}
+            <TransformWrapper
+                panning={{ excluded: ['cv-selectable'] }}
+                doubleClick={{ excluded: ['cv-selectable'] }}
+            >
                 <TransformComponent>
                     <div ref={printRef} className="cv-a4">
                         <CvHeader identity={identity} context={filters.context} />

@@ -15,11 +15,11 @@ export default function CvPresentation({ context }: Props) {
         enabled: !!context,
     });
 
-    if (isLoading) return <section className="cv-presentation"><p>…</p></section>;
+    if (isLoading) return <section className="cv-presentation cv-selectable"><p>…</p></section>;
     if (isError || !profile) return null;
 
     return (
-        <section className="cv-presentation">
+        <section className="cv-presentation cv-selectable">
             <h2>Présentation</h2>
             {profile.description.split('\n').filter(Boolean).map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>

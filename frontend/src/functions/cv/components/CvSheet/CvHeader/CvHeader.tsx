@@ -18,7 +18,7 @@ export default function CvHeader({ identity, context }: Props) {
     });
 
     return (
-        <header className="cv-header">
+        <header className="cv-header cv-selectable">
             <h1>
                 <span className='cv-header__firstname'>{identity?.firstname}</span>
                 <span className='cv-header__lastname'>{identity?.lastname}</span>

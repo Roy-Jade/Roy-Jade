@@ -26,11 +26,11 @@ export default function CvExperiences({
 }: Props) {
     const { data: experiences = [], isLoading, isError } = useExperienceData(filters);
 
-    if (isLoading) return <section className="cv-experiences"><p>…</p></section>;
+    if (isLoading) return <section className="cv-experiences cv-selectable"><p>…</p></section>;
     if (isError) return null;
 
     return (
-        <section className="cv-experiences">
+        <section className="cv-experiences cv-selectable">
             <h2>Expériences professionnelles</h2>
             <ul>
                 {experiences.filter(exp => !isHidden(exp.id, hiddenExperienceIds)).map(exp => (

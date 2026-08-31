@@ -1,3 +1,15 @@
+.cv-selectable {
+    // La lib pose toutes les variantes préfixées (-webkit-user-select en particulier,
+    // ce que Safari respecte réellement) — il faut toutes les annuler, pas juste la
+    // propriété standard non préfixée.
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
 .cv-a4 {
     height: 822pt;
     width: 575pt;

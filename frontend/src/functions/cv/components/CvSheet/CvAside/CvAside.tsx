@@ -28,7 +28,7 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
     const { language = [], hobby = [] } = aside ?? {};
 
     return (
-        <aside className="cv-aside">
+        <aside className="cv-aside cv-selectable">
             <img src={photo} alt="Photo de profil" className="cv-aside__photo" />
 
             {(isLoading || isAsideLoading) && <p>…</p>}

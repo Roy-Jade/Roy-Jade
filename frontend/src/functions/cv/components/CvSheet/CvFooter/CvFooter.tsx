@@ -18,7 +18,7 @@ interface Props {
 
 export default function CvFooter({ identity }: Props) {
     return (
-        <footer className="cv-footer">
+        <footer className="cv-footer cv-selectable">
             <h2>Sur les réseaux :</h2>
             <ul className="cv-footer__list">
                 {socialLinks.map(({ key, icon, label }) => {

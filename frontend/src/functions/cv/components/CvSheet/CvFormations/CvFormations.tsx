@@ -25,11 +25,11 @@ export default function CvFormations({
 }: Props) {
     const { data: formations = [], isLoading, isError } = useFormationData(domains);
 
-    if (isLoading) return <section className="cv-formations"><p>…</p></section>;
+    if (isLoading) return <section className="cv-formations cv-selectable"><p>…</p></section>;
     if (isError) return null;
 
     return (
-        <section className="cv-formations">
+        <section className="cv-formations cv-selectable">
             <h2>Formations et diplômes</h2>
             <ul>
                 {formations.filter(formation => !isHidden(formation.id, hiddenFormationIds)).map(formation => (
