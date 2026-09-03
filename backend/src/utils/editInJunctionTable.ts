@@ -1,21 +1,21 @@
-import db from "../config/db.js";
+import { PoolClient } from "pg";
 import { AppError } from "./AppError.js";
 import { junctionTable } from "./junctionTables.js";
 
-export const deleteInJunctionTable = async (refTable:string, secondTable:string, id:number) => {
+export const deleteInJunctionTable = async (refTable:string, secondTable:string, id:number, client:PoolClient) => {
 
     if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!junctionTable.some(([ref, second]) => ref ===refTable && second === secondTable)) {
         throw new AppError(400, "Erreur : la table de liaison cible n'existe pas")
     }
 
-    const response = await db.query(`
+    const response = await client.query(`
         DELETE FROM ${refTable}_${secondTable} WHERE ${refTable}_id = $1
         `, [id]
     );
 }
 
-export const insertInJunctionTable = async (refTable:string, secondTable:string, id:number, addedElement:number[]) => {
+export const insertInJunctionTable = async (refTable:string, secondTable:string, id:number, addedElement:number[], client:PoolClient) => {
 
     if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!junctionTable.some(([ref, second]) => ref ===refTable && second === secondTable)) {
@@ -27,7 +27,7 @@ export const insertInJunctionTable = async (refTable:string, secondTable:string,
 
     const placeholder = addedElement.map((_, i) => `($1, $${i+2})`).join(', ');
     const params = [id, ...addedElement]
-    const response = await db.query(`
+    const response = await client.query(`
         INSERT INTO ${refTable}_${secondTable} (${refTable}_id, ${secondTable}_id)
         VALUES ${placeholder}
         `, params
@@ -36,7 +36,7 @@ export const insertInJunctionTable = async (refTable:string, secondTable:string,
     return
 }
 
-export const insertTasks = async (refTable:string, id:number, tasks:string[]) => {
+export const insertTasks = async (refTable:string, id:number, tasks:string[], client:PoolClient) => {
 
     if (id<1 || Number.isNaN(id)) {throw new AppError(400, "Erreur : aucun id n'a été fourni")};
     if (!junctionTable.some(([ref, second]) => ref ===refTable && second === "task")) {
@@ -50,7 +50,7 @@ export const insertTasks = async (refTable:string, id:number, tasks:string[]) =>
     const placeholder = tasks.map((_, i) => `($1, $${i*2+2}, $${i*2+3})`).join(', ');
     const params = tasks.flatMap((_, i) => [tasks[i], i+1]);
     const completeParams = [id, ...params];
-    await db.query(`
+    await client.query(`
         INSERT INTO ${refTable}_task (${refTable}_id, content, position)
         VALUES ${placeholder}
         `, completeParams

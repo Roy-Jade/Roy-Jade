@@ -2,7 +2,7 @@ import { Pool, QueryArrayConfig } from 'pg';
 import { dbHost, dbPort, dbName, dbUser, dbPassword } from './env.js';
 
 // Sert à gérer les connexions PSQL (optimisation et requêtes)
-const pool = new Pool({
+export const pool = new Pool({
   host: dbHost,
   port: dbPort,
   database: dbName,

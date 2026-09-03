@@ -1,5 +1,4 @@
-// ⚠️ editFormation manque de transaction : les opérations partielles sont commitées en cas d'erreur. Ne pas utiliser comme modèle pour du code transactionnel. Fix documenté dans backend/CLAUDE.md.
-import db from "../../config/db.js";
+import db, { pool } from "../../config/db.js";
 import { Formation, FormationKeyList } from "../../schema/cv/formation.js";
 import { getFormationById } from "../../utils/getFormationById.js";
 import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
@@ -47,28 +46,42 @@ export async function fetchFormation(data:string[]) {
 
 
 export async function addFormation(data:Formation, domain:number[], tasks:string[], hardskill:number[]) {
-    
-    const insertFormation = await db.query(`
-        INSERT INTO formation (slug, title, institution, location, obtention_date, description, level)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id
-        `, [
-            data.slug, 
-            data.title, 
-            data.institution?data.institution:null, 
-            data.location?data.location:null, 
-            data.obtention_date?data.obtention_date:null, 
-            data.description?data.description:null,
-            data.level?data.level:null
-        ]);
 
-    await Promise.all([
-        insertInJunctionTable("formation", "domain", insertFormation.rows[0].id, domain), 
-        insertTasks("formation", insertFormation.rows[0].id, tasks),
-        insertInJunctionTable("formation", "hardskill", insertFormation.rows[0].id, hardskill)
-    ])
+    const client = await pool.connect();
+    let newId: number;
+    try {
+        await client.query('BEGIN');
 
-    const addedFormation = await getFormationById(insertFormation.rows[0].id)
+        const insertFormation = await client.query(`
+            INSERT INTO formation (slug, title, institution, location, obtention_date, description, level)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id
+            `, [
+                data.slug,
+                data.title,
+                data.institution?data.institution:null,
+                data.location?data.location:null,
+                data.obtention_date?data.obtention_date:null,
+                data.description?data.description:null,
+                data.level?data.level:null
+            ]);
+        newId = insertFormation.rows[0].id;
+
+        await Promise.all([
+            insertInJunctionTable("formation", "domain", newId, domain, client),
+            insertTasks("formation", newId, tasks, client),
+            insertInJunctionTable("formation", "hardskill", newId, hardskill, client)
+        ])
+
+        await client.query('COMMIT');
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
+
+    const addedFormation = await getFormationById(newId)
 
     return addedFormation
 }
@@ -85,32 +98,44 @@ export async function editFormation(
         throw new AppError(400, "Erreur : aucune donnée à modifier n'a été fourni")
     };
 
-    if(formationData) {
-        if (!Object.keys(formationData).every((key) => FormationKeyList.includes(key))) {
-            throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        if(formationData) {
+            if (!Object.keys(formationData).every((key) => FormationKeyList.includes(key))) {
+                throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
+            };
+
+            const setValues = Object.entries(formationData).map(([key], i) => `${key} = $${i+2}`).join(', ');
+            const params = [id, ...Object.values(formationData)];
+            await client.query(`
+                UPDATE formation SET ${setValues}
+                WHERE id = $1`,
+                params);
+        }
+
+        if (domainData !== null) {
+            await deleteInJunctionTable("formation", "domain", id, client);
+            if (domainData.length > 0) await insertInJunctionTable("formation", "domain", id, domainData, client);
         };
 
-        const setValues = Object.entries(formationData).map(([key], i) => `${key} = $${i+2}`).join(', ');
-        const params = [id, ...Object.values(formationData)];
-        await db.query(`
-            UPDATE formation SET ${setValues}
-            WHERE id = $1`,
-            params);
-    }
+        if (hardskillData !== null) {
+            await deleteInJunctionTable("formation", "hardskill", id, client);
+            if (hardskillData.length > 0) await insertInJunctionTable("formation", "hardskill", id, hardskillData, client);
+        };
 
-    if (domainData !== null) {
-        await deleteInJunctionTable("formation", "domain", id);
-        if (domainData.length > 0) await insertInJunctionTable("formation", "domain", id, domainData);
-    };
+        if (taskData !== null) {
+            await deleteInJunctionTable("formation", "task", id, client);
+            if (taskData.length > 0) await insertTasks("formation", id, taskData, client);
+        }
 
-    if (hardskillData !== null) {
-        await deleteInJunctionTable("formation", "hardskill", id);
-        if (hardskillData.length > 0) await insertInJunctionTable("formation", "hardskill", id, hardskillData);
-    };
-
-    if (taskData !== null) {
-        await deleteInJunctionTable("formation", "task", id);
-        if (taskData.length > 0) await insertTasks("formation", id, taskData);
+        await client.query('COMMIT');
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
     }
 
     const editedFormation = await getFormationById(id);

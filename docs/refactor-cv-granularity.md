@@ -1,6 +1,6 @@
 # Refactor CV — granularité d'affichage sans re-fetch
 
-**Statut :** logique et accessibilité implémentées et vérifiées (compilation, lint, tests backend, scénarios manuels via navigateur piloté). CSS/mise en forme volontairement pas traité — voir "Design restant" en bas de fichier.
+**Statut :** terminé et mergé sur `main`. Logique et accessibilité implémentées et vérifiées (compilation, lint, tests backend, scénarios manuels via navigateur piloté). CSS/mise en forme volontairement pas traité — voir "Design restant" en bas de fichier.
 
 ## Objectif
 

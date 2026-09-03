@@ -1,5 +1,4 @@
-// ⚠️ editExperience manque de transaction : les opérations partielles sont commitées en cas d'erreur. Ne pas utiliser comme modèle pour du code transactionnel. Fix documenté dans backend/CLAUDE.md.
-import db from "../../config/db.js";
+import db, { pool } from "../../config/db.js";
 import { Experience, ExperienceKeyList } from "../../schema/cv/experience.js";
 import { getExperienceById } from "../../utils/getExperienceById.js";
 import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
@@ -57,29 +56,43 @@ export async function fetchExperience(data:{domains:string[], type:'detail'|'sum
 }
 
 export async function addExperience(data:Experience, domain:number[], tasks:string[], hardskill:number[], softskill:number[]) {
-    
-    const insertExperience = await db.query(`
-        INSERT INTO experience (slug, type, title, company, location, start_date, end_date, description)
-        VALUES ($1, 'detail', $2, $3, $4, $5, $6, $7)
-        RETURNING id
-        `, [
-            data.slug, 
-            data.title, 
-            data.company?data.company:null, 
-            data.location?data.location:null, 
-            data.start_date?data.start_date:null, 
-            data.end_date?data.end_date:null, 
-            data.description?data.description:null
-        ]);
 
-    await Promise.all([
-        insertInJunctionTable("experience", "domain", insertExperience.rows[0].id, domain), 
-        insertTasks("experience", insertExperience.rows[0].id, tasks), 
-        insertInJunctionTable("experience", "hardskill", insertExperience.rows[0].id, hardskill), 
-        insertInJunctionTable("experience", "softskill", insertExperience.rows[0].id, softskill)
-    ])
+    const client = await pool.connect();
+    let newId: number;
+    try {
+        await client.query('BEGIN');
 
-    const addedExperience = await getExperienceById(insertExperience.rows[0].id)
+        const insertExperience = await client.query(`
+            INSERT INTO experience (slug, type, title, company, location, start_date, end_date, description)
+            VALUES ($1, 'detail', $2, $3, $4, $5, $6, $7)
+            RETURNING id
+            `, [
+                data.slug,
+                data.title,
+                data.company?data.company:null,
+                data.location?data.location:null,
+                data.start_date?data.start_date:null,
+                data.end_date?data.end_date:null,
+                data.description?data.description:null
+            ]);
+        newId = insertExperience.rows[0].id;
+
+        await Promise.all([
+            insertInJunctionTable("experience", "domain", newId, domain, client),
+            insertTasks("experience", newId, tasks, client),
+            insertInJunctionTable("experience", "hardskill", newId, hardskill, client),
+            insertInJunctionTable("experience", "softskill", newId, softskill, client)
+        ])
+
+        await client.query('COMMIT');
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
+    }
+
+    const addedExperience = await getExperienceById(newId)
 
     return addedExperience
 }
@@ -97,37 +110,49 @@ export async function editExperience(
         throw new AppError(400, "Erreur : aucune donnée à modifier n'a été fourni")
     };
 
-    if(experienceData) {
-        if (!Object.keys(experienceData).every((key) => ExperienceKeyList.includes(key))) {
-            throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        if(experienceData) {
+            if (!Object.keys(experienceData).every((key) => ExperienceKeyList.includes(key))) {
+                throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
+            };
+
+            const setValues = Object.entries(experienceData).map(([key], i) => `${key} = $${i+2}`).join(', ');
+            const params = [id, ...Object.values(experienceData)];
+            await client.query(`
+                UPDATE experience SET ${setValues}
+                WHERE id = $1`,
+                params);
+        }
+
+        if (domainData !== null) {
+            await deleteInJunctionTable("experience", "domain", id, client);
+            if (domainData.length > 0) await insertInJunctionTable("experience", "domain", id, domainData, client);
         };
 
-        const setValues = Object.entries(experienceData).map(([key], i) => `${key} = $${i+2}`).join(', ');
-        const params = [id, ...Object.values(experienceData)];
-        await db.query(`
-            UPDATE experience SET ${setValues}
-            WHERE id = $1`,
-            params);
-    }
+        if (hardskillData !== null) {
+            await deleteInJunctionTable("experience", "hardskill", id, client);
+            if (hardskillData.length > 0) await insertInJunctionTable("experience", "hardskill", id, hardskillData, client);
+        };
 
-    if (domainData !== null) {
-        await deleteInJunctionTable("experience", "domain", id);
-        if (domainData.length > 0) await insertInJunctionTable("experience", "domain", id, domainData);
-    };
+        if (softskillData !== null) {
+            await deleteInJunctionTable("experience", "softskill", id, client);
+            if (softskillData.length > 0) await insertInJunctionTable("experience", "softskill", id, softskillData, client);
+        };
 
-    if (hardskillData !== null) {
-        await deleteInJunctionTable("experience", "hardskill", id);
-        if (hardskillData.length > 0) await insertInJunctionTable("experience", "hardskill", id, hardskillData);
-    };
+        if (taskData !== null) {
+            await deleteInJunctionTable("experience", "task", id, client);
+            if (taskData.length > 0) await insertTasks("experience", id, taskData, client);
+        }
 
-    if (softskillData !== null) {
-        await deleteInJunctionTable("experience", "softskill", id);
-        if (softskillData.length > 0) await insertInJunctionTable("experience", "softskill", id, softskillData);
-    };
-
-    if (taskData !== null) {
-        await deleteInJunctionTable("experience", "task", id);
-        if (taskData.length > 0) await insertTasks("experience", id, taskData);
+        await client.query('COMMIT');
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
     }
 
     const editedExperience = await getExperienceById(id);

@@ -1,21 +1,11 @@
 # Backend Roy-Jade — Notes pour Claude
 
-## Bug connu : absence de transactions dans les services d'édition
+## Transactions sur les services d'édition — corrigé
 
-**Fichiers concernés :** `src/service/cv/experienceService.ts`, `src/service/cv/formationService.ts`
+**Fichiers concernés :** `src/config/db.ts`, `src/utils/editInJunctionTable.ts`, `src/service/cv/experienceService.ts`, `src/service/cv/formationService.ts`
 
-**Symptôme :** Si `editExperience` ou `editFormation` échoue en cours de route (erreur sur une des opérations de liaison), les opérations SQL déjà exécutées (UPDATE, DELETE) sont commitées en base malgré l'erreur retournée au client. Pas d'atomicité.
+`addExperience`/`editExperience`/`addFormation`/`editFormation` enveloppent désormais toutes leurs opérations dans une transaction :
 
-**Cause :** Les requêtes s'exécutent via `db.query()` (connexions indépendantes du pool). Aucun `BEGIN`/`COMMIT`/`ROLLBACK` n'enveloppe l'ensemble des opérations.
-
-**Fix à implémenter :**
-
-1. Exporter `pool` depuis `src/config/db.ts` :
-```ts
-export const pool = new Pool({ ... });
-```
-
-2. Dans chaque fonction `editX`, sortir un client du pool et envelopper dans une transaction :
 ```ts
 const client = await pool.connect();
 try {
@@ -30,6 +20,8 @@ try {
 }
 ```
 
-3. Adapter `src/utils/editInJunctionTable.ts` pour accepter un `client` en paramètre (ou le pool) au lieu d'utiliser `db` directement.
+`pool` est exporté nommément depuis `src/config/db.ts` (en plus de l'export par défaut `{ query }`, toujours utilisé pour les lectures simples type `fetchExperience`/`getExperienceById`).
 
-**Priorité :** Moyenne — le bug est bénin en pratique depuis la correction des `AppError(400)` sur tableaux vides (le cas pathologique ne se produit plus), mais l'atomicité reste une garantie fondamentale à respecter.
+`editInJunctionTable.ts` (`deleteInJunctionTable`, `insertInJunctionTable`, `insertTasks`) prend un `client: PoolClient` obligatoire en dernier paramètre — c'est l'appelant qui fournit sa connexion transactionnelle, la fonction ne va plus chercher `db` elle-même. Choix délibéré (plutôt qu'un paramètre optionnel retombant sur `db`) : rend impossible d'appeler ces fonctions hors transaction par oubli.
+
+Couvert par `src/tests/service/cv/experienceService.test.ts` / `formationService.test.ts` (cas nominal : `BEGIN` → opérations → `COMMIT` → `client.release()` ; cas d'échec : `ROLLBACK`, `COMMIT` jamais atteint, `client.release()` quand même appelé, aucune donnée exposée) et `src/tests/utils/editInJunctionTable.test.ts`.

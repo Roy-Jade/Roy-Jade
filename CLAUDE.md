@@ -98,18 +98,6 @@ Les scripts SQL dans `backend/conception/` sont exécutés automatiquement au d�
 
 `frontend/src/functions/portfolio/` — section en cours de construction. Prévu pour présenter les projets personnels (blablabook en premier). Ne pas traiter ce dossier vide comme abandonné.
 
-## Bugs connus
-
-### Transactions manquantes — `editExperience` / `editFormation`
-
-**Fichiers :** `backend/src/service/cv/experienceService.ts`, `backend/src/service/cv/formationService.ts`
-
-Chaque `db.query()` utilise une connexion indépendante du pool. Si une opération échoue en cours de route (UPDATE puis DELETE/INSERT sur les tables de liaison), les opérations déjà exécutées sont commitées. Pas d'atomicité.
-
-Ces deux fichiers portent un commentaire `// ⚠️` en en-tête. Ne pas les utiliser comme modèle pour du code nécessitant des transactions.
-
-**Fix prévu :** envelopper dans un `BEGIN`/`COMMIT`/`ROLLBACK` avec un client sorti du pool, et adapter `editInJunctionTable.ts` pour accepter ce client en paramètre.
-
 ## Refactors futurs identifiés (non planifiés)
 
 ### Filtre `detail`/`summary` par domaine (expériences)
@@ -124,7 +112,8 @@ Le retrait nécessite un travail d'agrégation de données plus important que le
 
 Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le sujet devient pertinent (pas chargés automatiquement, contrairement à ce fichier) :
 
-- [docs/refactor-cv-granularity.md](docs/refactor-cv-granularity.md) — masquage granulaire des données du CV par ID (blacklist), sans re-fetch réseau. Design validé, implémentation pas commencée.
+- [docs/refactor-cv-granularity.md](docs/refactor-cv-granularity.md) — masquage granulaire des données du CV par ID (blacklist), sans re-fetch réseau. Terminé et mergé.
+- [docs/refactor-cv-dashboard-edit.md](docs/refactor-cv-dashboard-edit.md) — édition en direct sur rendu CV côté dashboard admin. Réflexion en cours, implémentation pas commencée.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 
