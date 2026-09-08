@@ -1,8 +1,21 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { AppError } from "../../utils/AppError.js";
-import { addSoftskill, editSoftskill } from "../../service/cv/softskillService.js";
+import { fetchSoftskill, addSoftskill, editSoftskill } from "../../service/cv/softskillService.js";
 import { SoftskillSchema } from "../../schema/cv/skill.js";
+
+export const getSoftskill = async (req:Request, res:Response) => {
+    try {
+        const result = await fetchSoftskill();
+        return res.status(200).json({result})
+
+    } catch (error) {
+        if (error instanceof AppError) {
+            return res.status(error.statusCode).json({ message: error.message });
+        }
+        return res.status(500).json({ message: "Erreur lors de la récupération des données" })
+    }
+}
 
 export const postSoftskill = async (req:Request, res:Response) => {
     try {

@@ -1,10 +1,11 @@
 import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
 import type { Request, Response } from 'express';
 import { AppError } from '../../../utils/AppError.js';
-import { postSoftskill, patchSoftskill } from '../../../controller/cv/softskillController.js';
-import { addSoftskill, editSoftskill } from '../../../service/cv/softskillService.js';
+import { getSoftskill, postSoftskill, patchSoftskill } from '../../../controller/cv/softskillController.js';
+import { fetchSoftskill, addSoftskill, editSoftskill } from '../../../service/cv/softskillService.js';
 
 vi.mock('../../../service/cv/softskillService.js', () => ({
+    fetchSoftskill: vi.fn(),
     addSoftskill: vi.fn(),
     editSoftskill: vi.fn(),
 }));
@@ -16,6 +17,41 @@ const mockRes = () => ({
 
 beforeEach(() => {
     vi.clearAllMocks();
+});
+
+describe('getSoftskill', () => {
+
+    it('cas fonctionnel : retourne 200 avec les données', async () => {
+        const req = {} as unknown as Request;
+        const res = mockRes();
+        const data = [{ id: 1, slug: 'autonomie', label: 'Autonomie' }];
+        (fetchSoftskill as Mock).mockResolvedValueOnce(data);
+
+        await getSoftskill(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ result: data });
+    });
+
+    it('cas dysfonctionnel : AppError du service', async () => {
+        const req = {} as unknown as Request;
+        const res = mockRes();
+        (fetchSoftskill as Mock).mockRejectedValueOnce(new AppError(404, "Aucune donnée trouvée"));
+
+        await getSoftskill(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('cas dysfonctionnel : erreur générique, retourne 500', async () => {
+        const req = {} as unknown as Request;
+        const res = mockRes();
+        (fetchSoftskill as Mock).mockRejectedValueOnce(new Error('Erreur inattendue'));
+
+        await getSoftskill(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+    });
 });
 
 describe('postSoftskill', () => {

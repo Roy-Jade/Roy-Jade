@@ -7,7 +7,7 @@ import Legal from './functions/core/pages/Legal/Legal';
 import NotFound from './functions/core/pages/NotFound/NotFound';
 import Portfolio from './functions/portfolio/pages/Portfolio/Portfolio';
 import CV from './functions/cv/pages/CV/CV';
-import Dashboard from './functions/admin/pages/Dashboard/Dashboard';
+import Login from './functions/admin/pages/Login/Login';
 
 export default function App() {
 
@@ -19,7 +19,7 @@ export default function App() {
           <Route path='/' element={<Home/>}/>
           <Route path='/cv' element={<CV/>}/>
           <Route path='/portfolio' element={<Portfolio/>}/>
-          <Route path='/dashboard' element={<Dashboard/>}/>
+          <Route path='/login' element={<Login/>}/>
           <Route path='/legal' element={<Legal/>}/>
           <Route path='/contact' element={<Contact/>}/>
           <Route path='*' element={<NotFound/>}/>

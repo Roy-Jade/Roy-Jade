@@ -1,7 +1,7 @@
 import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
 import type { Request, Response } from 'express';
 import { AppError } from '../../utils/AppError.js';
-import { login, logout } from '../../controller/authController.js';
+import { login, logout, getSession } from '../../controller/authController.js';
 import { validateLogin } from '../../service/authService.js';
 
 vi.mock('../../service/authService.js', () => ({
@@ -50,6 +50,29 @@ describe('login', () => {
         await login(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
+    });
+});
+
+describe('getSession', () => {
+
+    it('cas fonctionnel : session admin, isAdmin vaut true', async () => {
+        const req = { session: { isAdmin: true } } as unknown as Request;
+        const res = mockRes();
+
+        await getSession(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ result: { isAdmin: true } });
+    });
+
+    it('cas fonctionnel : visiteur anonyme, isAdmin vaut false', async () => {
+        const req = { session: {} } as unknown as Request;
+        const res = mockRes();
+
+        await getSession(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ result: { isAdmin: false } });
     });
 });
 

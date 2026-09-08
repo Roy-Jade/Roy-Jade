@@ -35,6 +35,7 @@ export default function Login({ isOpen, onClose }: Props) {
         setErrorMessage('');
         try {
             await login(pseudonyme, password);
+            queryClient.invalidateQueries({ queryKey: ['authSession'] });
             queryClient.invalidateQueries({ queryKey: ['dashboardOverview'] });
             onClose();
         } catch (err) {

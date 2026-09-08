@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useReactToPrint } from 'react-to-print';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
+import type { EditingState } from '../../../admin/types/EditingState';
 import CvHeader from './CvHeader/CvHeader';
 import CvPresentation from './CvPresentation/CvPresentation';
 import CvAside from './CvAside/CvAside';
@@ -16,9 +17,11 @@ interface Props {
     filters: CvFiltersParams;
     identity: Identity | undefined;
     toggleHidden: (key: HiddenIdField, id: number) => void;
+    editing: EditingState | null;
+    onCloseEdit: () => void;
 }
 
-export default function CvSheet({ filters, identity, toggleHidden }: Props) {
+export default function CvSheet({ filters, identity, toggleHidden, editing, onCloseEdit }: Props) {
     const printRef = useRef<HTMLDivElement>(null);
     const handlePrint = useReactToPrint({ contentRef: printRef });
 
@@ -42,9 +45,11 @@ export default function CvSheet({ filters, identity, toggleHidden }: Props) {
                                 categories={filters.hardskillCategories}
                                 hiddenHardskillIds={filters.hiddenHardskillIds}
                                 toggleHidden={toggleHidden}
+                                editing={editing}
+                                onCloseEdit={onCloseEdit}
                             />
                             <section className="cv-content">
-                                <CvPresentation context={filters.context} />
+                                <CvPresentation context={filters.context} editing={editing} onCloseEdit={onCloseEdit} />
                                 <CvExperiences
                                     filters={filters.experienceFilters}
                                     hiddenExperienceIds={filters.hiddenExperienceIds}
@@ -53,6 +58,8 @@ export default function CvSheet({ filters, identity, toggleHidden }: Props) {
                                     hiddenExperienceHardskillIds={filters.hiddenExperienceHardskillIds}
                                     hiddenExperienceSoftskillIds={filters.hiddenExperienceSoftskillIds}
                                     toggleHidden={toggleHidden}
+                                    editing={editing}
+                                    onCloseEdit={onCloseEdit}
                                 />
                                 <CvFormations
                                     domains={filters.formationDomains}
@@ -61,6 +68,8 @@ export default function CvSheet({ filters, identity, toggleHidden }: Props) {
                                     hiddenFormationTaskIds={filters.hiddenFormationTaskIds}
                                     hiddenFormationHardskillIds={filters.hiddenFormationHardskillIds}
                                     toggleHidden={toggleHidden}
+                                    editing={editing}
+                                    onCloseEdit={onCloseEdit}
                                 />
                             </section>
                         </main>

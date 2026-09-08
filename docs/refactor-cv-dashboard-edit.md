@@ -1,6 +1,6 @@
 # Refactor dashboard — édition en direct sur rendu CV
 
-**Statut :** réflexion en cours, implémentation pas commencée. Suite logique du refactor granularité CV (`docs/refactor-cv-granularity.md`, terminé et mergé).
+**Statut :** implémentation en cours (branche `cv-dashboard-refactor`). Décisions prises : option 2 (réutilisation de `CvFilters`/endpoints publics filtrés), menu cascade scope au filtre CV courant, formulaire = vrai `<form>` classique + aperçu réactif (pas de `contentEditable`), positionnement de la coquille sous la zone concernée du CV pour expérience/formation/hardskill/langue/loisir/profil, menu uniquement pour identité/domaine/softskill. Les 9 formulaires (`EditShell` + dispatch par table dans `frontend/src/functions/admin/components/EditShell/`, un fichier par catégorie sous `forms/`) sont branchés et fonctionnels, expérience/formation compris (tâches en liste, sélection domaines/hardskills/softskills). Chaque formulaire est autonome : il retrouve sa propre donnée via les hooks de cache déjà utilisés par le CV public (pas de prop-drilling depuis `EditShell`), y compris pour les catégories relationnelles où il faut le jeu de données complet indépendamment du filtre CV courant (toutes les catégories de hardskills au niveau plancher, tous les domaines × les deux types pour les expériences). Aperçu live (le brouillon qui remplace l'item réel pendant l'édition) pas encore fait — la coquille s'affiche au bon endroit mais l'item au-dessus reste la donnée réelle jusqu'à sauvegarde. Suite logique du refactor granularité CV (`docs/refactor-cv-granularity.md`, terminé et mergé).
 
 ## Objectif (rappel de la demande initiale)
 
@@ -49,10 +49,28 @@ Classe `.cv-selectable` posée sur les conteneurs de contenu textuel : `.cv-head
 
 ## Autres points à traiter avant/pendant l'implémentation
 
+- **`domains` manquant sur `GET /api/cv/experience`/`GET /api/cv/formation` — corrigé.** La table `domain` n'était jointe que pour filtrer (`WHERE dom.slug = ANY(...)`), jamais projetée dans le SELECT, alors que `types/Experience.ts`/`types/Formation.ts` et `API.md` promettaient tous les deux un champ `domains: string[]`. Provoquait un crash de `ExperienceForm`/`FormationForm` (`existing.domains.map` sur `undefined`) et aurait silencieusement effacé les domaines à la sauvegarde (tableau vide envoyé). Ajouté `JSON_AGG(DISTINCT dom.slug) AS domains` aux deux requêtes (`experienceService.fetchExperience`, `formationService.fetchFormation`) — sûr sans `FILTER`/`COALESCE` puisque la jointure est `INNER JOIN` (toujours au moins une ligne).
 - **`getExperienceById`/`getFormationById`** (`backend/src/utils/`, utilisés par `addExperience`/`editExperience`/`addFormation`/`editFormation` du dashboard) n'exposent pas les IDs de tâches/liaisons hardskill/softskill qu'on a ajoutés côté lecture publique (`experienceService.ts`/`formationService.ts`, fait en partie 1). Si le dashboard réutilise les composants de rendu du CV, il faudra le même traitement SQL sur ces deux fichiers (ajouter `task.id`, l'ID de liaison hardskill/softskill au `jsonb_build_object`).
 - **Bug de transaction — corrigé** (branche `transactionnal-fix`, avant de démarrer ce chantier). `addExperience`/`editExperience`/`addFormation`/`editFormation` sont maintenant enveloppés dans une transaction (`BEGIN`/`COMMIT`/`ROLLBACK`), `editInJunctionTable.ts` prend un `client` obligatoire. Détails dans `backend/CLAUDE.md`. L'édition en direct peut s'appuyer dessus sans risque d'état partiel.
 - **`EditButton`** (`frontend/src/functions/admin/components/ui/EditButton.tsx`), utilisé aujourd'hui dans les 9 sections du dashboard classique — contexte différent de `HoverAction` (bouton toujours visible dans une grille de gestion, pas de survol/focus). L'utilisateur a confirmé qu'il sera probablement remplacé/unifié avec `HoverAction` paramétré en "edit" une fois la transformation de l'affichage admin faite — pas maintenant, à garder en tête.
 
+## Problème bloquant actuel — positionnement de la coquille
+
+Confirmé avec les formulaires expérience/formation (le plus gros cas) : insérée dans le flux normal du document (actuellement un `<li>`/élément sibling dans la liste), la coquille fait déborder le contenu de `.cv-a4` (page CV à taille fixe, `height: 822pt`/`width: 575pt`) — les boutons Enregistrer/Annuler et la fin du formulaire deviennent inaccessibles. Repéré dès les formulaires simples de l'aside (juste "pas la place d'exister"), mais devient bloquant avec les formulaires complexes.
+
+**Piste retenue à explorer en priorité (session suivante, avant de continuer) :** sortir la coquille du flux normal — `position: absolute`/`fixed` par-dessus le CV, ancrée visuellement sous la zone éditée mais sans pousser le reste du contenu ni être contrainte par la hauteur fixe de `.cv-a4`. Implique de revoir le point d'insertion dans `CvExperiences.tsx`/`CvFormations.tsx`/`CvAside.tsx`/`CvPresentation.tsx` (actuellement des `<li>`/éléments insérés directement dans les listes) — probablement un seul point de montage (portail ou position fixe au niveau de `CvSheet`) plutôt qu'un par composant.
+
+## Autres points reportés (repérés en testant les 7 premiers formulaires)
+
+- **Réorganisation des listes** : pas de mécanisme pour réordonner hardskills/langues/loisirs dans l'aside, ni les tâches/skills à l'intérieur d'une expérience/formation. Probablement lié à un besoin de champ `position` explicite (déjà présent sur les tâches, absent sur hardskill/langue/hobby). À concevoir une fois le formulaire expérience/formation en place, pour couvrir les deux cas ensemble.
+- **Tri des expériences/formations** : actuellement rendues dans l'ordre de l'id (ordre naturel de la requête), pas par pertinence. Cible à terme : tri par date de fin, avec les `summary` en bas et les `detail` en haut, chaque groupe trié par date de fin en interne.
+
+Aucun de ces trois points n'est bloquant pour la suite (formulaires expérience/formation) — notés pour une session future dédiée au design de ces interactions.
+
 ## Prochaine étape (session suivante)
 
-Concevoir le mécanisme de "brouillon" d'édition (état local avant sauvegarde) — c'est le point de départ logique, avant même de trancher option 1 vs option 2 puisque ce travail est commun aux deux.
+1. **Résoudre le positionnement de la coquille** (voir "Problème bloquant actuel" ci-dessus) — priorité immédiate, bloque l'usage réel des formulaires expérience/formation.
+2. L'aperçu live (brouillon qui remplace l'item réel pendant l'édition).
+3. Le toast de confirmation.
+
+Les 9 formulaires sont fonctionnellement terminés (champs, mutations, invalidation) — ce qui reste est de la présentation/positionnement, pas de la logique métier.

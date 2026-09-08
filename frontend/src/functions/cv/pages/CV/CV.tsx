@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
-import { getIdentity } from '../../../../api/cvApi';
+import type { FiltersData } from '../../../../types/FiltersData';
+import { getIdentity, getFilters } from '../../../../api/cvApi';
 import { toggleId } from '../../../../utils/toggleId';
 import { clearIds } from '../../../../utils/clearIds';
+import { useAdminSession } from '../../../core/hooks/useAdminSession';
+import type { DashboardCategory, EditingState } from '../../../admin/types/EditingState';
+import DashboardMenu from '../../../admin/components/DashboardMenu/DashboardMenu';
+import EditShell from '../../../admin/components/EditShell/EditShell';
+
+const MENU_ONLY_CATEGORIES: DashboardCategory[] = ['identity', 'domain', 'softskill'];
 import CvFilters from '../../components/CvFilters/CvFilters';
 import CvSheet from '../../components/CvSheet/CvSheet';
 import CvHiddenPanel from '../../components/CvHiddenPanel/CvHiddenPanel';
@@ -11,11 +19,20 @@ import CvHiddenPanel from '../../components/CvHiddenPanel/CvHiddenPanel';
 
 export default function CV() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const [editing, setEditing] = useState<EditingState | null>(null);
+
+    const { data: session } = useAdminSession();
 
     const { data: identity, isLoading: identityLoading } = useQuery({
         queryKey: ['identity'],
         queryFn: getIdentity,
         staleTime: 20 * 60 * 1000,
+    });
+
+    const { data: filtersData } = useQuery<FiltersData>({
+        queryKey: ['filters'],
+        queryFn: getFilters,
+        staleTime: Infinity,
     });
 
     const filters: CvFiltersParams = {
@@ -46,6 +63,19 @@ export default function CV() {
         setSearchParams(prev => clearIds(prev, keys));
     };
 
+    const handleEdit = (category: DashboardCategory, item?: { id: number }) => {
+        setEditing({ category, mode: 'edit', item });
+    };
+
+    const handleAdd = (category: DashboardCategory) => {
+        setEditing({ category, mode: 'add' });
+    };
+
+    const closeEditing = () => setEditing(null);
+
+    const isAdmin = !!session?.isAdmin;
+    const menuOnlyEditing = editing && MENU_ONLY_CATEGORIES.includes(editing.category) ? editing : null;
+
     return (
         <div className="cv-page">
             <CvFilters
@@ -54,12 +84,39 @@ export default function CV() {
             />
             <section className="cv-viewport">
                 {filtersReady && !identityLoading
-                    ? <CvSheet filters={filters} identity={identity} toggleHidden={toggleHidden} />
+                    ? (
+                        <CvSheet
+                            filters={filters}
+                            identity={identity}
+                            toggleHidden={toggleHidden}
+                            editing={isAdmin ? editing : null}
+                            onCloseEdit={closeEditing}
+                        />
+                    )
                     : <p>Chargement du CV…</p>
                 }
             </section>
             {filtersReady && (
                 <CvHiddenPanel filters={filters} toggleHidden={toggleHidden} clearHidden={clearHidden} />
+            )}
+            {isAdmin && filtersReady && filtersData && (
+                <>
+                    <DashboardMenu
+                        filters={filters}
+                        filtersData={filtersData}
+                        editing={editing}
+                        onEdit={handleEdit}
+                        onAdd={handleAdd}
+                    />
+                    {menuOnlyEditing && (
+                        <EditShell
+                            category={menuOnlyEditing.category}
+                            mode={menuOnlyEditing.mode}
+                            itemId={menuOnlyEditing.item?.id}
+                            onClose={closeEditing}
+                        />
+                    )}
+                </>
             )}
         </div>
     );

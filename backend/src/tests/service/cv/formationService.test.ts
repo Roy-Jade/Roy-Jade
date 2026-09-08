@@ -35,7 +35,8 @@ describe('fetchFormation', () => {
                     ],
                     hardskills: [
                         { slug: "magie-triforce", label: "Magie de la Triforce", level: "expert", category: "Magie", sub_category: "Triforce" }
-                    ]
+                    ],
+                    domains: ["hylien"]
                 },
                 {
                     id: 2,
@@ -51,7 +52,8 @@ describe('fetchFormation', () => {
                     ],
                     hardskills: [
                         { slug: "combat-epee", label: "Combat à l'épée", level: "expert", category: "Combat", sub_category: null }
-                    ]
+                    ],
+                    domains: ["hylien"]
                 }
             ]});
 
@@ -71,7 +73,8 @@ describe('fetchFormation', () => {
                 ],
                 hardskills: [
                     { slug: "magie-triforce", label: "Magie de la Triforce", level: "expert", category: "Magie", sub_category: "Triforce" }
-                ]
+                ],
+                domains: ["hylien"]
             },
             {
                 id: 2,
@@ -87,7 +90,8 @@ describe('fetchFormation', () => {
                 ],
                 hardskills: [
                     { slug: "combat-epee", label: "Combat à l'épée", level: "expert", category: "Combat", sub_category: null }
-                ]
+                ],
+                domains: ["hylien"]
             }
         ]);
         expect(db.query).toHaveBeenCalledWith(`
@@ -110,7 +114,8 @@ describe('fetchFormation', () => {
                 'label', hard.label,
                 'level', hard.level,
                 'category', hard.category,
-                'sub_category', hard.sub_category)) AS hardskills
+                'sub_category', hard.sub_category)) AS hardskills,
+            JSON_AGG(DISTINCT dom.slug) AS domains
             FROM formation form
             LEFT JOIN formation_task task ON task.formation_id = form.id
             LEFT JOIN formation_hardskill hardexp ON hardexp.formation_id = form.id

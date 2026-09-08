@@ -31,7 +31,8 @@ export async function fetchExperience(data:{domains:string[], type:'detail'|'sum
                 'label', hard.label,
                 'level', hard.level,
                 'category', hard.category,
-                'sub_category', hard.sub_category)) AS hardskills
+                'sub_category', hard.sub_category)) AS hardskills,
+            JSON_AGG(DISTINCT dom.slug) AS domains
         FROM experience exp
         LEFT JOIN experience_task task ON task.experience_id = exp.id
         LEFT JOIN experience_hardskill hardexp ON hardexp.experience_id = exp.id

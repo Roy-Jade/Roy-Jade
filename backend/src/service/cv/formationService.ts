@@ -26,7 +26,8 @@ export async function fetchFormation(data:string[]) {
                 'label', hard.label,
                 'level', hard.level,
                 'category', hard.category,
-                'sub_category', hard.sub_category)) AS hardskills
+                'sub_category', hard.sub_category)) AS hardskills,
+            JSON_AGG(DISTINCT dom.slug) AS domains
             FROM formation form
             LEFT JOIN formation_task task ON task.formation_id = form.id
             LEFT JOIN formation_hardskill hardexp ON hardexp.formation_id = form.id

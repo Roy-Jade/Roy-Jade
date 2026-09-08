@@ -14,3 +14,8 @@ export const logout = async () => {
     });
     return data.message;
 };
+
+export const getSession = async (): Promise<{ isAdmin: boolean }> => {
+    const data = await privateApi("/api/auth/session");
+    return data.result;
+};

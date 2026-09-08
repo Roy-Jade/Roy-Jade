@@ -37,6 +37,10 @@ export const getHardskill = async (level: string, categories: string[]) => {
     return cvApi(`hardskill?${params.toString()}`);
 };
 
+export const getSoftskill = async () => {
+    return cvApi("softskill");
+};
+
 export const getAside = async () => {
     return cvApi("aside");
 };

@@ -5,14 +5,15 @@ import { AppError } from "../../utils/AppError.js";
 export async function fetchFilters() {
     const type = ExperienceFilterSchema.element.shape.type.options;
 
-    const [contextResult, domainResult, categoryResult, levelResult] = await Promise.all([
-        db.query(`SELECT DISTINCT context FROM profile`, []),
-        db.query(`SELECT slug, label FROM domain`, []),
+    const [profileResult, domainResult, categoryResult, levelResult] = await Promise.all([
+        db.query(`SELECT id, context, tagline, description FROM profile`, []),
+        db.query(`SELECT id, slug, label FROM domain`, []),
         db.query(`SELECT DISTINCT category FROM hardskill WHERE category IS NOT NULL`, []),
         db.query(`SELECT DISTINCT level FROM hardskill WHERE level IS NOT NULL`, []),
     ]);
 
-    const context = contextResult.rows.map((row: {context: string}) => row.context);
+    const profile = profileResult.rows;
+    const context = [...new Set(profile.map((row: {context: string}) => row.context))];
     const domain = domainResult.rows;
     const category = categoryResult.rows.map((row: {category: string}) => row.category);
     const level = levelResult.rows.map((row: {level: string}) => row.level);
@@ -21,5 +22,5 @@ export async function fetchFilters() {
         throw new AppError(404, "Aucune donnée trouvée");
     }
 
-    return { type, context, domain, category, level };
+    return { type, context, domain, category, level, profile };
 }

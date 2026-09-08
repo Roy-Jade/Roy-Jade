@@ -3,6 +3,21 @@ import { Softskill, SoftskillKeyList } from "../../schema/cv/skill.js";
 import { AppError } from "../../utils/AppError.js";
 import { getSoftskillById } from "../../utils/getSoftskillById.js";
 
+export async function fetchSoftskill() {
+    const results = await db.query(`
+        SELECT
+            soft.id,
+            soft.slug,
+            soft.label
+            FROM softskill soft
+        `, []);
+
+    if(results.rows[0]===undefined) {
+        throw new AppError(404, "Aucune donnée trouvée")
+    }
+    return results.rows
+}
+
 export async function addSoftskill(data:Softskill) {
     const insertSoftskill = await db.query(`
         INSERT INTO softskill (slug, label)

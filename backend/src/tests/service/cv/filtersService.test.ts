@@ -7,8 +7,8 @@ vi.mock('../../../config/db.js', () => ({
 }));
 
 const mockFullResults = () => {
-    (db.query as Mock).mockResolvedValueOnce({ rows: [{ context: 'generique' }] });
-    (db.query as Mock).mockResolvedValueOnce({ rows: [{ slug: 'web', label: 'Développement web' }] });
+    (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, context: 'generique', tagline: 'Tagline', description: 'Description' }] });
+    (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: 'web', label: 'Développement web' }] });
     (db.query as Mock).mockResolvedValueOnce({ rows: [{ category: 'frontend' }] });
     (db.query as Mock).mockResolvedValueOnce({ rows: [{ level: 'avancé' }] });
 };
@@ -25,14 +25,15 @@ describe('fetchFilters', () => {
         await expect(fetchFilters()).resolves.toEqual({
             type: ['detail', 'summary'],
             context: ['generique'],
-            domain: [{ slug: 'web', label: 'Développement web' }],
+            domain: [{ id: 1, slug: 'web', label: 'Développement web' }],
             category: ['frontend'],
             level: ['avancé'],
+            profile: [{ id: 1, context: 'generique', tagline: 'Tagline', description: 'Description' }],
         });
     });
 
     it('cas dysfonctionnel : au moins une requête sans résultat', async () => {
-        (db.query as Mock).mockResolvedValueOnce({ rows: [{ context: 'generique' }] });
+        (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, context: 'generique', tagline: 'Tagline', description: 'Description' }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ category: 'frontend' }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ level: 'avancé' }] });

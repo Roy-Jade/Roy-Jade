@@ -20,6 +20,10 @@ export const login = async (req:Request, res:Response) => {
     }
 }
 
+export const getSession = async (req:Request, res:Response) => {
+    return res.status(200).json({ result: { isAdmin: req.session.isAdmin ?? false } })
+}
+
 export const logout = async (req:Request, res:Response) => {
     req.session.destroy((error) => {
         if (error) {

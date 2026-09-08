@@ -1,11 +1,45 @@
 import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
 import db from '../../../config/db.js';
-import { addSoftskill, editSoftskill } from '../../../service/cv/softskillService.js'
+import { fetchSoftskill, addSoftskill, editSoftskill } from '../../../service/cv/softskillService.js'
 
 // Mock des dépendances externes
 vi.mock('../../../config/db.js', () => ({
   default: { query: vi.fn() }
 }));
+
+describe('fetchSoftskill', () => {
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('cas fonctionnel : données récupérées', async () => {
+        (db.query as Mock).mockResolvedValueOnce({
+            rows: [
+                { id: 1, slug: "autonomie", label: "Autonomie" },
+                { id: 2, slug: "empathie", label: "Empathie" }
+            ]});
+
+        await expect(fetchSoftskill()).resolves.toEqual([
+            { id: 1, slug: "autonomie", label: "Autonomie" },
+            { id: 2, slug: "empathie", label: "Empathie" }
+        ]);
+    });
+
+    it('cas dysfonctionnel : pas de données dans la BDD', async () => {
+        (db.query as Mock).mockResolvedValue({
+            rows: []
+        });
+
+        await expect(fetchSoftskill()).rejects.toThrow('Aucune donnée trouvée');
+    })
+
+    it('cas dysfonctionnel : erreur BDD', async () => {
+        (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
+
+        await expect(fetchSoftskill()).rejects.toThrow('Connexion BDD perdue');
+    });
+})
 
 describe('addSoftskill', () => {
 

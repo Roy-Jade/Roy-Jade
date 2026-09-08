@@ -39,6 +39,16 @@ Détruit la session courante. **Authentification requise.**
 
 ---
 
+### GET /api/auth/session
+Indique si la session courante est une session admin. Aucun paramètre requis, aucune authentification requise — répond toujours 200, `isAdmin` vaut `false` pour un visiteur anonyme.
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 200 | `{ result: { isAdmin: boolean } }` |
+
+---
+
 ## CV (public)
 
 ### GET /api/cv/filters
@@ -56,14 +66,15 @@ Retourne toutes les valeurs valides pour alimenter les UI de filtres côté fron
   "result": {
     "type": ["detail", "summary"],
     "context": ["generique", "labo", "alternance"],
-    "domain": [{ "slug": "web", "label": "Développement web" }],
+    "domain": [{ "id": 1, "slug": "web", "label": "Développement web" }],
     "category": ["frontend", "backend"],
-    "level": ["débutant", "intermédiaire", "avancé"]
+    "level": ["débutant", "intermédiaire", "avancé"],
+    "profile": [{ "id": 1, "context": "generique", "tagline": "...", "description": "..." }]
   }
 }
 ```
 
-`type` est extrait statiquement du schéma Zod (pas de requête DB). Les autres champs viennent de la base.
+`type` est extrait statiquement du schéma Zod (pas de requête DB). Les autres champs viennent de la base. `profile` contient tous les profils (tous contextes confondus) — contenu déjà public un par un via `GET /api/cv/profile?context=...`, ce champ ne fait qu'agréger la même donnée en un seul appel.
 
 ---
 
@@ -89,8 +100,9 @@ Retourne le profil correspondant au contexte demandé.
 **Réponses**
 | Code | Corps |
 |------|-------|
-| 200 | `{ result: [{ id, context, tagline, description }] }` |
+| 200 | `{ result: { id, context, tagline, description } }` |
 | 400 | `{ message: "Erreur : le niveau est requis" }` |
+| 404 | `{ message: "Aucune donnée trouvée" }` |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
 
 ---
@@ -109,6 +121,18 @@ Retourne les compétences techniques filtrées.
 |------|-------|
 | 200 | `{ result: [{ id, slug, label, level, category, sub_category }] }` |
 | 400 | `{ message: "Erreur : le niveau est requis" }` |
+| 500 | `{ message: "Erreur lors de la récupération des données" }` |
+
+---
+
+### GET /api/cv/softskill
+Retourne toutes les compétences comportementales. Aucun paramètre requis.
+
+**Réponses**
+| Code | Corps |
+|------|-------|
+| 200 | `{ result: [{ id, slug, label }] }` |
+| 404 | `{ message: "Aucune donnée trouvée" }` |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
 
 ---
