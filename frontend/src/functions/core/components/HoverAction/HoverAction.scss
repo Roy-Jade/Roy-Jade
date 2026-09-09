@@ -26,6 +26,18 @@
     }
 }
 
+.hover-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 2px;
+
+    .hover-action {
+        position: static;
+    }
+}
+
 .hover-reveal {
     position: relative;
 }

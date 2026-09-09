@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { useReactToPrint } from 'react-to-print';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
-import type { EditingState } from '../../../admin/types/EditingState';
+import type { DashboardCategory, EditingState } from '../../../admin/types/EditingState';
 import type { EditPreview } from '../../../admin/types/EditPreview';
 import { useEditAnchor } from '../../../admin/hooks/useEditAnchor';
 import EditOverlay from '../../../admin/components/EditOverlay/EditOverlay';
@@ -24,9 +24,11 @@ interface Props {
     preview: EditPreview | null;
     onCloseEdit: () => void;
     onPreviewChange: (preview: EditPreview) => void;
+    onEdit?: (category: DashboardCategory, item?: { id: number }) => void;
+    onAdd?: (category: DashboardCategory) => void;
 }
 
-export default function CvSheet({ filters, identity, toggleHidden, editing, preview, onCloseEdit, onPreviewChange }: Props) {
+export default function CvSheet({ filters, identity, toggleHidden, editing, preview, onCloseEdit, onPreviewChange, onEdit, onAdd }: Props) {
     const printRef = useRef<HTMLDivElement>(null);
     const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
     const handlePrint = useReactToPrint({ contentRef: printRef });
@@ -56,6 +58,8 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                                 editing={editing}
                                 preview={preview}
                                 setAnchor={setAnchor}
+                                onEdit={onEdit}
+                                onAdd={onAdd}
                             />
                             <section className="cv-content">
                                 <CvPresentation
@@ -63,6 +67,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                                     editing={editing}
                                     preview={preview}
                                     setAnchor={setAnchor}
+                                    onEdit={onEdit}
                                 />
                                 <CvExperiences
                                     filters={filters.experienceFilters}
@@ -75,6 +80,8 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                                     editing={editing}
                                     preview={preview}
                                     setAnchor={setAnchor}
+                                    onEdit={onEdit}
+                                    onAdd={onAdd}
                                 />
                                 <CvFormations
                                     domains={filters.formationDomains}
@@ -86,6 +93,8 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                                     editing={editing}
                                     preview={preview}
                                     setAnchor={setAnchor}
+                                    onEdit={onEdit}
+                                    onAdd={onAdd}
                                 />
                             </section>
                         </main>

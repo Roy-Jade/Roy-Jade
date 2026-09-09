@@ -100,6 +100,8 @@ export default function CV() {
                             preview={isAdmin ? preview : null}
                             onCloseEdit={closeEditing}
                             onPreviewChange={setPreview}
+                            onEdit={isAdmin ? handleEdit : undefined}
+                            onAdd={isAdmin ? handleAdd : undefined}
                         />
                     )
                     : <p>Chargement du CV…</p>

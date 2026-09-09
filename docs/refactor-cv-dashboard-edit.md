@@ -66,7 +66,12 @@ Chaque conteneur (`CvExperiences`, `CvFormations`, `CvAside`, `CvPresentation`) 
 
 **Non traité (pas bloquant) :** pas de clamp aux bords de l'écran si l'item ancré sort du viewport pendant l'édition (pan/zoom extrême) — l'overlay suit et peut sortir de l'écran avec lui.
 
-**Vérification :** `tsc` propre, rechargement à chaud Vite sans erreur de parsing sur tous les fichiers modifiés. Vérification visuelle complète (positionnement réel, boutons accessibles, suivi pendant pan/zoom) en attente du retour utilisateur — pas pu être testée par un agent faute d'accès admin (mot de passe non présent dans les fichiers non gitignorés).
+**Vérification :** confirmée par test réel utilisateur (desktop). Trois ajustements faits suite à ce premier test :
+- Mesure passée de `useEffect` à `useLayoutEffect` dans `useEditAnchor` — la coquille n'apparaissait qu'après un pan/zoom (mesure trop tardive, après peinture).
+- Ajout d'un écouteur `scroll` (capture) — la coquille ne suivait que le pan/zoom interne du CV, pas le scroll de la page (alors qu'elle est en `position: fixed`, donc sensible aux deux).
+- `max-height` réduite de `calc(100vh - 2rem)` à `50vh`, + `scrollIntoView({block:'center'})` sur l'item ancré à l'ouverture d'une édition, + focus automatique de la coquille au montage — la coquille pouvait déborder en bas sans que le scroll de page permette d'atteindre les boutons.
+
+Non testé sur affichage mobile/portable — pas une priorité tant que le besoin ne se fait pas sentir (fonctions admin, faible volume d'usage), passe en V2+.
 
 ## Autres points reportés (repérés en testant les 7 premiers formulaires)
 
@@ -75,10 +80,24 @@ Chaque conteneur (`CvExperiences`, `CvFormations`, `CvAside`, `CvPresentation`) 
 
 Aucun de ces trois points n'est bloquant pour la suite (formulaires expérience/formation) — notés pour une session future dédiée au design de ces interactions.
 
+## Aperçu live — fait
+
+Chaque formulaire concerné (profile, hardskill, language, hobby, experience, formation — les seules catégories avec un ancrage CV) calcule à chaque frappe une projection de son état interne dans la forme d'affichage publique (résolution des ids de relations → slugs/labels via les listes déjà chargées par le formulaire) et la remonte via `onPreviewChange`. État `preview` (nouveau type `EditPreview`, union discriminée par catégorie) porté par `CV.tsx`, même chemin que `editing`/`onCloseEdit`.
+
+A nécessité d'extraire le JSX de rendu d'un item hors des `.map()` de `CvExperiences`/`CvFormations`/`CvAside` en sous-composants (`ExperienceItem`, `FormationItem`, `HardskillItem`, `LanguageItem`, `HobbyItem`) — mécanique, sans changement de comportement — pour pouvoir les appeler avec la donnée réelle ou le brouillon. S'applique aussi au mode ajout : le placeholder minimal ("Nouvelle expérience"...) est remplacé par le vrai gabarit dès que le formulaire émet sa première preview.
+
+Confirmé fonctionnel par test utilisateur.
+
+## Boutons edit/add directement sur le CV — fait
+
+En plus du menu cascade, chaque item du CV (expérience, formation, hardskill, langue, loisir, profil) a maintenant son propre bouton "Éditer" au survol/focus (pattern `HoverAction`, comme les boutons "Masquer"), qui déclenche directement l'édition de cet item — sans passer par le menu. Chaque catégorie à liste (compétences, langues, centres d'intérêts, expériences, formations) a aussi un bouton "Ajouter" au survol/focus de son titre `<h2>`. Les deux boutons appellent exactement `onEdit`/`onAdd` (mêmes handlers que `DashboardMenu`), threadés depuis `CV.tsx` à travers `CvSheet` jusqu'aux composants d'item.
+
+Détail technique : `.hover-action` est positionné en `absolute; top:0; right:0` — deux boutons dans la même zone (masquer + éditer) se superposaient. Ajout d'un wrapper `.hover-actions` (flex, `position:absolute` sur le groupe, `position:static` sur chaque bouton à l'intérieur) dans `HoverAction.scss`, utilisé uniquement là où deux actions coexistent.
+
+Icône réutilisée : `assets/edit.svg` (déjà utilisée par `EditButton` du dashboard classique). Pas d'icône dédiée pour "Ajouter" — texte `+`, comme `AddButton` du dashboard classique.
+
+Profil : bouton Éditer ajouté (cohérent, l'ancrage existait déjà) ; pas de bouton Ajouter (pas dans la liste demandée, et le mode ajout du profil n'a de toute façon pas d'ancrage CV — un nouveau contexte n'est pas affiché sur le CV courant).
+
 ## Prochaine étape (session suivante)
 
-1. **Confirmer visuellement le positionnement de la coquille** (voir section ci-dessus) — vérification utilisateur en attente, sinon corriger si un défaut apparaît à l'usage réel.
-2. L'aperçu live (brouillon qui remplace l'item réel pendant l'édition).
-3. Le toast de confirmation.
-
-Les 9 formulaires sont fonctionnellement terminés (champs, mutations, invalidation) — ce qui reste est de la présentation/positionnement, pas de la logique métier.
+Reste uniquement : le toast de confirmation (succès après résolution de la mutation, `aria-live="polite"`, auto-dismiss annulable au clic) — dernier point du chantier "fermeture propre du dashboard".

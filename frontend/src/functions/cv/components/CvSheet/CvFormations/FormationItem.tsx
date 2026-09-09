@@ -4,6 +4,7 @@ import { isHidden } from '../../../../../utils/isHidden';
 import Tag from '../../../../core/components/Tag/Tag';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
+import EditIcon from '../../../../../assets/edit.svg?react';
 
 interface Props {
     formation: FormationItemData;
@@ -11,6 +12,7 @@ interface Props {
     hiddenFormationTaskIds: number[];
     hiddenFormationHardskillIds: number[];
     toggleHidden: (key: HiddenIdField, id: number) => void;
+    onEdit?: () => void;
     ref?: (node: HTMLLIElement | null) => void;
 }
 
@@ -20,15 +22,21 @@ export default function FormationItem({
     hiddenFormationTaskIds,
     hiddenFormationHardskillIds,
     toggleHidden,
+    onEdit,
     ref,
 }: Props) {
     return (
         <li ref={ref} className="cv-formation hover-reveal">
-            <HoverAction
-                icon={<HideIcon />}
-                label={`Masquer la formation : ${formation.title}`}
-                onClick={() => toggleHidden('hiddenFormationIds', formation.id)}
-            />
+            <span className="hover-actions">
+                {onEdit && (
+                    <HoverAction icon={<EditIcon />} label={`Éditer la formation : ${formation.title}`} onClick={onEdit} />
+                )}
+                <HoverAction
+                    icon={<HideIcon />}
+                    label={`Masquer la formation : ${formation.title}`}
+                    onClick={() => toggleHidden('hiddenFormationIds', formation.id)}
+                />
+            </span>
             <span className="cv-formation__date">{formation.obtention_date}</span>
             <div className="cv-formation__content">
                 <h3 className="cv-formation__title">

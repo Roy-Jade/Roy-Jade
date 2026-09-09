@@ -4,6 +4,7 @@ import { isHidden } from '../../../../../utils/isHidden';
 import Tag from '../../../../core/components/Tag/Tag';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
+import EditIcon from '../../../../../assets/edit.svg?react';
 
 interface Props {
     exp: ExperienceItemData;
@@ -12,6 +13,7 @@ interface Props {
     hiddenExperienceHardskillIds: number[];
     hiddenExperienceSoftskillIds: number[];
     toggleHidden: (key: HiddenIdField, id: number) => void;
+    onEdit?: () => void;
     ref?: (node: HTMLLIElement | null) => void;
 }
 
@@ -22,15 +24,21 @@ export default function ExperienceItem({
     hiddenExperienceHardskillIds,
     hiddenExperienceSoftskillIds,
     toggleHidden,
+    onEdit,
     ref,
 }: Props) {
     return (
         <li ref={ref} className={`cv-experience cv-experience--${exp.type} hover-reveal`}>
-            <HoverAction
-                icon={<HideIcon />}
-                label={`Masquer l'expérience : ${exp.title}`}
-                onClick={() => toggleHidden('hiddenExperienceIds', exp.id)}
-            />
+            <span className="hover-actions">
+                {onEdit && (
+                    <HoverAction icon={<EditIcon />} label={`Éditer l'expérience : ${exp.title}`} onClick={onEdit} />
+                )}
+                <HoverAction
+                    icon={<HideIcon />}
+                    label={`Masquer l'expérience : ${exp.title}`}
+                    onClick={() => toggleHidden('hiddenExperienceIds', exp.id)}
+                />
+            </span>
             <span className="cv-experience__dates">
                 <span>{exp.start_date}</span>
                 {exp.end_date && exp.end_date !== exp.start_date && <span>{exp.end_date}</span>}

@@ -1,8 +1,9 @@
 import type { HiddenIdField } from '../../../../../types/searchParams';
-import type { EditingState } from '../../../../admin/types/EditingState';
+import type { DashboardCategory, EditingState } from '../../../../admin/types/EditingState';
 import type { EditPreview } from '../../../../admin/types/EditPreview';
 import { isHidden } from '../../../../../utils/isHidden';
 import { useFormationData } from '../../../hooks/useFormationData';
+import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import FormationItem from './FormationItem';
 // import './CvFormations.scss';
 
@@ -16,6 +17,8 @@ interface Props {
     editing: EditingState | null;
     preview: EditPreview | null;
     setAnchor: (node: HTMLElement | null) => void;
+    onEdit?: (category: DashboardCategory, item?: { id: number }) => void;
+    onAdd?: (category: DashboardCategory) => void;
 }
 
 export default function CvFormations({
@@ -28,6 +31,8 @@ export default function CvFormations({
     editing,
     preview,
     setAnchor,
+    onEdit,
+    onAdd,
 }: Props) {
     const { data: formations = [], isLoading, isError } = useFormationData(domains);
 
@@ -41,7 +46,12 @@ export default function CvFormations({
 
     return (
         <section className="cv-formations cv-selectable">
-            <h2>Formations et diplômes</h2>
+            <h2 className="hover-reveal">
+                Formations et diplômes
+                {onAdd && (
+                    <HoverAction icon={<span>+</span>} label="Ajouter une formation" onClick={() => onAdd('formation')} />
+                )}
+            </h2>
             <ul>
                 {formations.filter(formation => !isHidden(formation.id, hiddenFormationIds)).map(formation => (
                     <FormationItem
@@ -51,6 +61,7 @@ export default function CvFormations({
                         hiddenFormationTaskIds={hiddenFormationTaskIds}
                         hiddenFormationHardskillIds={hiddenFormationHardskillIds}
                         toggleHidden={toggleHidden}
+                        onEdit={onEdit ? () => onEdit('formation', { id: formation.id }) : undefined}
                         ref={isEditingThis(formation.id) ? setAnchor : undefined}
                     />
                 ))}

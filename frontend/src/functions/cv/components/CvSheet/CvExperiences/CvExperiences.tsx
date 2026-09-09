@@ -1,8 +1,9 @@
 import type { ExperienceFilter, HiddenIdField } from '../../../../../types/searchParams';
-import type { EditingState } from '../../../../admin/types/EditingState';
+import type { DashboardCategory, EditingState } from '../../../../admin/types/EditingState';
 import type { EditPreview } from '../../../../admin/types/EditPreview';
 import { isHidden } from '../../../../../utils/isHidden';
 import { useExperienceData } from '../../../hooks/useExperienceData';
+import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import ExperienceItem from './ExperienceItem';
 
 interface Props {
@@ -16,6 +17,8 @@ interface Props {
     editing: EditingState | null;
     preview: EditPreview | null;
     setAnchor: (node: HTMLElement | null) => void;
+    onEdit?: (category: DashboardCategory, item?: { id: number }) => void;
+    onAdd?: (category: DashboardCategory) => void;
 }
 
 export default function CvExperiences({
@@ -29,6 +32,8 @@ export default function CvExperiences({
     editing,
     preview,
     setAnchor,
+    onEdit,
+    onAdd,
 }: Props) {
     const { data: experiences = [], isLoading, isError } = useExperienceData(filters);
 
@@ -42,7 +47,12 @@ export default function CvExperiences({
 
     return (
         <section className="cv-experiences cv-selectable">
-            <h2>Expériences professionnelles</h2>
+            <h2 className="hover-reveal">
+                Expériences professionnelles
+                {onAdd && (
+                    <HoverAction icon={<span>+</span>} label="Ajouter une expérience" onClick={() => onAdd('experience')} />
+                )}
+            </h2>
             <ul>
                 {experiences.filter(exp => !isHidden(exp.id, hiddenExperienceIds)).map(exp => (
                     <ExperienceItem
@@ -53,6 +63,7 @@ export default function CvExperiences({
                         hiddenExperienceHardskillIds={hiddenExperienceHardskillIds}
                         hiddenExperienceSoftskillIds={hiddenExperienceSoftskillIds}
                         toggleHidden={toggleHidden}
+                        onEdit={onEdit ? () => onEdit('experience', { id: exp.id }) : undefined}
                         ref={isEditingThis(exp.id) ? setAnchor : undefined}
                     />
                 ))}
