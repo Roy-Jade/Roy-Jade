@@ -8,6 +8,7 @@ interface Props {
     mode: 'add' | 'edit';
     itemId?: number;
     onClose: () => void;
+    onPreviewChange?: (data: unknown) => void;
 }
 
 interface FormData {
@@ -18,7 +19,7 @@ interface FormData {
 
 const emptyForm: FormData = { context: '', tagline: '', description: '' };
 
-export default function ProfileForm({ mode, itemId, onClose }: Props) {
+export default function ProfileForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { data: filtersData } = useFiltersData();
     const existing = mode === 'edit' ? filtersData?.profile.find(p => p.id === itemId) : undefined;
@@ -33,6 +34,16 @@ export default function ProfileForm({ mode, itemId, onClose }: Props) {
             description: existing.description ?? '',
         });
     }, [existing]);
+
+    useEffect(() => {
+        if (mode === 'edit' && !existing) return;
+        onPreviewChange?.({
+            id: existing?.id ?? -1,
+            context: form.context,
+            tagline: form.tagline,
+            description: form.description,
+        });
+    }, [mode, existing, form, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();

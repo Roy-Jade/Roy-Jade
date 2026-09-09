@@ -6,11 +6,13 @@ import { isApiError } from '../../../../../api/privateApi';
 import { useFormationData } from '../../../../cv/hooks/useFormationData';
 import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
+import type { Hardskill } from '../../../../../types/Hardskill';
 
 interface Props {
     mode: 'add' | 'edit';
     itemId?: number;
     onClose: () => void;
+    onPreviewChange?: (data: unknown) => void;
 }
 
 interface FormData {
@@ -42,7 +44,7 @@ const toInput = (f: FormData): FormationInput => ({
 const toggleId = (ids: number[], id: number): number[] =>
     ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id];
 
-export default function FormationForm({ mode, itemId, onClose }: Props) {
+export default function FormationForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { data: filtersData } = useFiltersData();
     const domains = filtersData?.domain ?? [];
@@ -81,6 +83,28 @@ export default function FormationForm({ mode, itemId, onClose }: Props) {
                 .filter((id): id is number => id !== undefined)
         );
     }, [existing, domains, hardskills]);
+
+    useEffect(() => {
+        if (mode === 'edit' && !existing) return;
+        onPreviewChange?.({
+            id: existing?.id ?? -1,
+            slug: form.slug,
+            title: form.title,
+            institution: form.institution || null,
+            location: form.location || null,
+            obtention_date: form.obtention_date || null,
+            description: form.description || null,
+            level: form.level || null,
+            tasks: tasks.map((content, i) => ({ id: -(i + 1), content, position: i })),
+            hardskills: hardskillIds
+                .map(id => hardskills.find(h => h.id === id))
+                .filter((h): h is Hardskill => h !== undefined)
+                .map(h => ({ id: h.id, slug: h.slug, label: h.label, level: h.level, category: h.category, sub_category: h.sub_category ?? '' })),
+            domains: domainIds
+                .map(id => domains.find(d => d.id === id)?.slug)
+                .filter((slug): slug is string => slug !== undefined),
+        });
+    }, [mode, existing, form, tasks, domainIds, hardskillIds, domains, hardskills, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();

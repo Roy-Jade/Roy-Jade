@@ -4,11 +4,13 @@ import type { Language } from '../../../../../types/Language';
 import type { Hobby } from '../../../../../types/Hobby';
 import type { HiddenIdField } from '../../../../../types/searchParams';
 import type { EditingState } from '../../../../admin/types/EditingState';
+import type { EditPreview } from '../../../../admin/types/EditPreview';
 import { isHidden } from '../../../../../utils/isHidden';
 import { useHardskillData } from '../../../hooks/useHardskillData';
-import HoverAction from '../../../../core/components/HoverAction/HoverAction';
-import HideIcon from '../../../../../assets/icons/hide.svg?react';
 import photo from '../../../../../assets/photo.jpg';
+import HardskillItem from './HardskillItem';
+import LanguageItem from './LanguageItem';
+import HobbyItem from './HobbyItem';
 // import './CvAside.scss';
 
 interface Props {
@@ -17,10 +19,11 @@ interface Props {
     hiddenHardskillIds: number[];
     toggleHidden: (key: HiddenIdField, id: number) => void;
     editing: EditingState | null;
+    preview: EditPreview | null;
     setAnchor: (node: HTMLElement | null) => void;
 }
 
-export default function CvAside({ level, categories, hiddenHardskillIds, toggleHidden, editing, setAnchor }: Props) {
+export default function CvAside({ level, categories, hiddenHardskillIds, toggleHidden, editing, preview, setAnchor }: Props) {
     const { data: hardskills = [], isLoading, isError } = useHardskillData(level, categories);
     const isEditingItem = (category: 'hardskill' | 'language' | 'hobby', id: number) =>
         editing?.category === category && editing.mode === 'edit' && editing.item?.id === id;
@@ -33,6 +36,10 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
         staleTime: 20 * 60 * 1000,
     });
     const { language = [], hobby = [] } = aside ?? {};
+
+    const hardskillDraft = preview?.category === 'hardskill' ? preview.data : null;
+    const languageDraft = preview?.category === 'language' ? preview.data : null;
+    const hobbyDraft = preview?.category === 'hobby' ? preview.data : null;
 
     return (
         <aside className="cv-aside cv-selectable">
@@ -48,23 +55,17 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
                         {hardskills
                             .filter(skill => !isHidden(skill.id, hiddenHardskillIds))
                             .map(skill => (
-                                <li
+                                <HardskillItem
                                     key={skill.id}
-                                    className="hover-reveal"
+                                    skill={isEditingItem('hardskill', skill.id) && hardskillDraft ? hardskillDraft : skill}
+                                    onHide={() => toggleHidden('hiddenHardskillIds', skill.id)}
                                     ref={isEditingItem('hardskill', skill.id) ? setAnchor : undefined}
-                                >
-                                    {skill.label}
-                                    <HoverAction
-                                        icon={<HideIcon />}
-                                        label={`Masquer la compétence : ${skill.label}`}
-                                        onClick={() => toggleHidden('hiddenHardskillIds', skill.id)}
-                                    />
-                                </li>
+                                />
                             ))}
                         {isAddingNew('hardskill') && (
-                            <li ref={setAnchor}>
-                                Nouvelle compétence
-                            </li>
+                            hardskillDraft
+                                ? <HardskillItem skill={hardskillDraft} onHide={() => {}} ref={setAnchor} />
+                                : <li ref={setAnchor}>Nouvelle compétence</li>
                         )}
                     </ul>
                 </article>
@@ -75,17 +76,16 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
                     <h2>Langues</h2>
                     <ul>
                         {language.map(item => (
-                            <li
+                            <LanguageItem
                                 key={item.id}
+                                item={isEditingItem('language', item.id) && languageDraft ? languageDraft : item}
                                 ref={isEditingItem('language', item.id) ? setAnchor : undefined}
-                            >
-                                {item.label}
-                            </li>
+                            />
                         ))}
                         {isAddingNew('language') && (
-                            <li ref={setAnchor}>
-                                Nouvelle langue
-                            </li>
+                            languageDraft
+                                ? <LanguageItem item={languageDraft} ref={setAnchor} />
+                                : <li ref={setAnchor}>Nouvelle langue</li>
                         )}
                     </ul>
                 </article>
@@ -96,17 +96,16 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
                     <h2>Centres d'intérêts</h2>
                     <ul>
                         {hobby.map(item => (
-                            <li
+                            <HobbyItem
                                 key={item.id}
+                                item={isEditingItem('hobby', item.id) && hobbyDraft ? hobbyDraft : item}
                                 ref={isEditingItem('hobby', item.id) ? setAnchor : undefined}
-                            >
-                                {item.label}
-                            </li>
+                            />
                         ))}
                         {isAddingNew('hobby') && (
-                            <li ref={setAnchor}>
-                                Nouveau centre d'intérêt
-                            </li>
+                            hobbyDraft
+                                ? <HobbyItem item={hobbyDraft} ref={setAnchor} />
+                                : <li ref={setAnchor}>Nouveau centre d'intérêt</li>
                         )}
                     </ul>
                 </article>

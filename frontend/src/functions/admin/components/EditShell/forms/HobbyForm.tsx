@@ -8,6 +8,7 @@ interface Props {
     mode: 'add' | 'edit';
     itemId?: number;
     onClose: () => void;
+    onPreviewChange?: (data: unknown) => void;
 }
 
 interface FormData {
@@ -18,7 +19,7 @@ interface FormData {
 
 const emptyForm: FormData = { slug: '', label: '', supplement: '' };
 
-export default function HobbyForm({ mode, itemId, onClose }: Props) {
+export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { data: aside } = useAsideData();
     const existing = mode === 'edit' ? aside?.hobby.find(h => h.id === itemId) : undefined;
@@ -29,6 +30,11 @@ export default function HobbyForm({ mode, itemId, onClose }: Props) {
     useEffect(() => {
         if (existing) setForm({ slug: existing.slug, label: existing.label, supplement: existing.supplement ?? '' });
     }, [existing]);
+
+    useEffect(() => {
+        if (mode === 'edit' && !existing) return;
+        onPreviewChange?.({ id: existing?.id ?? -1, slug: form.slug, label: form.label, supplement: form.supplement || null });
+    }, [mode, existing, form, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();

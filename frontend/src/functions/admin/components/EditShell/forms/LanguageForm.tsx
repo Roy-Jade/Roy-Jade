@@ -8,6 +8,7 @@ interface Props {
     mode: 'add' | 'edit';
     itemId?: number;
     onClose: () => void;
+    onPreviewChange?: (data: unknown) => void;
 }
 
 interface FormData {
@@ -25,7 +26,7 @@ const LANGUAGE_LEVELS = [
 
 const emptyForm: FormData = { slug: '', label: '', level: '' };
 
-export default function LanguageForm({ mode, itemId, onClose }: Props) {
+export default function LanguageForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { data: aside } = useAsideData();
     const existing = mode === 'edit' ? aside?.language.find(l => l.id === itemId) : undefined;
@@ -36,6 +37,11 @@ export default function LanguageForm({ mode, itemId, onClose }: Props) {
     useEffect(() => {
         if (existing) setForm({ slug: existing.slug, label: existing.label, level: existing.level ?? '' });
     }, [existing]);
+
+    useEffect(() => {
+        if (mode === 'edit' && !existing) return;
+        onPreviewChange?.({ id: existing?.id ?? -1, slug: form.slug, label: form.label, level: form.level || null });
+    }, [mode, existing, form, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();

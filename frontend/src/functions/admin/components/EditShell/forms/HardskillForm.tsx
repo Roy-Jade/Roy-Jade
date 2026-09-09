@@ -9,6 +9,7 @@ interface Props {
     mode: 'add' | 'edit';
     itemId?: number;
     onClose: () => void;
+    onPreviewChange?: (data: unknown) => void;
 }
 
 interface FormData {
@@ -22,7 +23,7 @@ interface FormData {
 const HARDSKILL_LEVELS = ["notions", "courant", "maîtrise"];
 const emptyForm: FormData = { slug: '', label: '', level: '', category: '', sub_category: '' };
 
-export default function HardskillForm({ mode, itemId, onClose }: Props) {
+export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { data: filtersData } = useFiltersData();
     // Niveau le plus bas + toutes les catégories : équivaut à "tous les hardskills",
@@ -43,6 +44,18 @@ export default function HardskillForm({ mode, itemId, onClose }: Props) {
             sub_category: existing.sub_category ?? '',
         });
     }, [existing]);
+
+    useEffect(() => {
+        if (mode === 'edit' && !existing) return;
+        onPreviewChange?.({
+            id: existing?.id ?? -1,
+            slug: form.slug,
+            label: form.label,
+            level: form.level,
+            category: form.category,
+            sub_category: form.sub_category || null,
+        });
+    }, [mode, existing, form, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();

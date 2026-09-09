@@ -3,6 +3,7 @@ import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 
 import { useReactToPrint } from 'react-to-print';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
 import type { EditingState } from '../../../admin/types/EditingState';
+import type { EditPreview } from '../../../admin/types/EditPreview';
 import { useEditAnchor } from '../../../admin/hooks/useEditAnchor';
 import EditOverlay from '../../../admin/components/EditOverlay/EditOverlay';
 import CvHeader from './CvHeader/CvHeader';
@@ -20,10 +21,12 @@ interface Props {
     identity: Identity | undefined;
     toggleHidden: (key: HiddenIdField, id: number) => void;
     editing: EditingState | null;
+    preview: EditPreview | null;
     onCloseEdit: () => void;
+    onPreviewChange: (preview: EditPreview) => void;
 }
 
-export default function CvSheet({ filters, identity, toggleHidden, editing, onCloseEdit }: Props) {
+export default function CvSheet({ filters, identity, toggleHidden, editing, preview, onCloseEdit, onPreviewChange }: Props) {
     const printRef = useRef<HTMLDivElement>(null);
     const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
     const handlePrint = useReactToPrint({ contentRef: printRef });
@@ -51,12 +54,14 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                                 hiddenHardskillIds={filters.hiddenHardskillIds}
                                 toggleHidden={toggleHidden}
                                 editing={editing}
+                                preview={preview}
                                 setAnchor={setAnchor}
                             />
                             <section className="cv-content">
                                 <CvPresentation
                                     context={filters.context}
                                     editing={editing}
+                                    preview={preview}
                                     setAnchor={setAnchor}
                                 />
                                 <CvExperiences
@@ -68,6 +73,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                                     hiddenExperienceSoftskillIds={filters.hiddenExperienceSoftskillIds}
                                     toggleHidden={toggleHidden}
                                     editing={editing}
+                                    preview={preview}
                                     setAnchor={setAnchor}
                                 />
                                 <CvFormations
@@ -78,6 +84,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                                     hiddenFormationHardskillIds={filters.hiddenFormationHardskillIds}
                                     toggleHidden={toggleHidden}
                                     editing={editing}
+                                    preview={preview}
                                     setAnchor={setAnchor}
                                 />
                             </section>
@@ -86,7 +93,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                     </div>
                 </TransformComponent>
             </TransformWrapper>
-            <EditOverlay editing={editing} anchorRect={anchorRect} onClose={onCloseEdit} />
+            <EditOverlay editing={editing} anchorRect={anchorRect} onClose={onCloseEdit} onPreviewChange={onPreviewChange} />
         </>
     );
 }

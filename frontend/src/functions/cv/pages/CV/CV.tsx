@@ -8,6 +8,7 @@ import { toggleId } from '../../../../utils/toggleId';
 import { clearIds } from '../../../../utils/clearIds';
 import { useAdminSession } from '../../../core/hooks/useAdminSession';
 import type { DashboardCategory, EditingState } from '../../../admin/types/EditingState';
+import type { EditPreview } from '../../../admin/types/EditPreview';
 import DashboardMenu from '../../../admin/components/DashboardMenu/DashboardMenu';
 import EditShell from '../../../admin/components/EditShell/EditShell';
 
@@ -20,6 +21,7 @@ import CvHiddenPanel from '../../components/CvHiddenPanel/CvHiddenPanel';
 export default function CV() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [editing, setEditing] = useState<EditingState | null>(null);
+    const [preview, setPreview] = useState<EditPreview | null>(null);
 
     const { data: session } = useAdminSession();
 
@@ -65,13 +67,18 @@ export default function CV() {
 
     const handleEdit = (category: DashboardCategory, item?: { id: number }) => {
         setEditing({ category, mode: 'edit', item });
+        setPreview(null);
     };
 
     const handleAdd = (category: DashboardCategory) => {
         setEditing({ category, mode: 'add' });
+        setPreview(null);
     };
 
-    const closeEditing = () => setEditing(null);
+    const closeEditing = () => {
+        setEditing(null);
+        setPreview(null);
+    };
 
     const isAdmin = !!session?.isAdmin;
     const menuOnlyEditing = editing && MENU_ONLY_CATEGORIES.includes(editing.category) ? editing : null;
@@ -90,7 +97,9 @@ export default function CV() {
                             identity={identity}
                             toggleHidden={toggleHidden}
                             editing={isAdmin ? editing : null}
+                            preview={isAdmin ? preview : null}
                             onCloseEdit={closeEditing}
+                            onPreviewChange={setPreview}
                         />
                     )
                     : <p>Chargement du CV…</p>

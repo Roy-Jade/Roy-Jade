@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { EditingState } from '../../types/EditingState';
+import type { EditPreview } from '../../types/EditPreview';
 import EditShell from '../EditShell/EditShell';
 import './EditOverlay.scss';
 
@@ -7,9 +8,10 @@ interface Props {
     editing: EditingState | null;
     anchorRect: DOMRect | null;
     onClose: () => void;
+    onPreviewChange: (preview: EditPreview) => void;
 }
 
-export default function EditOverlay({ editing, anchorRect, onClose }: Props) {
+export default function EditOverlay({ editing, anchorRect, onClose, onPreviewChange }: Props) {
     // ref stable (useCallback, deps []) : ne doit focus qu'au vrai montage du nœud,
     // pas à chaque re-render (sinon vole le focus des champs du formulaire pendant
     // que anchorRect se met à jour en continu au pan/zoom).
@@ -24,7 +26,13 @@ export default function EditOverlay({ editing, anchorRect, onClose }: Props) {
             tabIndex={-1}
             style={{ top: anchorRect.bottom, left: anchorRect.left }}
         >
-            <EditShell category={editing.category} mode={editing.mode} itemId={editing.item?.id} onClose={onClose} />
+            <EditShell
+                category={editing.category}
+                mode={editing.mode}
+                itemId={editing.item?.id}
+                onClose={onClose}
+                onPreviewChange={onPreviewChange}
+            />
         </div>
     );
 }

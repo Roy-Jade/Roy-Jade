@@ -8,11 +8,14 @@ import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useSoftskillData } from '../../../../cv/hooks/useSoftskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
 import type { ExperienceFilter } from '../../../../../types/searchParams';
+import type { Hardskill } from '../../../../../types/Hardskill';
+import type { Softskill } from '../../../../../types/Softskill';
 
 interface Props {
     mode: 'add' | 'edit';
     itemId?: number;
     onClose: () => void;
+    onPreviewChange?: (data: unknown) => void;
 }
 
 interface FormData {
@@ -46,7 +49,7 @@ const toInput = (f: FormData): ExperienceInput => ({
 const toggleId = (ids: number[], id: number): number[] =>
     ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id];
 
-export default function ExperienceForm({ mode, itemId, onClose }: Props) {
+export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { data: filtersData } = useFiltersData();
     const domains = filtersData?.domain ?? [];
@@ -97,6 +100,33 @@ export default function ExperienceForm({ mode, itemId, onClose }: Props) {
                 .filter((id): id is number => id !== undefined)
         );
     }, [existing, domains, hardskills, softskills]);
+
+    useEffect(() => {
+        if (mode === 'edit' && !existing) return;
+        onPreviewChange?.({
+            id: existing?.id ?? -1,
+            slug: form.slug,
+            type: form.type,
+            title: form.title,
+            company: form.company || null,
+            location: form.location || null,
+            start_date: form.start_date || null,
+            end_date: form.end_date || null,
+            description: form.description || null,
+            tasks: tasks.map((content, i) => ({ id: -(i + 1), content, position: i })),
+            hardskills: hardskillIds
+                .map(id => hardskills.find(h => h.id === id))
+                .filter((h): h is Hardskill => h !== undefined)
+                .map(h => ({ id: h.id, slug: h.slug, label: h.label, level: h.level, category: h.category, sub_category: h.sub_category ?? '' })),
+            softskills: softskillIds
+                .map(id => softskills.find(s => s.id === id))
+                .filter((s): s is Softskill => s !== undefined)
+                .map(s => ({ id: s.id, slug: s.slug, label: s.label })),
+            domains: domainIds
+                .map(id => domains.find(d => d.id === id)?.slug)
+                .filter((slug): slug is string => slug !== undefined),
+        });
+    }, [mode, existing, form, tasks, domainIds, hardskillIds, softskillIds, domains, hardskills, softskills, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
         e.preventDefault();
