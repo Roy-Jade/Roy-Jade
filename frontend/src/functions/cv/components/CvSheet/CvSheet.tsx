@@ -1,8 +1,10 @@
 import { useRef } from 'react';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { TransformWrapper, TransformComponent, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { useReactToPrint } from 'react-to-print';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
 import type { EditingState } from '../../../admin/types/EditingState';
+import { useEditAnchor } from '../../../admin/hooks/useEditAnchor';
+import EditOverlay from '../../../admin/components/EditOverlay/EditOverlay';
 import CvHeader from './CvHeader/CvHeader';
 import CvPresentation from './CvPresentation/CvPresentation';
 import CvAside from './CvAside/CvAside';
@@ -23,7 +25,9 @@ interface Props {
 
 export default function CvSheet({ filters, identity, toggleHidden, editing, onCloseEdit }: Props) {
     const printRef = useRef<HTMLDivElement>(null);
+    const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
     const handlePrint = useReactToPrint({ contentRef: printRef });
+    const { rect: anchorRect, setAnchor } = useEditAnchor(transformRef);
 
     return (
         <>
@@ -33,6 +37,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                 de sa logique de pan. panning ET doubleClick ont chacun leur propre `excluded` —
                 la lib ne les partage pas, les deux doivent être configurés séparément. */}
             <TransformWrapper
+                ref={transformRef}
                 panning={{ excluded: ['cv-selectable'] }}
                 doubleClick={{ excluded: ['cv-selectable'] }}
             >
@@ -46,10 +51,14 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                                 hiddenHardskillIds={filters.hiddenHardskillIds}
                                 toggleHidden={toggleHidden}
                                 editing={editing}
-                                onCloseEdit={onCloseEdit}
+                                setAnchor={setAnchor}
                             />
                             <section className="cv-content">
-                                <CvPresentation context={filters.context} editing={editing} onCloseEdit={onCloseEdit} />
+                                <CvPresentation
+                                    context={filters.context}
+                                    editing={editing}
+                                    setAnchor={setAnchor}
+                                />
                                 <CvExperiences
                                     filters={filters.experienceFilters}
                                     hiddenExperienceIds={filters.hiddenExperienceIds}
@@ -59,7 +68,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                                     hiddenExperienceSoftskillIds={filters.hiddenExperienceSoftskillIds}
                                     toggleHidden={toggleHidden}
                                     editing={editing}
-                                    onCloseEdit={onCloseEdit}
+                                    setAnchor={setAnchor}
                                 />
                                 <CvFormations
                                     domains={filters.formationDomains}
@@ -69,7 +78,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                                     hiddenFormationHardskillIds={filters.hiddenFormationHardskillIds}
                                     toggleHidden={toggleHidden}
                                     editing={editing}
-                                    onCloseEdit={onCloseEdit}
+                                    setAnchor={setAnchor}
                                 />
                             </section>
                         </main>
@@ -77,6 +86,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, onCl
                     </div>
                 </TransformComponent>
             </TransformWrapper>
+            <EditOverlay editing={editing} anchorRect={anchorRect} onClose={onCloseEdit} />
         </>
     );
 }

@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import type { HiddenIdField } from '../../../../../types/searchParams';
 import type { EditingState } from '../../../../admin/types/EditingState';
 import { isHidden } from '../../../../../utils/isHidden';
@@ -6,7 +5,6 @@ import { useFormationData } from '../../../hooks/useFormationData';
 import Tag from '../../../../core/components/Tag/Tag';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
-import EditShell from '../../../../admin/components/EditShell/EditShell';
 // import './CvFormations.scss';
 
 interface Props {
@@ -17,7 +15,7 @@ interface Props {
     hiddenFormationHardskillIds: number[];
     toggleHidden: (key: HiddenIdField, id: number) => void;
     editing: EditingState | null;
-    onCloseEdit: () => void;
+    setAnchor: (node: HTMLElement | null) => void;
 }
 
 export default function CvFormations({
@@ -28,7 +26,7 @@ export default function CvFormations({
     hiddenFormationHardskillIds,
     toggleHidden,
     editing,
-    onCloseEdit,
+    setAnchor,
 }: Props) {
     const { data: formations = [], isLoading, isError } = useFormationData(domains);
 
@@ -44,8 +42,11 @@ export default function CvFormations({
             <h2>Formations et diplômes</h2>
             <ul>
                 {formations.filter(formation => !isHidden(formation.id, hiddenFormationIds)).map(formation => (
-                    <Fragment key={`form ${formation.id}`}>
-                    <li className="cv-formation hover-reveal">
+                    <li
+                        key={`form ${formation.id}`}
+                        className="cv-formation hover-reveal"
+                        ref={isEditingThis(formation.id) ? setAnchor : undefined}
+                    >
                         <HoverAction
                             icon={<HideIcon />}
                             label={`Masquer la formation : ${formation.title}`}
@@ -101,19 +102,12 @@ export default function CvFormations({
                             </ul>
                         )}
                     </li>
-                    {isEditingThis(formation.id) && (
-                        <li className="cv-formation-edit-slot">
-                            <EditShell category="formation" mode="edit" itemId={formation.id} onClose={onCloseEdit} />
-                        </li>
-                    )}
-                    </Fragment>
                 ))}
                 {isAddingNew && (
-                    <li className="cv-formation cv-formation--new">
+                    <li className="cv-formation cv-formation--new" ref={setAnchor}>
                         <div className="cv-formation__content">
                             <h3 className="cv-formation__title">Nouvelle formation</h3>
                         </div>
-                        <EditShell category="formation" mode="add" onClose={onCloseEdit} />
                     </li>
                 )}
             </ul>

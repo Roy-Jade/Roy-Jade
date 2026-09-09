@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import type { ExperienceFilter, HiddenIdField } from '../../../../../types/searchParams';
 import type { EditingState } from '../../../../admin/types/EditingState';
 import { isHidden } from '../../../../../utils/isHidden';
@@ -6,7 +5,6 @@ import { useExperienceData } from '../../../hooks/useExperienceData';
 import Tag from '../../../../../functions/core/components/Tag/Tag';
 import HoverAction from '../../../../../functions/core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
-import EditShell from '../../../../admin/components/EditShell/EditShell';
 
 interface Props {
     filters: ExperienceFilter[];
@@ -17,7 +15,7 @@ interface Props {
     hiddenExperienceSoftskillIds: number[];
     toggleHidden: (key: HiddenIdField, id: number) => void;
     editing: EditingState | null;
-    onCloseEdit: () => void;
+    setAnchor: (node: HTMLElement | null) => void;
 }
 
 export default function CvExperiences({
@@ -29,7 +27,7 @@ export default function CvExperiences({
     hiddenExperienceSoftskillIds,
     toggleHidden,
     editing,
-    onCloseEdit,
+    setAnchor,
 }: Props) {
     const { data: experiences = [], isLoading, isError } = useExperienceData(filters);
 
@@ -45,8 +43,11 @@ export default function CvExperiences({
             <h2>Expériences professionnelles</h2>
             <ul>
                 {experiences.filter(exp => !isHidden(exp.id, hiddenExperienceIds)).map(exp => (
-                    <Fragment key={`exp ${exp.id}`}>
-                    <li className={`cv-experience cv-experience--${exp.type} hover-reveal`}>
+                    <li
+                        key={`exp ${exp.id}`}
+                        className={`cv-experience cv-experience--${exp.type} hover-reveal`}
+                        ref={isEditingThis(exp.id) ? setAnchor : undefined}
+                    >
                         <HoverAction
                             icon={<HideIcon />}
                             label={`Masquer l'expérience : ${exp.title}`}
@@ -117,19 +118,12 @@ export default function CvExperiences({
                             </ul>
                         )}
                     </li>
-                    {isEditingThis(exp.id) && (
-                        <li className="cv-experience-edit-slot">
-                            <EditShell category="experience" mode="edit" itemId={exp.id} onClose={onCloseEdit} />
-                        </li>
-                    )}
-                    </Fragment>
                 ))}
                 {isAddingNew && (
-                    <li className="cv-experience cv-experience--new">
+                    <li className="cv-experience cv-experience--new" ref={setAnchor}>
                         <div className="cv-experience__content">
                             <h3 className="cv-experience__title">Nouvelle expérience</h3>
                         </div>
-                        <EditShell category="experience" mode="add" onClose={onCloseEdit} />
                     </li>
                 )}
             </ul>

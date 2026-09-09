@@ -54,11 +54,19 @@ Classe `.cv-selectable` posée sur les conteneurs de contenu textuel : `.cv-head
 - **Bug de transaction — corrigé** (branche `transactionnal-fix`, avant de démarrer ce chantier). `addExperience`/`editExperience`/`addFormation`/`editFormation` sont maintenant enveloppés dans une transaction (`BEGIN`/`COMMIT`/`ROLLBACK`), `editInJunctionTable.ts` prend un `client` obligatoire. Détails dans `backend/CLAUDE.md`. L'édition en direct peut s'appuyer dessus sans risque d'état partiel.
 - **`EditButton`** (`frontend/src/functions/admin/components/ui/EditButton.tsx`), utilisé aujourd'hui dans les 9 sections du dashboard classique — contexte différent de `HoverAction` (bouton toujours visible dans une grille de gestion, pas de survol/focus). L'utilisateur a confirmé qu'il sera probablement remplacé/unifié avec `HoverAction` paramétré en "edit" une fois la transformation de l'affichage admin faite — pas maintenant, à garder en tête.
 
-## Problème bloquant actuel — positionnement de la coquille
+## Positionnement de la coquille — résolu
 
-Confirmé avec les formulaires expérience/formation (le plus gros cas) : insérée dans le flux normal du document (actuellement un `<li>`/élément sibling dans la liste), la coquille fait déborder le contenu de `.cv-a4` (page CV à taille fixe, `height: 822pt`/`width: 575pt`) — les boutons Enregistrer/Annuler et la fin du formulaire deviennent inaccessibles. Repéré dès les formulaires simples de l'aside (juste "pas la place d'exister"), mais devient bloquant avec les formulaires complexes.
+Ancien problème : insérée dans le flux normal du document (un `<li>`/élément sibling dans la liste), la coquille faisait déborder le contenu de `.cv-a4` (page CV à taille fixe, `height: 822pt`/`width: 575pt`) — les boutons Enregistrer/Annuler et la fin du formulaire devenaient inaccessibles. Repéré dès les formulaires simples de l'aside, devenu bloquant avec les formulaires complexes (expérience/formation).
 
-**Piste retenue à explorer en priorité (session suivante, avant de continuer) :** sortir la coquille du flux normal — `position: absolute`/`fixed` par-dessus le CV, ancrée visuellement sous la zone éditée mais sans pousser le reste du contenu ni être contrainte par la hauteur fixe de `.cv-a4`. Implique de revoir le point d'insertion dans `CvExperiences.tsx`/`CvFormations.tsx`/`CvAside.tsx`/`CvPresentation.tsx` (actuellement des `<li>`/éléments insérés directement dans les listes) — probablement un seul point de montage (portail ou position fixe au niveau de `CvSheet`) plutôt qu'un par composant.
+**Solution implémentée :** point de montage unique, `EditOverlay` (`frontend/src/functions/admin/components/EditOverlay/`), rendu en sibling de `<TransformWrapper>` dans `CvSheet.tsx` — hors du sous-arbre transformé par `react-zoom-pan-pinch`, donc immunisé contre son `overflow: hidden` et son `transform: scale()`. Positionné en `position: fixed` via les coordonnées écran (`getBoundingClientRect()`) de l'item ancré, avec suivi en direct du pan/zoom via le hook `useEditAnchor` (`frontend/src/functions/admin/hooks/useEditAnchor.ts`) : `transformRef.current.instance.onChange(...)` (callback natif de la lib, se déclenche à chaque changement de transform) + `ResizeObserver` sur le nœud ancré + écouteur `resize` fenêtre. `EditOverlay.scss` gère le scroll indépendant (`overflow-y: auto`, `max-height: calc(100vh - 2rem)`).
+
+Chaque conteneur (`CvExperiences`, `CvFormations`, `CvAside`, `CvPresentation`) ne rend plus `<EditShell>` lui-même — il attache juste `ref={setAnchor}` (prop reçue depuis `CvSheet`) sur le `<li>`/élément concerné quand c'est celui en cours d'édition ou le placeholder d'ajout. Simplification notable : plus besoin des `<Fragment>`/`<li>` sibling supplémentaires pour l'édition d'un item existant (le ref se pose directement sur l'élément d'affichage).
+
+**Point accepté, à surveiller à l'usage plutôt qu'à corriger maintenant :** la taille de la coquille est indépendante du niveau de zoom du CV (nécessaire pour rester lisible) — l'utilisateur a jugé ce décrochage visuel tolérable vu le faible volume d'usage admin attendu.
+
+**Non traité (pas bloquant) :** pas de clamp aux bords de l'écran si l'item ancré sort du viewport pendant l'édition (pan/zoom extrême) — l'overlay suit et peut sortir de l'écran avec lui.
+
+**Vérification :** `tsc` propre, rechargement à chaud Vite sans erreur de parsing sur tous les fichiers modifiés. Vérification visuelle complète (positionnement réel, boutons accessibles, suivi pendant pan/zoom) en attente du retour utilisateur — pas pu être testée par un agent faute d'accès admin (mot de passe non présent dans les fichiers non gitignorés).
 
 ## Autres points reportés (repérés en testant les 7 premiers formulaires)
 
@@ -69,7 +77,7 @@ Aucun de ces trois points n'est bloquant pour la suite (formulaires expérience/
 
 ## Prochaine étape (session suivante)
 
-1. **Résoudre le positionnement de la coquille** (voir "Problème bloquant actuel" ci-dessus) — priorité immédiate, bloque l'usage réel des formulaires expérience/formation.
+1. **Confirmer visuellement le positionnement de la coquille** (voir section ci-dessus) — vérification utilisateur en attente, sinon corriger si un défaut apparaît à l'usage réel.
 2. L'aperçu live (brouillon qui remplace l'item réel pendant l'édition).
 3. Le toast de confirmation.
 
