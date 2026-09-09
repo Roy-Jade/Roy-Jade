@@ -1,6 +1,6 @@
 # Refactor dashboard — édition en direct sur rendu CV
 
-**Statut :** implémentation en cours (branche `cv-dashboard-refactor`). Décisions prises : option 2 (réutilisation de `CvFilters`/endpoints publics filtrés), menu cascade scope au filtre CV courant, formulaire = vrai `<form>` classique + aperçu réactif (pas de `contentEditable`), positionnement de la coquille sous la zone concernée du CV pour expérience/formation/hardskill/langue/loisir/profil, menu uniquement pour identité/domaine/softskill. Les 9 formulaires (`EditShell` + dispatch par table dans `frontend/src/functions/admin/components/EditShell/`, un fichier par catégorie sous `forms/`) sont branchés et fonctionnels, expérience/formation compris (tâches en liste, sélection domaines/hardskills/softskills). Chaque formulaire est autonome : il retrouve sa propre donnée via les hooks de cache déjà utilisés par le CV public (pas de prop-drilling depuis `EditShell`), y compris pour les catégories relationnelles où il faut le jeu de données complet indépendamment du filtre CV courant (toutes les catégories de hardskills au niveau plancher, tous les domaines × les deux types pour les expériences). Aperçu live (le brouillon qui remplace l'item réel pendant l'édition) pas encore fait — la coquille s'affiche au bon endroit mais l'item au-dessus reste la donnée réelle jusqu'à sauvegarde. Suite logique du refactor granularité CV (`docs/refactor-cv-granularity.md`, terminé et mergé).
+**Statut : terminé** (branche `cv-dashboard-refactor`), confirmé fonctionnel par test utilisateur sur tous les points. Décisions prises : option 2 (réutilisation de `CvFilters`/endpoints publics filtrés), menu cascade scope au filtre CV courant, formulaire = vrai `<form>` classique + aperçu réactif (pas de `contentEditable`), coquille d'édition en overlay `position: fixed` hors du sous-arbre pan-zoom (suit pan/zoom/scroll en direct), positionnement sous la zone concernée du CV pour expérience/formation/hardskill/langue/loisir/profil, menu uniquement pour identité/domaine/softskill. Les 9 formulaires sont branchés et fonctionnels, avec aperçu live (le brouillon remplace l'item réel pendant l'édition, à chaque frappe), boutons Éditer/Ajouter directement sur le CV (en plus du menu cascade), et toast de confirmation après sauvegarde. Suite logique du refactor granularité CV (`docs/refactor-cv-granularity.md`, terminé et mergé).
 
 ## Objectif (rappel de la demande initiale)
 
@@ -98,6 +98,14 @@ Icône réutilisée : `assets/edit.svg` (déjà utilisée par `EditButton` du da
 
 Profil : bouton Éditer ajouté (cohérent, l'ancrage existait déjà) ; pas de bouton Ajouter (pas dans la liste demandée, et le mode ajout du profil n'a de toute façon pas d'ancrage CV — un nouveau contexte n'est pas affiché sur le CV courant).
 
-## Prochaine étape (session suivante)
+## Toast de confirmation — fait
 
-Reste uniquement : le toast de confirmation (succès après résolution de la mutation, `aria-live="polite"`, auto-dismiss annulable au clic) — dernier point du chantier "fermeture propre du dashboard".
+`ToastContext` (Context React, `frontend/src/functions/admin/context/ToastContext.tsx`) + `ToastStack` (rendu une fois dans `CV.tsx`, en haut de l'écran, `position: fixed`). Choix Context plutôt que callback-prop (contrairement à l'aperçu live) : pas de pattern de prop-drilling existant à respecter ici, et il aurait fallu traverser ~8 niveaux (`CV.tsx` → `CvSheet` → 4 conteneurs → `EditOverlay` → `EditShell` → 9 formulaires, dont 3 rendus hors de cette chaîne pour identité/domaine/softskill) pour un simple signal ponctuel.
+
+`showToast(text, variant?)` appelé dans les 9 formulaires juste après la résolution de la mutation (donc un état réel, pas optimiste) et juste avant `onClose()`. Variante `success` (`role="status"`, `aria-live="polite"`) seule câblée pour l'instant ; variante `error` prête (`role="alert"`, assertive) mais pas encore déclenchée — les erreurs restent affichées inline dans le formulaire (`dash-error`), pas dupliquées en toast, pour rester dans le périmètre demandé (confirmation de succès uniquement). Auto-disparition à 4s, clic pour fermer immédiatement.
+
+Confirmé fonctionnel par test utilisateur (tests visuels).
+
+## État du chantier
+
+**Le refactor dashboard est terminé.** Les 9 formulaires, l'aperçu live, la coquille en overlay, les boutons edit/add sur le CV et le toast sont tous fonctionnels et confirmés par test utilisateur réel. Points volontairement non traités, listés ci-dessus, pour une session future si le besoin se fait sentir : réorganisation des listes (aside + tâches/skills), tri des expériences/formations par date, clamp de la coquille aux bords d'écran, responsive mobile de l'admin, routes DELETE (branche séparée), variante toast d'erreur.

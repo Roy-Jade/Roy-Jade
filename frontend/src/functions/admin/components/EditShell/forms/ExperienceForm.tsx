@@ -7,6 +7,7 @@ import { useExperienceData } from '../../../../cv/hooks/useExperienceData';
 import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useSoftskillData } from '../../../../cv/hooks/useSoftskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
+import { useToast } from '../../../context/ToastContext';
 import type { ExperienceFilter } from '../../../../../types/searchParams';
 import type { Hardskill } from '../../../../../types/Hardskill';
 import type { Softskill } from '../../../../../types/Softskill';
@@ -51,6 +52,7 @@ const toggleId = (ids: number[], id: number): number[] =>
 
 export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: filtersData } = useFiltersData();
     const domains = filtersData?.domain ?? [];
     // Tous les domaines x les deux types : équivaut à "toutes les expériences",
@@ -150,6 +152,7 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
                 });
             }
             await queryClient.invalidateQueries({ queryKey: ['experience'] });
+            showToast(mode === 'edit' ? 'Expérience mise à jour' : 'Expérience ajoutée');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

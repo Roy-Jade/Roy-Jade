@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { postSoftskill, patchSoftskill } from '../../../../../api/dashboardApi';
 import { isApiError } from '../../../../../api/privateApi';
 import { useSoftskillData } from '../../../../cv/hooks/useSoftskillData';
+import { useToast } from '../../../context/ToastContext';
 
 interface Props {
     mode: 'add' | 'edit';
@@ -19,6 +20,7 @@ const emptyForm: FormData = { slug: '', label: '' };
 
 export default function SoftskillForm({ mode, itemId, onClose }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: softskills = [] } = useSoftskillData();
     const existing = mode === 'edit' ? softskills.find(s => s.id === itemId) : undefined;
 
@@ -39,6 +41,7 @@ export default function SoftskillForm({ mode, itemId, onClose }: Props) {
                 await postSoftskill(form);
             }
             await queryClient.invalidateQueries({ queryKey: ['softskill'] });
+            showToast(mode === 'edit' ? 'Soft skill mis à jour' : 'Soft skill ajouté');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

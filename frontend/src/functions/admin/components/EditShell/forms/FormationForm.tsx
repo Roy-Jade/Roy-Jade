@@ -6,6 +6,7 @@ import { isApiError } from '../../../../../api/privateApi';
 import { useFormationData } from '../../../../cv/hooks/useFormationData';
 import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
+import { useToast } from '../../../context/ToastContext';
 import type { Hardskill } from '../../../../../types/Hardskill';
 
 interface Props {
@@ -46,6 +47,7 @@ const toggleId = (ids: number[], id: number): number[] =>
 
 export default function FormationForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: filtersData } = useFiltersData();
     const domains = filtersData?.domain ?? [];
     // Tous les domaines : équivaut à "toutes les formations", indépendamment
@@ -126,6 +128,7 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
                 });
             }
             await queryClient.invalidateQueries({ queryKey: ['formation'] });
+            showToast(mode === 'edit' ? 'Formation mise à jour' : 'Formation ajoutée');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

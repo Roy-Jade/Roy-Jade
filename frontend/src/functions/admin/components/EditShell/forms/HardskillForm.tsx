@@ -4,6 +4,7 @@ import { postHardskill, patchHardskill } from '../../../../../api/dashboardApi';
 import { isApiError } from '../../../../../api/privateApi';
 import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
+import { useToast } from '../../../context/ToastContext';
 
 interface Props {
     mode: 'add' | 'edit';
@@ -25,6 +26,7 @@ const emptyForm: FormData = { slug: '', label: '', level: '', category: '', sub_
 
 export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: filtersData } = useFiltersData();
     // Niveau le plus bas + toutes les catégories : équivaut à "tous les hardskills",
     // indépendamment du filtre CV actuellement affiché (fetchHardskill filtre par
@@ -67,6 +69,7 @@ export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }
                 await postHardskill(form);
             }
             await queryClient.invalidateQueries({ queryKey: ['hardskill'] });
+            showToast(mode === 'edit' ? 'Compétence mise à jour' : 'Compétence ajoutée');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

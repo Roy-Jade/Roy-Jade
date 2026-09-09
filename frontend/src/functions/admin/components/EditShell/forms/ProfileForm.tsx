@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { postProfile, patchProfile } from '../../../../../api/dashboardApi';
 import { isApiError } from '../../../../../api/privateApi';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
+import { useToast } from '../../../context/ToastContext';
 
 interface Props {
     mode: 'add' | 'edit';
@@ -21,6 +22,7 @@ const emptyForm: FormData = { context: '', tagline: '', description: '' };
 
 export default function ProfileForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: filtersData } = useFiltersData();
     const existing = mode === 'edit' ? filtersData?.profile.find(p => p.id === itemId) : undefined;
 
@@ -56,6 +58,7 @@ export default function ProfileForm({ mode, itemId, onClose, onPreviewChange }: 
             }
             await queryClient.invalidateQueries({ queryKey: ['filters'] });
             await queryClient.invalidateQueries({ queryKey: ['profile'] });
+            showToast(mode === 'edit' ? 'Profil mis à jour' : 'Profil ajouté');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

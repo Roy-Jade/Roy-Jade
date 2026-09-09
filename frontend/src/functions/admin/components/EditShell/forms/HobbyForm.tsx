@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { postHobby, patchHobby } from '../../../../../api/dashboardApi';
 import { isApiError } from '../../../../../api/privateApi';
 import { useAsideData } from '../../../../cv/hooks/useAsideData';
+import { useToast } from '../../../context/ToastContext';
 
 interface Props {
     mode: 'add' | 'edit';
@@ -21,6 +22,7 @@ const emptyForm: FormData = { slug: '', label: '', supplement: '' };
 
 export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: aside } = useAsideData();
     const existing = mode === 'edit' ? aside?.hobby.find(h => h.id === itemId) : undefined;
 
@@ -46,6 +48,7 @@ export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Pr
                 await postHobby(form);
             }
             await queryClient.invalidateQueries({ queryKey: ['aside'] });
+            showToast(mode === 'edit' ? "Centre d'intérêt mis à jour" : "Centre d'intérêt ajouté");
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

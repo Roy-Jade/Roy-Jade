@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { postDomain, patchDomain } from '../../../../../api/dashboardApi';
 import { isApiError } from '../../../../../api/privateApi';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
+import { useToast } from '../../../context/ToastContext';
 
 interface Props {
     mode: 'add' | 'edit';
@@ -19,6 +20,7 @@ const emptyForm: FormData = { slug: '', label: '' };
 
 export default function DomainForm({ mode, itemId, onClose }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: filtersData } = useFiltersData();
     const existing = mode === 'edit' ? filtersData?.domain.find(d => d.id === itemId) : undefined;
 
@@ -39,6 +41,7 @@ export default function DomainForm({ mode, itemId, onClose }: Props) {
                 await postDomain(form);
             }
             await queryClient.invalidateQueries({ queryKey: ['filters'] });
+            showToast(mode === 'edit' ? 'Domaine mis à jour' : 'Domaine ajouté');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

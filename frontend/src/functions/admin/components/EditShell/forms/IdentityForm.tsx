@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { patchIdentity } from '../../../../../api/dashboardApi';
 import { isApiError } from '../../../../../api/privateApi';
 import { useIdentityData } from '../../../../cv/hooks/useIdentityData';
+import { useToast } from '../../../context/ToastContext';
 
 interface Props {
     onClose: () => void;
@@ -25,6 +26,7 @@ const emptyForm: FormData = {
 
 export default function IdentityForm({ onClose }: Props) {
     const queryClient = useQueryClient();
+    const { showToast } = useToast();
     const { data: identity } = useIdentityData();
 
     const [form, setForm] = useState<FormData>(emptyForm);
@@ -48,6 +50,7 @@ export default function IdentityForm({ onClose }: Props) {
         try {
             await patchIdentity(form);
             await queryClient.invalidateQueries({ queryKey: ['identity'] });
+            showToast('Identité mise à jour');
             onClose();
         } catch (err) {
             setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');

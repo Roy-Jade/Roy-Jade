@@ -11,6 +11,8 @@ import type { DashboardCategory, EditingState } from '../../../admin/types/Editi
 import type { EditPreview } from '../../../admin/types/EditPreview';
 import DashboardMenu from '../../../admin/components/DashboardMenu/DashboardMenu';
 import EditShell from '../../../admin/components/EditShell/EditShell';
+import { ToastProvider } from '../../../admin/context/ToastContext';
+import ToastStack from '../../../admin/components/ToastStack/ToastStack';
 
 const MENU_ONLY_CATEGORIES: DashboardCategory[] = ['identity', 'domain', 'softskill'];
 import CvFilters from '../../components/CvFilters/CvFilters';
@@ -84,51 +86,54 @@ export default function CV() {
     const menuOnlyEditing = editing && MENU_ONLY_CATEGORIES.includes(editing.category) ? editing : null;
 
     return (
-        <div className="cv-page">
-            <CvFilters
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-            />
-            <section className="cv-viewport">
-                {filtersReady && !identityLoading
-                    ? (
-                        <CvSheet
+        <ToastProvider>
+            <div className="cv-page">
+                <ToastStack />
+                <CvFilters
+                    searchParams={searchParams}
+                    setSearchParams={setSearchParams}
+                />
+                <section className="cv-viewport">
+                    {filtersReady && !identityLoading
+                        ? (
+                            <CvSheet
+                                filters={filters}
+                                identity={identity}
+                                toggleHidden={toggleHidden}
+                                editing={isAdmin ? editing : null}
+                                preview={isAdmin ? preview : null}
+                                onCloseEdit={closeEditing}
+                                onPreviewChange={setPreview}
+                                onEdit={isAdmin ? handleEdit : undefined}
+                                onAdd={isAdmin ? handleAdd : undefined}
+                            />
+                        )
+                        : <p>Chargement du CV…</p>
+                    }
+                </section>
+                {filtersReady && (
+                    <CvHiddenPanel filters={filters} toggleHidden={toggleHidden} clearHidden={clearHidden} />
+                )}
+                {isAdmin && filtersReady && filtersData && (
+                    <>
+                        <DashboardMenu
                             filters={filters}
-                            identity={identity}
-                            toggleHidden={toggleHidden}
-                            editing={isAdmin ? editing : null}
-                            preview={isAdmin ? preview : null}
-                            onCloseEdit={closeEditing}
-                            onPreviewChange={setPreview}
-                            onEdit={isAdmin ? handleEdit : undefined}
-                            onAdd={isAdmin ? handleAdd : undefined}
+                            filtersData={filtersData}
+                            editing={editing}
+                            onEdit={handleEdit}
+                            onAdd={handleAdd}
                         />
-                    )
-                    : <p>Chargement du CV…</p>
-                }
-            </section>
-            {filtersReady && (
-                <CvHiddenPanel filters={filters} toggleHidden={toggleHidden} clearHidden={clearHidden} />
-            )}
-            {isAdmin && filtersReady && filtersData && (
-                <>
-                    <DashboardMenu
-                        filters={filters}
-                        filtersData={filtersData}
-                        editing={editing}
-                        onEdit={handleEdit}
-                        onAdd={handleAdd}
-                    />
-                    {menuOnlyEditing && (
-                        <EditShell
-                            category={menuOnlyEditing.category}
-                            mode={menuOnlyEditing.mode}
-                            itemId={menuOnlyEditing.item?.id}
-                            onClose={closeEditing}
-                        />
-                    )}
-                </>
-            )}
-        </div>
+                        {menuOnlyEditing && (
+                            <EditShell
+                                category={menuOnlyEditing.category}
+                                mode={menuOnlyEditing.mode}
+                                itemId={menuOnlyEditing.item?.id}
+                                onClose={closeEditing}
+                            />
+                        )}
+                    </>
+                )}
+            </div>
+        </ToastProvider>
     );
 }
