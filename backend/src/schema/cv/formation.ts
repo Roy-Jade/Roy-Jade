@@ -1,4 +1,5 @@
 import {z} from "zod";
+import { DATE_REGEX, normalizeDate } from "../../utils/normalizeDate.js";
 
 export const FormationSchema = z.object({
     id: z.number().optional(),
@@ -6,7 +7,7 @@ export const FormationSchema = z.object({
     title: z.string(),
     institution: z.string().optional(),
     location: z.string().optional(),
-    obtention_date: z.string().optional(),
+    obtention_date: z.string().regex(DATE_REGEX, "Format de date invalide (jj/mm/aaaa, mm/aaaa ou aaaa)").transform(normalizeDate).optional(),
     description: z.string().optional(),
     level: z.string().optional(),
 });

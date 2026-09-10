@@ -74,8 +74,8 @@ CREATE TABLE experience (
     title       VARCHAR(200) NOT NULL,
     company     VARCHAR(200),
     location    VARCHAR(150),
-    start_date  VARCHAR(20),
-    end_date    VARCHAR(20),
+    start_date  VARCHAR(20) CHECK (start_date ~ '^\d{2}/\d{2}/\d{4}$|^\d{2}/\d{4}$|^\d{4}$'),
+    end_date    VARCHAR(20) CHECK (end_date ~ '^\d{2}/\d{2}/\d{4}$|^\d{2}/\d{4}$|^\d{4}$'),
     description TEXT
 );
 
@@ -92,7 +92,7 @@ CREATE TABLE formation (
     title          VARCHAR(200) NOT NULL,
     institution    VARCHAR(200),
     location       VARCHAR(150),
-    obtention_date VARCHAR(20),
+    obtention_date VARCHAR(20) CHECK (obtention_date ~ '^\d{2}/\d{2}/\d{4}$|^\d{2}/\d{4}$|^\d{4}$'),
     description    TEXT,
     level          VARCHAR(100)
 );

@@ -1,0 +1,13 @@
+.rich-form .date-input {
+    display: inline-flex;
+    gap: 0.25rem;
+
+    input {
+        width: 3.5rem;
+        text-align: center;
+
+        &:last-child {
+            width: 4.5rem;
+        }
+    }
+}

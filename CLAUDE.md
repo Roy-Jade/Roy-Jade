@@ -108,12 +108,20 @@ Repéré pendant la réflexion sur le refactor de granularité du CV (masquage g
 
 Le retrait nécessite un travail d'agrégation de données plus important que le nettoyage de `maxExperiences`/`maxFormations` (regrouper detail/summary d'une même expérience). **Ne pas traiter sans revalidation explicite avec l'utilisateur** — noté ici pour référence future, pas une tâche en cours.
 
+### Tri/recherche sur la liste des hardskills
+
+**Fichiers concernés probables :** `frontend/src/functions/admin/components/EditShell/forms/ExperienceForm.tsx`, `FormationForm.tsx`, `HardskillForm.tsx`, `frontend/src/functions/admin/components/Dashboard/DashboardHardskill/`.
+
+La liste des hardskills (sélection en checkboxes dans les formulaires expérience/formation, gestion dans le dashboard classique) va s'allonger avec le temps et devenir difficile à parcourir telle quelle. Besoin identifié : tri rapide et/ou recherche. Signalé par l'utilisateur comme un chantier à part, pas encore débroussaillé (pas de décision d'architecture prise) — ne pas commencer sans en discuter d'abord.
+
 ## Documentation
 
 Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le sujet devient pertinent (pas chargés automatiquement, contrairement à ce fichier) :
 
 - [docs/refactor-cv-granularity.md](docs/refactor-cv-granularity.md) — masquage granulaire des données du CV par ID (blacklist), sans re-fetch réseau. Terminé et mergé.
-- [docs/refactor-cv-dashboard-edit.md](docs/refactor-cv-dashboard-edit.md) — édition en direct sur rendu CV côté dashboard admin. Réflexion en cours, implémentation pas commencée.
+- [docs/refactor-cv-dashboard-edit.md](docs/refactor-cv-dashboard-edit.md) — édition en direct sur rendu CV côté dashboard admin. Terminé (branche `cv-dashboard-refactor`, mergée).
+- [docs/refactor-date-format.md](docs/refactor-date-format.md) — format `jj/mm/aaaa` forcé (année seule obligatoire) sur les dates d'expérience/formation, saisie en 3 champs, validation+normalisation Zod, `CHECK` en base. Terminé (branche `date-format`).
+- [docs/refactor-slug-generation.md](docs/refactor-slug-generation.md) — génération automatique des slugs (expérience, formation, hardskill, softskill, langue, loisir, domaine) au lieu d'une saisie libre. Décisions actées, implémentation pas commencée (le chantier date bloquant est terminé).
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 

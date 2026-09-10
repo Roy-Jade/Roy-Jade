@@ -26,7 +26,7 @@ describe('fetchFormation', () => {
                     title: "Maîtrise des Arts Magiques",
                     institution: "Académie Royale d'Hyrule",
                     location: "Château d'Hyrule",
-                    obtention_date: "An 1872",
+                    obtention_date: "1872",
                     description: "Formation approfondie aux arts magiques de la Triforce.",
                     level: "Maîtrise",
                     tasks: [
@@ -44,7 +44,7 @@ describe('fetchFormation', () => {
                     title: "Gardien du Temple du Temps",
                     institution: "Temple du Temps",
                     location: "Plaine d'Hyrule",
-                    obtention_date: "An 1880",
+                    obtention_date: "1880",
                     description: "Certification de gardien des artefacts sacrés.",
                     level: "Certification",
                     tasks: [
@@ -64,7 +64,7 @@ describe('fetchFormation', () => {
                 title: "Maîtrise des Arts Magiques",
                 institution: "Académie Royale d'Hyrule",
                 location: "Château d'Hyrule",
-                obtention_date: "An 1872",
+                obtention_date: "1872",
                 description: "Formation approfondie aux arts magiques de la Triforce.",
                 level: "Maîtrise",
                 tasks: [
@@ -82,7 +82,7 @@ describe('fetchFormation', () => {
                 title: "Gardien du Temple du Temps",
                 institution: "Temple du Temps",
                 location: "Plaine d'Hyrule",
-                obtention_date: "An 1880",
+                obtention_date: "1880",
                 description: "Certification de gardien des artefacts sacrés.",
                 level: "Certification",
                 tasks: [

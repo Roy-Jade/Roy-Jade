@@ -8,6 +8,7 @@ import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useSoftskillData } from '../../../../cv/hooks/useSoftskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
 import { useToast } from '../../../context/ToastContext';
+import DateInput from '../../DateInput/DateInput';
 import type { ExperienceFilter } from '../../../../../types/searchParams';
 import type { Hardskill } from '../../../../../types/Hardskill';
 import type { Softskill } from '../../../../../types/Softskill';
@@ -190,10 +191,10 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
             </div>
             <div className="form-grid">
                 <label>Début
-                    <input value={form.start_date} onChange={e => setForm(p => ({ ...p, start_date: e.target.value }))} />
+                    <DateInput value={form.start_date} onChange={v => setForm(p => ({ ...p, start_date: v }))} />
                 </label>
                 <label>Fin
-                    <input value={form.end_date} onChange={e => setForm(p => ({ ...p, end_date: e.target.value }))} />
+                    <DateInput value={form.end_date} onChange={v => setForm(p => ({ ...p, end_date: v }))} />
                 </label>
             </div>
             <div className="form-full">

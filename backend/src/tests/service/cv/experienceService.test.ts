@@ -27,8 +27,8 @@ describe('fetchExperience', () => {
                     title:"Chevalier ranger mercenaire",
                     company:"Poing enflammé",
                     location:"Porte de Baldur",
-                    start_date:"1396 DR",
-                    end_date:"1401 DR",
+                    start_date:"1396",
+                    end_date:"1401",
                     description:"En association du Point enflammé, la mission consistait à démanteler un culte maléfique qui prenait ces racines dans les profondeurs de la Porte de Baldur.",
                     tasks :[
                         {content:"Dépistage des cellules de cultistes", position:1},
@@ -48,8 +48,8 @@ describe('fetchExperience', () => {
                     title:"Occultiste de la Grande Fée Verte",
                     company:"Cour de la Fée Verte",
                     location:"Domaine Féérique vert",
-                    start_date:"1402 DR",
-                    end_date:"1406 DR",
+                    start_date:"1402",
+                    end_date:"1406",
                     description:"Au sein de la cour de la Grande Fée Verte, réduction des menaces invasives qui se développement dans le domaine féérique.",
                     tasks :[
                         {content:"Suppression des menaces invasives", position:1},
@@ -73,8 +73,8 @@ describe('fetchExperience', () => {
                     title:"Chevalier ranger mercenaire",
                     company:"Poing enflammé",
                     location:"Porte de Baldur",
-                    start_date:"1396 DR",
-                    end_date:"1401 DR",
+                    start_date:"1396",
+                    end_date:"1401",
                     description:"En association du Point enflammé, la mission consistait à démanteler un culte maléfique qui prenait ces racines dans les profondeurs de la Porte de Baldur.",
                     tasks :[
                         {content:"Dépistage des cellules de cultistes", position:1},
@@ -94,8 +94,8 @@ describe('fetchExperience', () => {
                     title:"Occultiste de la Grande Fée Verte",
                     company:"Cour de la Fée Verte",
                     location:"Domaine Féérique vert",
-                    start_date:"1402 DR",
-                    end_date:"1406 DR",
+                    start_date:"1402",
+                    end_date:"1406",
                     description:"Au sein de la cour de la Grande Fée Verte, réduction des menaces invasives qui se développement dans le domaine féérique.",
                     tasks :[
                         {content:"Suppression des menaces invasives", position:1},

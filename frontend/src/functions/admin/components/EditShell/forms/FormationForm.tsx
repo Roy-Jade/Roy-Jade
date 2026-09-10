@@ -7,6 +7,7 @@ import { useFormationData } from '../../../../cv/hooks/useFormationData';
 import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
 import { useToast } from '../../../context/ToastContext';
+import DateInput from '../../DateInput/DateInput';
 import type { Hardskill } from '../../../../../types/Hardskill';
 
 interface Props {
@@ -162,7 +163,7 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
             </div>
             <div className="form-full">
                 <label>Date d'obtention
-                    <input value={form.obtention_date} onChange={e => setForm(p => ({ ...p, obtention_date: e.target.value }))} />
+                    <DateInput value={form.obtention_date} onChange={v => setForm(p => ({ ...p, obtention_date: v }))} />
                 </label>
             </div>
             <div className="form-full">
