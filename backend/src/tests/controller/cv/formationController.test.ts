@@ -113,7 +113,7 @@ describe('patchFormation', () => {
     });
 
     it('cas dysfonctionnel : données invalides, ZodError retourne 400', async () => {
-        const req = { params: { id: '1' }, body: { formationData: { slug: 123 } } } as unknown as Request;
+        const req = { params: { id: '1' }, body: { formationData: { title: 123 } } } as unknown as Request;
         const res = mockRes();
 
         await patchFormation(req, res);

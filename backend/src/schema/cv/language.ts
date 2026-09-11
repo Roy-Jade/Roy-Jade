@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const LanguageSchema = z.object({
     id: z.number().optional(),
-    slug: z.string(),
     label: z.string(),
     level: z.string().optional(),
 });

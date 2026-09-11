@@ -2,7 +2,6 @@ import {z} from "zod";
 
 export const SoftskillSchema = z.object({
     id: z.number().optional(),
-    slug: z.string(),
     label: z.string(),
 });
 
@@ -12,7 +11,6 @@ export type Softskill = z.infer<typeof SoftskillSchema>
 
 export const HardskillSchema = z.object({
     id: z.number().optional(),
-    slug: z.string(),
     label: z.string(),
     level: z.string().optional(),
     category: z.string().optional(),

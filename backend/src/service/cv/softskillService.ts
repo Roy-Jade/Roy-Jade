@@ -2,6 +2,8 @@ import db from "../../config/db.js";
 import { Softskill, SoftskillKeyList } from "../../schema/cv/skill.js";
 import { AppError } from "../../utils/AppError.js";
 import { getSoftskillById } from "../../utils/getSoftskillById.js";
+import { slugify } from "../../utils/slugify.js";
+import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 
 export async function fetchSoftskill() {
     const results = await db.query(`
@@ -19,12 +21,14 @@ export async function fetchSoftskill() {
 }
 
 export async function addSoftskill(data:Softskill) {
+    const slug = await generateUniqueSlug(db, "softskill", slugify({ label: data.label }));
+
     const insertSoftskill = await db.query(`
         INSERT INTO softskill (slug, label)
         VALUES ($1, $2)
         RETURNING id
         `, [
-            data.slug, 
+            slug,
             data.label,
         ]);
 
@@ -40,8 +44,13 @@ export async function editSoftskill(id:number, data:Partial<Softskill>) {
     if (dataKeys.length === 0) {throw new AppError(400, "Erreur : aucun champ à modifier n'a été fourni")};
     if (!dataKeys.every((dataKey) => SoftskillKeyList.includes(dataKey))) {throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")};
 
-    const setValues = Object.entries(data).map(([key], i) => `${key} = $${i+2}`).join(', ');
-    const params = [id, ...Object.values(data)];
+    const entries: [string, unknown][] = Object.entries(data);
+    if (data.label !== undefined) {
+        entries.push(["slug", await generateUniqueSlug(db, "softskill", slugify({ label: data.label }), id)]);
+    }
+
+    const setValues = entries.map(([key], i) => `${key} = $${i+2}`).join(', ');
+    const params = [id, ...entries.map(([, value]) => value)];
     const update = await db.query(`
         UPDATE softskill SET ${setValues}
         WHERE id = $1

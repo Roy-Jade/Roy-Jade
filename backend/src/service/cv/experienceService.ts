@@ -3,6 +3,8 @@ import { Experience, ExperienceKeyList } from "../../schema/cv/experience.js";
 import { getExperienceById } from "../../utils/getExperienceById.js";
 import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
 import { AppError } from "../../utils/AppError.js";
+import { slugify } from "../../utils/slugify.js";
+import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 
 export async function fetchExperience(data:{domains:string[], type:'detail'|'summary'}[]) {
 
@@ -63,12 +65,18 @@ export async function addExperience(data:Experience, domain:number[], tasks:stri
     try {
         await client.query('BEGIN');
 
+        const slug = await generateUniqueSlug(client, "experience", slugify({
+            title: data.title,
+            company: data.company,
+            date: data.end_date
+        }));
+
         const insertExperience = await client.query(`
             INSERT INTO experience (slug, type, title, company, location, start_date, end_date, description)
             VALUES ($1, 'detail', $2, $3, $4, $5, $6, $7)
             RETURNING id
             `, [
-                data.slug,
+                slug,
                 data.title,
                 data.company?data.company:null,
                 data.location?data.location:null,
@@ -120,8 +128,17 @@ export async function editExperience(
                 throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
             };
 
-            const setValues = Object.entries(experienceData).map(([key], i) => `${key} = $${i+2}`).join(', ');
-            const params = [id, ...Object.values(experienceData)];
+            const entries: [string, unknown][] = Object.entries(experienceData);
+            if (experienceData.title !== undefined || experienceData.company !== undefined || experienceData.end_date !== undefined) {
+                entries.push(["slug", await generateUniqueSlug(client, "experience", slugify({
+                    title: experienceData.title,
+                    company: experienceData.company,
+                    date: experienceData.end_date
+                }), id)]);
+            }
+
+            const setValues = entries.map(([key], i) => `${key} = $${i+2}`).join(', ');
+            const params = [id, ...entries.map(([, value]) => value)];
             await client.query(`
                 UPDATE experience SET ${setValues}
                 WHERE id = $1`,

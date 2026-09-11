@@ -42,10 +42,11 @@ describe('fetchLanguage', () => {
 describe('addLanguage', () => {
 
     it('cas fonctionnel : donnée ajoutée', async () => {
+        (db.query as Mock).mockResolvedValueOnce({ rows: [] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1 }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: 'anglais', label: 'Anglais', level: 'courant' }] });
 
-        await expect(addLanguage({ slug: 'anglais', label: 'Anglais', level: 'courant' })).resolves.toEqual(
+        await expect(addLanguage({ label: 'Anglais', level: 'courant' })).resolves.toEqual(
             { id: 1, slug: 'anglais', label: 'Anglais', level: 'courant' }
         );
     });
@@ -53,7 +54,7 @@ describe('addLanguage', () => {
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(addLanguage({ slug: 'anglais', label: 'Anglais' })).rejects.toThrow('Connexion BDD perdue');
+        await expect(addLanguage({ label: 'Anglais' })).rejects.toThrow('Connexion BDD perdue');
     });
 });
 

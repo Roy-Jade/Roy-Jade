@@ -13,12 +13,11 @@ interface Props {
 }
 
 interface FormData {
-    slug: string;
     label: string;
     supplement: string;
 }
 
-const emptyForm: FormData = { slug: '', label: '', supplement: '' };
+const emptyForm: FormData = { label: '', supplement: '' };
 
 export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
@@ -30,12 +29,12 @@ export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Pr
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        if (existing) setForm({ slug: existing.slug, label: existing.label, supplement: existing.supplement ?? '' });
+        if (existing) setForm({ label: existing.label, supplement: existing.supplement ?? '' });
     }, [existing]);
 
     useEffect(() => {
         if (mode === 'edit' && !existing) return;
-        onPreviewChange?.({ id: existing?.id ?? -1, slug: form.slug, label: form.label, supplement: form.supplement || null });
+        onPreviewChange?.({ id: existing?.id ?? -1, slug: existing?.slug ?? '', label: form.label, supplement: form.supplement || null });
     }, [mode, existing, form, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
@@ -60,9 +59,6 @@ export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Pr
     return (
         <form className="rich-form" onSubmit={handleSubmit}>
             <div className="form-grid">
-                <label>Slug
-                    <input value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required />
-                </label>
                 <label>Loisir
                     <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} required />
                 </label>

@@ -77,7 +77,7 @@ describe('patchHobby', () => {
     });
 
     it('cas dysfonctionnel : données invalides, ZodError retourne 400', async () => {
-        const req = { params: { id: '1' }, body: { data: { slug: 123 } } } as unknown as Request;
+        const req = { params: { id: '1' }, body: { data: { label: 123 } } } as unknown as Request;
         const res = mockRes();
 
         await patchHobby(req, res);

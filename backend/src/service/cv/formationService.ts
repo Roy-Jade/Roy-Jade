@@ -3,6 +3,8 @@ import { Formation, FormationKeyList } from "../../schema/cv/formation.js";
 import { getFormationById } from "../../utils/getFormationById.js";
 import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../../utils/editInJunctionTable.js";
 import { AppError } from "../../utils/AppError.js";
+import { slugify } from "../../utils/slugify.js";
+import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 
 export async function fetchFormation(data:string[]) {
 
@@ -53,12 +55,18 @@ export async function addFormation(data:Formation, domain:number[], tasks:string
     try {
         await client.query('BEGIN');
 
+        const slug = await generateUniqueSlug(client, "formation", slugify({
+            title: data.title,
+            company: data.institution,
+            date: data.obtention_date
+        }));
+
         const insertFormation = await client.query(`
             INSERT INTO formation (slug, title, institution, location, obtention_date, description, level)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING id
             `, [
-                data.slug,
+                slug,
                 data.title,
                 data.institution?data.institution:null,
                 data.location?data.location:null,
@@ -108,8 +116,17 @@ export async function editFormation(
                 throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")
             };
 
-            const setValues = Object.entries(formationData).map(([key], i) => `${key} = $${i+2}`).join(', ');
-            const params = [id, ...Object.values(formationData)];
+            const entries: [string, unknown][] = Object.entries(formationData);
+            if (formationData.title !== undefined || formationData.institution !== undefined || formationData.obtention_date !== undefined) {
+                entries.push(["slug", await generateUniqueSlug(client, "formation", slugify({
+                    title: formationData.title,
+                    company: formationData.institution,
+                    date: formationData.obtention_date
+                }), id)]);
+            }
+
+            const setValues = entries.map(([key], i) => `${key} = $${i+2}`).join(', ');
+            const params = [id, ...entries.map(([, value]) => value)];
             await client.query(`
                 UPDATE formation SET ${setValues}
                 WHERE id = $1`,

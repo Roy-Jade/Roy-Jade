@@ -121,7 +121,7 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-cv-granularity.md](docs/refactor-cv-granularity.md) — masquage granulaire des données du CV par ID (blacklist), sans re-fetch réseau. Terminé et mergé.
 - [docs/refactor-cv-dashboard-edit.md](docs/refactor-cv-dashboard-edit.md) — édition en direct sur rendu CV côté dashboard admin. Terminé (branche `cv-dashboard-refactor`, mergée).
 - [docs/refactor-date-format.md](docs/refactor-date-format.md) — format `jj/mm/aaaa` forcé (année seule obligatoire) sur les dates d'expérience/formation, saisie en 3 champs, validation+normalisation Zod, `CHECK` en base. Terminé (branche `date-format`).
-- [docs/refactor-slug-generation.md](docs/refactor-slug-generation.md) — génération automatique des slugs (expérience, formation, hardskill, softskill, langue, loisir, domaine) au lieu d'une saisie libre. Décisions actées, implémentation pas commencée (le chantier date bloquant est terminé).
+- [docs/refactor-slug-generation.md](docs/refactor-slug-generation.md) — génération automatique des slugs (expérience, formation, hardskill, softskill, langue, loisir, domaine) au lieu d'une saisie libre. Terminé.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 

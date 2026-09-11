@@ -13,7 +13,6 @@ interface Props {
 }
 
 interface FormData {
-    slug: string;
     label: string;
     level: string;
 }
@@ -25,7 +24,7 @@ const LANGUAGE_LEVELS = [
     "Langue maternelle",
 ];
 
-const emptyForm: FormData = { slug: '', label: '', level: '' };
+const emptyForm: FormData = { label: '', level: '' };
 
 export default function LanguageForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
@@ -37,12 +36,12 @@ export default function LanguageForm({ mode, itemId, onClose, onPreviewChange }:
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        if (existing) setForm({ slug: existing.slug, label: existing.label, level: existing.level ?? '' });
+        if (existing) setForm({ label: existing.label, level: existing.level ?? '' });
     }, [existing]);
 
     useEffect(() => {
         if (mode === 'edit' && !existing) return;
-        onPreviewChange?.({ id: existing?.id ?? -1, slug: form.slug, label: form.label, level: form.level || null });
+        onPreviewChange?.({ id: existing?.id ?? -1, slug: existing?.slug ?? '', label: form.label, level: form.level || null });
     }, [mode, existing, form, onPreviewChange]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
@@ -67,9 +66,6 @@ export default function LanguageForm({ mode, itemId, onClose, onPreviewChange }:
     return (
         <form className="rich-form" onSubmit={handleSubmit}>
             <div className="form-grid">
-                <label>Slug
-                    <input value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required />
-                </label>
                 <label>Langue
                     <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} required />
                 </label>

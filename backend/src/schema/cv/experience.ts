@@ -5,7 +5,6 @@ const DATE_ERROR = "Format de date invalide (jj/mm/aaaa, mm/aaaa ou aaaa)";
 
 export const ExperienceSchema = z.object({
     id: z.number().optional(),
-    slug: z.string(),
     type: z.enum(["detail", "summary"]),
     title: z.string(),
     company: z.string().optional(),

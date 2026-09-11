@@ -3,7 +3,6 @@ import { DATE_REGEX, normalizeDate } from "../../utils/normalizeDate.js";
 
 export const FormationSchema = z.object({
     id: z.number().optional(),
-    slug: z.string(),
     title: z.string(),
     institution: z.string().optional(),
     location: z.string().optional(),

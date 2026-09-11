@@ -51,6 +51,9 @@ describe('addSoftskill', () => {
 
     it('cas fonctionnel : données ajoutées', async () => {
         (db.query as Mock).mockResolvedValueOnce({
+            rows: []
+        });
+        (db.query as Mock).mockResolvedValueOnce({
             rows: [{id: 18}]
         });
         (db.query as Mock).mockResolvedValueOnce({
@@ -60,7 +63,7 @@ describe('addSoftskill', () => {
                     label: "Autonomie",
                 }]});
 
-        await expect(addSoftskill({slug:"autonomie", label:"Autonomie"})).resolves.toEqual({
+        await expect(addSoftskill({label:"Autonomie"})).resolves.toEqual({
                     id: 18,
                     slug: "autonomie",
                     label: "Autonomie",
@@ -70,7 +73,7 @@ describe('addSoftskill', () => {
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(addSoftskill({slug:"autonomie", label:"Autonomie"})).rejects.toThrow('Connexion BDD perdue');
+        await expect(addSoftskill({label:"Autonomie"})).rejects.toThrow('Connexion BDD perdue');
     });
 })
 
@@ -83,6 +86,9 @@ describe('editSoftskill', () => {
 
 
     it('cas fonctionnel : données modifiées', async () => {
+        (db.query as Mock).mockResolvedValueOnce({
+            rows: []
+        });
         (db.query as Mock).mockResolvedValueOnce({
             rows: [{id: 18}]
         });

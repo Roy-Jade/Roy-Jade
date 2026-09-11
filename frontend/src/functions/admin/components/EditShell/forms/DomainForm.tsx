@@ -12,11 +12,10 @@ interface Props {
 }
 
 interface FormData {
-    slug: string;
     label: string;
 }
 
-const emptyForm: FormData = { slug: '', label: '' };
+const emptyForm: FormData = { label: '' };
 
 export default function DomainForm({ mode, itemId, onClose }: Props) {
     const queryClient = useQueryClient();
@@ -28,7 +27,7 @@ export default function DomainForm({ mode, itemId, onClose }: Props) {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        if (existing) setForm({ slug: existing.slug, label: existing.label });
+        if (existing) setForm({ label: existing.label });
     }, [existing]);
 
     const handleSubmit = async (e: { preventDefault(): void }) => {
@@ -41,6 +40,8 @@ export default function DomainForm({ mode, itemId, onClose }: Props) {
                 await postDomain(form);
             }
             await queryClient.invalidateQueries({ queryKey: ['filters'] });
+            await queryClient.invalidateQueries({ queryKey: ['experience'] });
+            await queryClient.invalidateQueries({ queryKey: ['formation'] });
             showToast(mode === 'edit' ? 'Domaine mis à jour' : 'Domaine ajouté');
             onClose();
         } catch (err) {
@@ -53,9 +54,6 @@ export default function DomainForm({ mode, itemId, onClose }: Props) {
     return (
         <form className="rich-form" onSubmit={handleSubmit}>
             <div className="form-grid">
-                <label>Slug
-                    <input value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required />
-                </label>
                 <label>Libellé
                     <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} required />
                 </label>

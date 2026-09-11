@@ -14,7 +14,6 @@ interface Props {
 }
 
 interface FormData {
-    slug: string;
     label: string;
     level: string;
     category: string;
@@ -22,7 +21,7 @@ interface FormData {
 }
 
 const HARDSKILL_LEVELS = ["notions", "courant", "maîtrise"];
-const emptyForm: FormData = { slug: '', label: '', level: '', category: '', sub_category: '' };
+const emptyForm: FormData = { label: '', level: '', category: '', sub_category: '' };
 
 export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
@@ -39,7 +38,6 @@ export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }
 
     useEffect(() => {
         if (existing) setForm({
-            slug: existing.slug,
             label: existing.label,
             level: existing.level ?? '',
             category: existing.category ?? '',
@@ -51,7 +49,7 @@ export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }
         if (mode === 'edit' && !existing) return;
         onPreviewChange?.({
             id: existing?.id ?? -1,
-            slug: form.slug,
+            slug: existing?.slug ?? '',
             label: form.label,
             level: form.level,
             category: form.category,
@@ -81,9 +79,6 @@ export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }
     return (
         <form className="rich-form" onSubmit={handleSubmit}>
             <div className="form-grid">
-                <label>Slug
-                    <input value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required />
-                </label>
                 <label>Libellé
                     <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} required />
                 </label>

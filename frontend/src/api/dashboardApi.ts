@@ -130,7 +130,7 @@ export const patchIdentity = async (data: Partial<Omit<Identity, 'id'>>): Promis
     return response.result;
 };
 
-export const postLanguage = async (data: Omit<Language, 'id'>): Promise<Language> => {
+export const postLanguage = async (data: Omit<Language, 'id' | 'slug'>): Promise<Language> => {
     const response = await privateApi('/api/cv/dashboard/language', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -138,7 +138,7 @@ export const postLanguage = async (data: Omit<Language, 'id'>): Promise<Language
     return response.result;
 };
 
-export const patchLanguage = async (id: number, data: Partial<Omit<Language, 'id'>>): Promise<Language> => {
+export const patchLanguage = async (id: number, data: Partial<Omit<Language, 'id' | 'slug'>>): Promise<Language> => {
     const response = await privateApi(`/api/cv/dashboard/language/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ data }),
@@ -146,7 +146,7 @@ export const patchLanguage = async (id: number, data: Partial<Omit<Language, 'id
     return response.result;
 };
 
-export const postHobby = async (data: Omit<Hobby, 'id'>): Promise<Hobby> => {
+export const postHobby = async (data: Omit<Hobby, 'id' | 'slug'>): Promise<Hobby> => {
     const response = await privateApi('/api/cv/dashboard/hobby', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -154,7 +154,7 @@ export const postHobby = async (data: Omit<Hobby, 'id'>): Promise<Hobby> => {
     return response.result;
 };
 
-export const patchHobby = async (id: number, data: Partial<Omit<Hobby, 'id'>>): Promise<Hobby> => {
+export const patchHobby = async (id: number, data: Partial<Omit<Hobby, 'id' | 'slug'>>): Promise<Hobby> => {
     const response = await privateApi(`/api/cv/dashboard/hobby/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ data }),
@@ -162,7 +162,7 @@ export const patchHobby = async (id: number, data: Partial<Omit<Hobby, 'id'>>): 
     return response.result;
 };
 
-export const postSoftskill = async (data: Omit<Softskill, 'id'>): Promise<Softskill> => {
+export const postSoftskill = async (data: Omit<Softskill, 'id' | 'slug'>): Promise<Softskill> => {
     const response = await privateApi('/api/cv/dashboard/softskill', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -170,7 +170,7 @@ export const postSoftskill = async (data: Omit<Softskill, 'id'>): Promise<Softsk
     return response.result;
 };
 
-export const patchSoftskill = async (id: number, data: Partial<Omit<Softskill, 'id'>>): Promise<Softskill> => {
+export const patchSoftskill = async (id: number, data: Partial<Omit<Softskill, 'id' | 'slug'>>): Promise<Softskill> => {
     const response = await privateApi(`/api/cv/dashboard/softskill/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ data }),
@@ -178,7 +178,7 @@ export const patchSoftskill = async (id: number, data: Partial<Omit<Softskill, '
     return response.result;
 };
 
-export const postHardskill = async (data: Omit<Hardskill, 'id'>): Promise<Hardskill> => {
+export const postHardskill = async (data: Omit<Hardskill, 'id' | 'slug'>): Promise<Hardskill> => {
     const response = await privateApi('/api/cv/dashboard/hardskill', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -186,7 +186,7 @@ export const postHardskill = async (data: Omit<Hardskill, 'id'>): Promise<Hardsk
     return response.result;
 };
 
-export const patchHardskill = async (id: number, data: Partial<Omit<Hardskill, 'id'>>): Promise<Hardskill> => {
+export const patchHardskill = async (id: number, data: Partial<Omit<Hardskill, 'id' | 'slug'>>): Promise<Hardskill> => {
     const response = await privateApi(`/api/cv/dashboard/hardskill/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ data }),
@@ -195,7 +195,6 @@ export const patchHardskill = async (id: number, data: Partial<Omit<Hardskill, '
 };
 
 export interface ExperienceInput {
-    slug: string;
     type: 'detail' | 'summary';
     title: string;
     company?: string;
@@ -233,7 +232,7 @@ export const patchExperience = async (id: number, payload: {
     return response.result;
 };
 
-export const postDomain = async (data: Omit<Domain, 'id'>): Promise<Domain> => {
+export const postDomain = async (data: Omit<Domain, 'id' | 'slug'>): Promise<Domain> => {
     const response = await privateApi('/api/cv/dashboard/domain', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -241,7 +240,7 @@ export const postDomain = async (data: Omit<Domain, 'id'>): Promise<Domain> => {
     return response.result;
 };
 
-export const patchDomain = async (id: number, data: Partial<Omit<Domain, 'id'>>): Promise<Domain> => {
+export const patchDomain = async (id: number, data: Partial<Omit<Domain, 'id' | 'slug'>>): Promise<Domain> => {
     const response = await privateApi(`/api/cv/dashboard/domain/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({ data }),
@@ -266,7 +265,6 @@ export const patchProfile = async (id: number, data: Partial<Omit<Profile, 'id'>
 };
 
 export interface FormationInput {
-    slug: string;
     title: string;
     institution?: string;
     location?: string;

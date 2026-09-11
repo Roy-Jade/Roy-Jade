@@ -150,7 +150,7 @@ describe('addExperience', () => {
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 10, slug: "ranger", title: "Chevalier ranger" }] });
 
         const result = await addExperience(
-            { slug: "ranger", type: "detail", title: "Chevalier ranger" } as Experience,
+            { type: "detail", title: "Chevalier ranger" } as Experience,
             [1, 2], ["Tâche 1"], [3], [4]
         );
 
@@ -173,7 +173,7 @@ describe('addExperience', () => {
         });
 
         await expect(addExperience(
-            { slug: "ranger", type: "detail", title: "Chevalier ranger" } as Experience,
+            { type: "detail", title: "Chevalier ranger" } as Experience,
             [999], ["Tâche 1"], [3], [4]
         )).rejects.toThrow('Violation de contrainte : domaine inconnu');
 
@@ -202,7 +202,7 @@ describe('editExperience', () => {
         expect(result).toEqual({ id: 5, title: "Nouveau titre" });
         expect(client.query.mock.calls[0][0]).toBe('BEGIN');
         expect(client.query.mock.calls.at(-1)?.[0]).toBe('COMMIT');
-        expect(client.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE experience SET'), [5, "Nouveau titre"]);
+        expect(client.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE experience SET'), [5, "Nouveau titre", "nouveau-titre"]);
         expect(client.query).toHaveBeenCalledWith(expect.stringContaining('DELETE FROM experience_domain'), [5]);
         expect(client.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO experience_domain'), expect.anything());
         expect(client.release).toHaveBeenCalledOnce();

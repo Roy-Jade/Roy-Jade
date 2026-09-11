@@ -21,7 +21,6 @@ interface Props {
 }
 
 interface FormData {
-    slug: string;
     type: 'detail' | 'summary';
     title: string;
     company: string;
@@ -33,12 +32,11 @@ interface FormData {
 
 const HARDSKILL_LEVELS_FLOOR = 'notions';
 const emptyForm: FormData = {
-    slug: '', type: 'detail', title: '', company: '',
+    type: 'detail', title: '', company: '',
     location: '', start_date: '', end_date: '', description: '',
 };
 
 const toInput = (f: FormData): ExperienceInput => ({
-    slug: f.slug,
     type: f.type,
     title: f.title,
     ...(f.company && { company: f.company }),
@@ -77,7 +75,6 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
     useEffect(() => {
         if (!existing) return;
         setForm({
-            slug: existing.slug,
             type: existing.type,
             title: existing.title,
             company: existing.company ?? '',
@@ -108,7 +105,7 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
         if (mode === 'edit' && !existing) return;
         onPreviewChange?.({
             id: existing?.id ?? -1,
-            slug: form.slug,
+            slug: existing?.slug ?? '',
             type: form.type,
             title: form.title,
             company: form.company || null,
@@ -165,15 +162,13 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
     return (
         <form className="rich-form" onSubmit={handleSubmit}>
             <div className="form-grid">
-                <label>Slug
-                    <input value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required />
-                </label>
                 <label>Type
                     <select value={form.type} onChange={e => setForm(p => ({ ...p, type: e.target.value as 'detail' | 'summary' }))}>
                         <option value="detail">detail</option>
                         <option value="summary">summary</option>
                     </select>
                 </label>
+                <div />
             </div>
             <div className="form-grid">
                 <label>Titre

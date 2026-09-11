@@ -18,7 +18,6 @@ interface Props {
 }
 
 interface FormData {
-    slug: string;
     title: string;
     institution: string;
     location: string;
@@ -29,12 +28,11 @@ interface FormData {
 
 const HARDSKILL_LEVELS_FLOOR = 'notions';
 const emptyForm: FormData = {
-    slug: '', title: '', institution: '',
+    title: '', institution: '',
     location: '', obtention_date: '', description: '', level: '',
 };
 
 const toInput = (f: FormData): FormationInput => ({
-    slug: f.slug,
     title: f.title,
     ...(f.institution && { institution: f.institution }),
     ...(f.location && { location: f.location }),
@@ -66,7 +64,6 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
     useEffect(() => {
         if (!existing) return;
         setForm({
-            slug: existing.slug,
             title: existing.title,
             institution: existing.institution ?? '',
             location: existing.location ?? '',
@@ -91,7 +88,7 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
         if (mode === 'edit' && !existing) return;
         onPreviewChange?.({
             id: existing?.id ?? -1,
-            slug: form.slug,
+            slug: existing?.slug ?? '',
             title: form.title,
             institution: form.institution || null,
             location: form.location || null,
@@ -141,12 +138,10 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
     return (
         <form className="rich-form" onSubmit={handleSubmit}>
             <div className="form-grid">
-                <label>Slug
-                    <input value={form.slug} onChange={e => setForm(p => ({ ...p, slug: e.target.value }))} required />
-                </label>
                 <label>Niveau
                     <input value={form.level} onChange={e => setForm(p => ({ ...p, level: e.target.value }))} />
                 </label>
+                <div />
             </div>
             <div className="form-full">
                 <label>Titre

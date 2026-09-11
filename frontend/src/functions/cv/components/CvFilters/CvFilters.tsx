@@ -101,9 +101,10 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
         setSearchParams(prev => {
             const next = new URLSearchParams(prev);
             const current: ExperienceFilter[] = JSON.parse(prev.get('experienceFilters') ?? '[]');
-            next.set('experienceFilters', JSON.stringify(
-                current.map(f => f.domain === domain ? { ...f, type } : f)
-            ));
+            const updated = current.some(f => f.domain === domain)
+                ? current.map(f => f.domain === domain ? { ...f, type } : f)
+                : [...current, { domain, type }];
+            next.set('experienceFilters', JSON.stringify(updated));
             return next;
         }, { replace: true });
 

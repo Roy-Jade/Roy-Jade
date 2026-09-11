@@ -42,10 +42,11 @@ describe('fetchHobby', () => {
 describe('addHobby', () => {
 
     it('cas fonctionnel : donnée ajoutée', async () => {
+        (db.query as Mock).mockResolvedValueOnce({ rows: [] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1 }] });
         (db.query as Mock).mockResolvedValueOnce({ rows: [{ id: 1, slug: 'modelisme', label: 'Modélisme', supplement: null }] });
 
-        await expect(addHobby({ slug: 'modelisme', label: 'Modélisme' })).resolves.toEqual(
+        await expect(addHobby({ label: 'Modélisme' })).resolves.toEqual(
             { id: 1, slug: 'modelisme', label: 'Modélisme', supplement: null }
         );
     });
@@ -53,7 +54,7 @@ describe('addHobby', () => {
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(addHobby({ slug: 'modelisme', label: 'Modélisme' })).rejects.toThrow('Connexion BDD perdue');
+        await expect(addHobby({ label: 'Modélisme' })).rejects.toThrow('Connexion BDD perdue');
     });
 });
 

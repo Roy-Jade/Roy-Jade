@@ -4,6 +4,8 @@ import { Hardskill, HardskillKeyList } from "../../schema/cv/skill.js";
 import { AppError } from "../../utils/AppError.js";
 import { getHardskillById } from "../../utils/getHardskillById.js";
 import { levels } from "../../utils/levels.js";
+import { slugify } from "../../utils/slugify.js";
+import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 
 export async function fetchHardskill(category:string[], level:string) {
 
@@ -32,16 +34,18 @@ export async function fetchHardskill(category:string[], level:string) {
 }
 
 export async function addHardskill(data:Hardskill) {
+    const slug = await generateUniqueSlug(db, "hardskill", slugify({ label: data.label }));
+
     const insertHardskill = await db.query(`
         INSERT INTO hardskill (slug, label, level, category, sub_category)
         VALUES ($1, $2, $3, $4, $5)
         RETURNING id
         `, [
-            data.slug, 
-            data.label, 
-            data.level?data.level:null, 
-            data.category?data.category:null, 
-            data.sub_category?data.sub_category:null, 
+            slug,
+            data.label,
+            data.level?data.level:null,
+            data.category?data.category:null,
+            data.sub_category?data.sub_category:null,
         ]);
 
         const addedHardskill = await getHardskillById(insertHardskill.rows[0].id);
@@ -56,8 +60,13 @@ export async function editHardskill(id:number, data:Partial<Hardskill>) {
     if (dataKeys.length === 0) {throw new AppError(400, "Erreur : aucun champ à modifier n'a été fourni")};
     if (!dataKeys.every((dataKey) => HardskillKeyList.includes(dataKey))) {throw new AppError(400, "Erreur : au moins l'un des champs à modifier n'existe pas")};
 
-    const setValues = Object.entries(data).map(([key], i) => `${key} = $${i+2}`).join(', ');
-    const params = [id, ...Object.values(data)];
+    const entries: [string, unknown][] = Object.entries(data);
+    if (data.label !== undefined) {
+        entries.push(["slug", await generateUniqueSlug(db, "hardskill", slugify({ label: data.label }), id)]);
+    }
+
+    const setValues = entries.map(([key], i) => `${key} = $${i+2}`).join(', ');
+    const params = [id, ...entries.map(([, value]) => value)];
     const update = await db.query(`
         UPDATE hardskill SET ${setValues}
         WHERE id = $1

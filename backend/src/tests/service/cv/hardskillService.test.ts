@@ -117,6 +117,9 @@ describe('addHardskill', () => {
 
     it('cas fonctionnel : données ajoutées', async () => {
         (db.query as Mock).mockResolvedValueOnce({
+            rows: []
+        });
+        (db.query as Mock).mockResolvedValueOnce({
             rows: [{id: 18}]
         });
         (db.query as Mock).mockResolvedValueOnce({
@@ -129,7 +132,7 @@ describe('addHardskill', () => {
                     sub_category: "capture"
                 }]});
 
-        await expect(addHardskill({slug:"dressage", label:"Dressage Pokémon", level:"maîtrise", category:"terrain", sub_category:"capture"})).resolves.toEqual({
+        await expect(addHardskill({label:"Dressage Pokémon", level:"maîtrise", category:"terrain", sub_category:"capture"})).resolves.toEqual({
                     id: 1,
                     slug: "dressage",
                     label: "Dressage Pokémon",
@@ -142,7 +145,7 @@ describe('addHardskill', () => {
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(addHardskill({slug:"dressage", label:"Dressage Pokémon", level:"maîtrise", category:"terrain", sub_category:"capture"})).rejects.toThrow('Connexion BDD perdue');
+        await expect(addHardskill({label:"Dressage Pokémon", level:"maîtrise", category:"terrain", sub_category:"capture"})).rejects.toThrow('Connexion BDD perdue');
     });
 })
 
@@ -155,6 +158,9 @@ describe('editHardskill', () => {
 
 
     it('cas fonctionnel : données modifiées', async () => {
+        (db.query as Mock).mockResolvedValueOnce({
+            rows: []
+        });
         (db.query as Mock).mockResolvedValueOnce({
             rows: [{id: 18}]
         });
