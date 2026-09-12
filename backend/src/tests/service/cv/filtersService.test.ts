@@ -23,7 +23,6 @@ describe('fetchFilters', () => {
         mockFullResults();
 
         await expect(fetchFilters()).resolves.toEqual({
-            type: ['detail', 'summary'],
             context: ['generique'],
             domain: [{ id: 1, slug: 'web', label: 'Développement web' }],
             category: ['frontend'],

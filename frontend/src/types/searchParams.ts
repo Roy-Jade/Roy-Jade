@@ -1,5 +1,3 @@
-export type ExperienceFilter = { domain: string; type: "detail" | "summary" };
-
 export type HiddenIdField =
     | 'hiddenHardskillIds'
     | 'hiddenExperienceIds'
@@ -14,7 +12,7 @@ export type HiddenIdField =
 
 export interface CvFiltersParams {
     context: string;
-    experienceFilters: ExperienceFilter[];
+    experienceDomains: string[];
     hardskillCategories: string[];
     hardskillLevel: string;
     formationDomains: string[];

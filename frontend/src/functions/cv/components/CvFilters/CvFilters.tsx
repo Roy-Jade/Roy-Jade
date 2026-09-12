@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { ExperienceFilter } from '../../../../types/searchParams';
 import { getFilters } from '../../../../api/cvApi';
 // import './CvFilters.scss';
 import type { FiltersData } from '../../../../types/FiltersData';
@@ -37,22 +36,18 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
                 isChanged = true;
             }
 
-            if (!prev.get('experienceFilters')) {
-                const defaults: ExperienceFilter[] = filtersData.domain.map(d => ({
-                    domain: d.slug,
-                    type: 'detail',
-                }));
-                next.set('experienceFilters', JSON.stringify(defaults));
-                isChanged = true;
-            }
-
             if (prev.getAll('category').length === 0) {
                 filtersData.category.forEach(cat => next.append('category', cat));
                 isChanged = true;
             }
 
+            if (prev.getAll('experienceDomain').length === 0) {
+                filtersData.domain.forEach(d => next.append('experienceDomain', d.slug));
+                isChanged = true;
+            }
+
             if (prev.getAll('formationDomain').length === 0) {
-                filtersData.category.forEach(formDom => next.append('formationDomain', formDom));
+                filtersData.domain.forEach(d => next.append('formationDomain', d.slug));
                 isChanged = true;
             }
 
@@ -66,10 +61,8 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
     const currentContext = searchParams.get('context') ?? filtersData.context[0];
     const currentLevel = searchParams.get('level') ?? filtersData.level[0];
     const currentCategories = searchParams.getAll('category');
+    const currentExperienceDomains = searchParams.getAll('experienceDomain');
     const currentFormationDomains = searchParams.getAll('formationDomain');
-    const currentExperienceFilters: ExperienceFilter[] = JSON.parse(
-        searchParams.get('experienceFilters') ?? '[]'
-    );
 
     const setContext = (value: string) =>
         setSearchParams(prev => {
@@ -97,14 +90,15 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
             return next;
         }, { replace: true });
 
-    const setExperienceType = (domain: string, type: 'detail' | 'summary') =>
+    const toggleExperienceDomain = (slug: string) =>
         setSearchParams(prev => {
             const next = new URLSearchParams(prev);
-            const current: ExperienceFilter[] = JSON.parse(prev.get('experienceFilters') ?? '[]');
-            const updated = current.some(f => f.domain === domain)
-                ? current.map(f => f.domain === domain ? { ...f, type } : f)
-                : [...current, { domain, type }];
-            next.set('experienceFilters', JSON.stringify(updated));
+            const current = prev.getAll('experienceDomain');
+            next.delete('experienceDomain');
+            (current.includes(slug)
+                ? current.filter(d => d !== slug)
+                : [...current, slug]
+            ).forEach(d => next.append('experienceDomain', d));
             return next;
         }, { replace: true });
 
@@ -163,28 +157,18 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
             </fieldset>
 
             <fieldset>
-                <legend>Expériences par domaine</legend>
-                {filtersData.domain.map(domain => {
-                    const filter = currentExperienceFilters.find(f => f.domain === domain.slug);
-                    const currentType = filter?.type ?? 'detail';
-                    return (
-                        <fieldset key={domain.slug}>
-                            <legend>{domain.label}</legend>
-                            {filtersData.type.map(t => (
-                                <label key={t}>
-                                    <input
-                                        type="radio"
-                                        name={`exp-${domain.slug}`}
-                                        value={t}
-                                        checked={currentType === t}
-                                        onChange={() => setExperienceType(domain.slug, t as 'detail' | 'summary')}
-                                    />
-                                    {t}
-                                </label>
-                            ))}
-                        </fieldset>
-                    );
-                })}
+                <legend>Domaines d'expérience</legend>
+                {filtersData.domain.map(domain => (
+                    <label key={domain.slug}>
+                        <input
+                            type="checkbox"
+                            value={domain.slug}
+                            checked={currentExperienceDomains.length === 0 || currentExperienceDomains.includes(domain.slug)}
+                            onChange={() => toggleExperienceDomain(domain.slug)}
+                        />
+                        {domain.label}
+                    </label>
+                ))}
             </fieldset>
 
             <fieldset>

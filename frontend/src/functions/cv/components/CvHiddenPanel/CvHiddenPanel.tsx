@@ -24,7 +24,7 @@ export default function CvHiddenPanel({ filters, toggleHidden, clearHidden }: Pr
     const [isOpen, setIsOpen] = useState(false);
     const { register, requestFocus } = useFocusRegistry();
 
-    const { data: experiences = [] } = useExperienceData(filters.experienceFilters);
+    const { data: experiences = [] } = useExperienceData(filters.experienceDomains);
     const { data: formations = [] } = useFormationData(filters.formationDomains);
     const { data: hardskills = [] } = useHardskillData(filters.hardskillLevel, filters.hardskillCategories);
 

@@ -9,7 +9,8 @@ import { useSoftskillData } from '../../../../cv/hooks/useSoftskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
 import { useToast } from '../../../context/ToastContext';
 import DateInput from '../../DateInput/DateInput';
-import type { ExperienceFilter } from '../../../../../types/searchParams';
+import HardskillChecklist from '../../HardskillChecklist/HardskillChecklist';
+import SoftskillChecklist from '../../SoftskillChecklist/SoftskillChecklist';
 import type { Hardskill } from '../../../../../types/Hardskill';
 import type { Softskill } from '../../../../../types/Softskill';
 
@@ -54,13 +55,10 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
     const { showToast } = useToast();
     const { data: filtersData } = useFiltersData();
     const domains = filtersData?.domain ?? [];
-    // Tous les domaines x les deux types : équivaut à "toutes les expériences",
-    // indépendamment du filtre CV actuellement affiché.
-    const allFilters: ExperienceFilter[] = domains.flatMap(d => [
-        { domain: d.slug, type: 'detail' as const },
-        { domain: d.slug, type: 'summary' as const },
-    ]);
-    const { data: experiences = [] } = useExperienceData(allFilters);
+    // Tous les domaines : équivaut à "toutes les expériences", indépendamment
+    // du filtre CV actuellement affiché.
+    const allDomains = domains.map(d => d.slug);
+    const { data: experiences = [] } = useExperienceData(allDomains);
     const { data: hardskills = [] } = useHardskillData(HARDSKILL_LEVELS_FLOOR, filtersData?.category ?? []);
     const { data: softskills = [] } = useSoftskillData();
     const existing = mode === 'edit' ? experiences.find(e => e.id === itemId) : undefined;
@@ -222,25 +220,17 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
                 ))}
             </fieldset>
 
-            <fieldset>
-                <legend>Hard skills</legend>
-                {hardskills.map(s => (
-                    <label key={s.id}>
-                        <input type="checkbox" checked={hardskillIds.includes(s.id)} onChange={() => setHardskillIds(p => toggleId(p, s.id))} />
-                        {s.label}
-                    </label>
-                ))}
-            </fieldset>
+            <HardskillChecklist
+                hardskills={hardskills}
+                checkedIds={hardskillIds}
+                onToggle={id => setHardskillIds(p => toggleId(p, id))}
+            />
 
-            <fieldset>
-                <legend>Soft skills</legend>
-                {softskills.map(s => (
-                    <label key={s.id}>
-                        <input type="checkbox" checked={softskillIds.includes(s.id)} onChange={() => setSoftskillIds(p => toggleId(p, s.id))} />
-                        {s.label}
-                    </label>
-                ))}
-            </fieldset>
+            <SoftskillChecklist
+                softskills={softskills}
+                checkedIds={softskillIds}
+                onToggle={id => setSoftskillIds(p => toggleId(p, id))}
+            />
 
             {errorMessage && <p className="dash-error">{errorMessage}</p>}
             <div className="form-actions">

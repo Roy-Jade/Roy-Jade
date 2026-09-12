@@ -40,7 +40,7 @@ export default function DashboardMenu({ filters, filtersData, editing, onEdit, o
         queryFn: getAside,
         staleTime: 20 * 60 * 1000,
     });
-    const { data: experiences = [] } = useExperienceData(filters.experienceFilters);
+    const { data: experiences = [] } = useExperienceData(filters.experienceDomains);
     const { data: formations = [] } = useFormationData(filters.formationDomains);
     const { data: hardskills = [] } = useHardskillData(filters.hardskillLevel, filters.hardskillCategories);
     const { data: softskills = [] } = useSoftskillData();

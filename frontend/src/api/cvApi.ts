@@ -1,5 +1,4 @@
 import { apiUrl } from "../config/env";
-import type { ExperienceFilter } from "../types/searchParams";
 
 export const cvApi = async (path: string) => {
     const response = await fetch(`${apiUrl}/api/cv/${path}`);
@@ -26,8 +25,8 @@ export const getProfile = async (context: string) => {
     return cvApi(`profile?${params.toString()}`);
 };
 
-export const getExperience = async (filters: ExperienceFilter[]) => {
-    const params = new URLSearchParams({ data: JSON.stringify(filters) });
+export const getExperience = async (domains: string[]) => {
+    const params = new URLSearchParams({ data: JSON.stringify(domains) });
     return cvApi(`experience?${params.toString()}`);
 };
 

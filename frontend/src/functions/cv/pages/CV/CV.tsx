@@ -41,7 +41,7 @@ export default function CV() {
 
     const filters: CvFiltersParams = {
         context: searchParams.get('context') ?? '',
-        experienceFilters: JSON.parse(searchParams.get('experienceFilters') ?? '[]'),
+        experienceDomains: searchParams.getAll('experienceDomain'),
         hardskillCategories: searchParams.getAll('category'),
         hardskillLevel: searchParams.get('level') ?? '',
         formationDomains: searchParams.getAll('formationDomain'),

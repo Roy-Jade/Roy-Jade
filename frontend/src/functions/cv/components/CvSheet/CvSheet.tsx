@@ -70,7 +70,7 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                                     onEdit={onEdit}
                                 />
                                 <CvExperiences
-                                    filters={filters.experienceFilters}
+                                    domains={filters.experienceDomains}
                                     hiddenExperienceIds={filters.hiddenExperienceIds}
                                     hiddenExperienceDescriptionIds={filters.hiddenExperienceDescriptionIds}
                                     hiddenExperienceTaskIds={filters.hiddenExperienceTaskIds}

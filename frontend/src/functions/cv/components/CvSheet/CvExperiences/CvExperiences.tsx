@@ -1,4 +1,4 @@
-import type { ExperienceFilter, HiddenIdField } from '../../../../../types/searchParams';
+import type { HiddenIdField } from '../../../../../types/searchParams';
 import type { DashboardCategory, EditingState } from '../../../../admin/types/EditingState';
 import type { EditPreview } from '../../../../admin/types/EditPreview';
 import { isHidden } from '../../../../../utils/isHidden';
@@ -7,7 +7,7 @@ import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import ExperienceItem from './ExperienceItem';
 
 interface Props {
-    filters: ExperienceFilter[];
+    domains: string[];
     hiddenExperienceIds: number[];
     hiddenExperienceDescriptionIds: number[];
     hiddenExperienceTaskIds: number[];
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function CvExperiences({
-    filters,
+    domains,
     hiddenExperienceIds,
     hiddenExperienceDescriptionIds,
     hiddenExperienceTaskIds,
@@ -35,7 +35,7 @@ export default function CvExperiences({
     onEdit,
     onAdd,
 }: Props) {
-    const { data: experiences = [], isLoading, isError } = useExperienceData(filters);
+    const { data: experiences = [], isLoading, isError } = useExperienceData(domains);
 
     if (isLoading) return <section className="cv-experiences cv-selectable"><p>…</p></section>;
     if (isError) return null;

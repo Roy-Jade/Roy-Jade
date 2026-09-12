@@ -22,7 +22,7 @@ beforeEach(() => {
 describe('getExperience', () => {
 
     it('cas fonctionnel : retourne 200 avec les données', async () => {
-        const filter = JSON.stringify([{ domain: 'web', type: 'detail' }]);
+        const filter = JSON.stringify(['web']);
         const req = { query: { data: filter } } as unknown as Request;
         const res = mockRes();
         const data = [{ id: 1, slug: 'dev-web', title: 'Dev web' }];
@@ -35,7 +35,7 @@ describe('getExperience', () => {
     });
 
     it('cas dysfonctionnel : filtre invalide, ZodError retourne 400', async () => {
-        const filter = JSON.stringify([{ domain: 'web' }]);
+        const filter = JSON.stringify([123]);
         const req = { query: { data: filter } } as unknown as Request;
         const res = mockRes();
 
@@ -45,7 +45,7 @@ describe('getExperience', () => {
     });
 
     it('cas dysfonctionnel : AppError du service', async () => {
-        const filter = JSON.stringify([{ domain: 'web', type: 'detail' }]);
+        const filter = JSON.stringify(['web']);
         const req = { query: { data: filter } } as unknown as Request;
         const res = mockRes();
         (fetchExperience as Mock).mockRejectedValueOnce(new AppError(404, "Aucune donnée trouvée"));
@@ -56,7 +56,7 @@ describe('getExperience', () => {
     });
 
     it('cas dysfonctionnel : erreur générique, retourne 500', async () => {
-        const filter = JSON.stringify([{ domain: 'web', type: 'detail' }]);
+        const filter = JSON.stringify(['web']);
         const req = { query: { data: filter } } as unknown as Request;
         const res = mockRes();
         (fetchExperience as Mock).mockRejectedValueOnce(new Error('Erreur inattendue'));

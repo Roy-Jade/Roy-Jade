@@ -7,10 +7,10 @@ import { slugify } from "../../utils/slugify.js";
 import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 import { sortByTypeThenDateDesc } from "../../utils/sortByDate.js";
 
-export async function fetchExperience(data:{domains:string[], type:'detail'|'summary'}[]) {
+export async function fetchExperience(domains:string[]) {
 
-    const promises = data.map(group=>db.query(`
-        SELECT 
+    const queryResult = await db.query(`
+        SELECT
             exp.id,
             exp.slug,
             exp.title,
@@ -44,14 +44,11 @@ export async function fetchExperience(data:{domains:string[], type:'detail'|'sum
         LEFT JOIN softskill soft ON softexp.softskill_id = soft.id
         INNER JOIN experience_domain domexp ON domexp.experience_id = exp.id
         INNER JOIN domain dom ON domexp.domain_id = dom.id
-        WHERE dom.slug = ANY($1) AND exp.type = $2
+        WHERE dom.slug = ANY($1)
         GROUP BY exp.id
-        `, [group.domains, group.type]));
-    
+        `, [domains]);
 
-    const promiseAllResults = await Promise.all(promises);
-
-    const results = sortByTypeThenDateDesc(promiseAllResults.flatMap(result => result.rows), row => row.type, row => row.end_date)
+    const results = sortByTypeThenDateDesc(queryResult.rows, row => row.type, row => row.end_date)
 
     if(results[0]===undefined) {
         throw new AppError(404, "Aucune donnée trouvée")

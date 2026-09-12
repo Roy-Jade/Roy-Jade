@@ -65,7 +65,7 @@ describe('fetchExperience', () => {
                 }
             ]});
 
-        await expect(fetchExperience([{"domains":["combattant", "magicien"], "type":"detail"}])).resolves.toEqual([
+        await expect(fetchExperience(["combattant", "magicien"])).resolves.toEqual([
                 {
                     id:2,
                     slug:"occultiste",
@@ -114,7 +114,7 @@ describe('fetchExperience', () => {
         expect(db.query).toHaveBeenCalledTimes(1);
         expect(db.query).toHaveBeenCalledWith(
             expect.stringContaining('dom.slug = ANY($1)'),
-            [["combattant", "magicien"], "detail"]
+            [["combattant", "magicien"]]
         );
     });
 
@@ -123,13 +123,13 @@ describe('fetchExperience', () => {
             rows: []
         });
 
-        await expect(fetchExperience([{"domains":["voleur"], "type":"summary"}])).rejects.toThrow('Aucune donnée trouvée');
+        await expect(fetchExperience(["voleur"])).rejects.toThrow('Aucune donnée trouvée');
     })
 
     it('cas dysfonctionnel : erreur BDD', async () => {
         (db.query as Mock).mockRejectedValue(new Error('Connexion BDD perdue'));
 
-        await expect(fetchExperience([{"domains":["voleur"], "type":"summary"}])).rejects.toThrow('Connexion BDD perdue');
+        await expect(fetchExperience(["voleur"])).rejects.toThrow('Connexion BDD perdue');
     });
 })
 

@@ -8,6 +8,7 @@ import { useHardskillData } from '../../../../cv/hooks/useHardskillData';
 import { useFiltersData } from '../../../../cv/hooks/useFiltersData';
 import { useToast } from '../../../context/ToastContext';
 import DateInput from '../../DateInput/DateInput';
+import HardskillChecklist from '../../HardskillChecklist/HardskillChecklist';
 import type { Hardskill } from '../../../../../types/Hardskill';
 
 interface Props {
@@ -191,15 +192,11 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
                 ))}
             </fieldset>
 
-            <fieldset>
-                <legend>Hard skills</legend>
-                {hardskills.map(s => (
-                    <label key={s.id}>
-                        <input type="checkbox" checked={hardskillIds.includes(s.id)} onChange={() => setHardskillIds(p => toggleId(p, s.id))} />
-                        {s.label}
-                    </label>
-                ))}
-            </fieldset>
+            <HardskillChecklist
+                hardskills={hardskills}
+                checkedIds={hardskillIds}
+                onToggle={id => setHardskillIds(p => toggleId(p, id))}
+            />
 
             {errorMessage && <p className="dash-error">{errorMessage}</p>}
             <div className="form-actions">

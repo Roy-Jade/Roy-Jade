@@ -100,19 +100,11 @@ Les scripts SQL dans `backend/conception/` sont exécutés automatiquement au d�
 
 ## Refactors futurs identifiés (non planifiés)
 
-### Filtre `detail`/`summary` par domaine (expériences)
+### Tri/recherche sur la liste de gestion des hardskills (dashboard classique)
 
-**Fichiers concernés :** `frontend/src/functions/cv/components/CvFilters/CvFilters.tsx`, `frontend/src/types/searchParams.ts`, `backend/src/service/cv/experienceService.ts`
+**Fichier concerné :** `frontend/src/functions/admin/components/Dashboard/DashboardHardskill/DashboardHardskill.tsx`.
 
-Repéré pendant la réflexion sur le refactor de granularité du CV (masquage granulaire par ID, voir conversation). Ce filtre par domaine (afficher une expérience en détail ou en résumé) deviendra probablement redondant une fois le masquage par item en place — l'utilisateur pourra choisir le niveau de détail par expérience individuelle plutôt que par domaine entier.
-
-Le retrait nécessite un travail d'agrégation de données plus important que le nettoyage de `maxExperiences`/`maxFormations` (regrouper detail/summary d'une même expérience). **Ne pas traiter sans revalidation explicite avec l'utilisateur** — noté ici pour référence future, pas une tâche en cours.
-
-### Tri/recherche sur la liste des hardskills
-
-**Fichiers concernés probables :** `frontend/src/functions/admin/components/EditShell/forms/ExperienceForm.tsx`, `FormationForm.tsx`, `HardskillForm.tsx`, `frontend/src/functions/admin/components/Dashboard/DashboardHardskill/`.
-
-La liste des hardskills (sélection en checkboxes dans les formulaires expérience/formation, gestion dans le dashboard classique) va s'allonger avec le temps et devenir difficile à parcourir telle quelle. Besoin identifié : tri rapide et/ou recherche. Signalé par l'utilisateur comme un chantier à part, pas encore débroussaillé (pas de décision d'architecture prise) — ne pas commencer sans en discuter d'abord.
+Le tri/recherche sur les listes de sélection (checkboxes hardskill/softskill dans `ExperienceForm`/`FormationForm`) est **fait**, voir `docs/refactor-cv-closure.md`. Reste ouvert : la liste de *gestion* des hardskills elle-même (le tableau `DashboardHardskill`, accessible depuis le menu cascade, qui liste tous les hardskills pour les éditer/en ajouter) n'a pas de tri/recherche — même problème de liste qui s'allonge, UI différente (tableau avec bouton éditer, pas des checkboxes). Pas encore demandé explicitement — ne pas commencer sans en discuter d'abord.
 
 ## Documentation
 
@@ -123,6 +115,7 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-date-format.md](docs/refactor-date-format.md) — format `jj/mm/aaaa` forcé (année seule obligatoire) sur les dates d'expérience/formation, saisie en 3 champs, validation+normalisation Zod, `CHECK` en base. Terminé (branche `date-format`).
 - [docs/refactor-slug-generation.md](docs/refactor-slug-generation.md) — génération automatique des slugs (expérience, formation, hardskill, softskill, langue, loisir, domaine) au lieu d'une saisie libre. Terminé.
 - [docs/refactor-chronological-sort.md](docs/refactor-chronological-sort.md) — tri par date de fin/obtention décroissante (expériences groupées par type puis triées, formations triées), plus deux bugs corrigés dans la foulée (édition d'expérience summary, scroll manquant sur les formulaires domaine/identité/softskill). Terminé.
+- [docs/refactor-cv-closure.md](docs/refactor-cv-closure.md) — retrait du filtre detail/summary par domaine (devenu redondant avec le masquage granulaire) + tri/recherche sur les listes hardskill/softskill dans les formulaires expérience/formation. Terminé.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 
