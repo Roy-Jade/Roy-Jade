@@ -16,7 +16,7 @@ describe('groupExperienceFilters', () => {
         ]);
     });
 
-    it('cas particulier : un domaine demandé en detail et en summary est conservé en detail uniquement', () => {
+    it('cas particulier : un domaine demandé en detail et en summary apparaît dans les deux groupes', () => {
         const result = groupExperienceFilters([
             { domain: 'tech', type: 'detail' },
             { domain: 'science', type: 'detail' },
@@ -25,12 +25,25 @@ describe('groupExperienceFilters', () => {
 
         expect(result).toEqual([
             { domains: ['tech', 'science'], type: 'detail' },
+            { domains: ['tech'], type: 'summary' },
         ]);
     });
 
-    it('cas particulier : la priorité au detail est conservée même si le summary arrive en premier', () => {
+    it('cas particulier : l\'ordre d\'apparition des types ne change rien au regroupement par domaine', () => {
         const result = groupExperienceFilters([
             { domain: 'tech', type: 'summary' },
+            { domain: 'tech', type: 'detail' },
+        ]);
+
+        expect(result).toEqual([
+            { domains: ['tech'], type: 'summary' },
+            { domains: ['tech'], type: 'detail' },
+        ]);
+    });
+
+    it('cas particulier : un même domaine demandé deux fois pour le même type n\'est pas dupliqué', () => {
+        const result = groupExperienceFilters([
+            { domain: 'tech', type: 'detail' },
             { domain: 'tech', type: 'detail' },
         ]);
 

@@ -3,17 +3,12 @@ type GroupedExperienceFilter = { domains: string[], type: "detail" | "summary" }
 
 export const groupExperienceFilters = (filters: ExperienceFilter[]): GroupedExperienceFilter[] => {
 
-    const domainTypeMap = new Map<string, "detail" | "summary">();
+    const domainsByType = new Map<"detail" | "summary", string[]>();
     for (const filter of filters) {
-        if (domainTypeMap.get(filter.domain) === "detail") continue;
-        domainTypeMap.set(filter.domain, filter.type);
+        if (!domainsByType.has(filter.type)) domainsByType.set(filter.type, []);
+        const domains = domainsByType.get(filter.type)!;
+        if (!domains.includes(filter.domain)) domains.push(filter.domain);
     }
 
-    const groups = new Map<"detail" | "summary", string[]>();
-    for (const [domain, type] of domainTypeMap) {
-        if (!groups.has(type)) groups.set(type, []);
-        groups.get(type)!.push(domain);
-    }
-
-    return Array.from(groups, ([type, domains]) => ({ domains, type }));
+    return Array.from(domainsByType, ([type, domains]) => ({ domains, type }));
 }

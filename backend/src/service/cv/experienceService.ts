@@ -5,6 +5,7 @@ import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../..
 import { AppError } from "../../utils/AppError.js";
 import { slugify } from "../../utils/slugify.js";
 import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
+import { sortByTypeThenDateDesc } from "../../utils/sortByDate.js";
 
 export async function fetchExperience(data:{domains:string[], type:'detail'|'summary'}[]) {
 
@@ -50,7 +51,7 @@ export async function fetchExperience(data:{domains:string[], type:'detail'|'sum
 
     const promiseAllResults = await Promise.all(promises);
 
-    const results = promiseAllResults.flatMap(result => result.rows)
+    const results = sortByTypeThenDateDesc(promiseAllResults.flatMap(result => result.rows), row => row.type, row => row.end_date)
 
     if(results[0]===undefined) {
         throw new AppError(404, "Aucune donnée trouvée")

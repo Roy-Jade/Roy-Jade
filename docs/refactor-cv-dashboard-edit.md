@@ -76,7 +76,7 @@ Non testé sur affichage mobile/portable — pas une priorité tant que le besoi
 ## Autres points reportés (repérés en testant les 7 premiers formulaires)
 
 - **Réorganisation des listes** : pas de mécanisme pour réordonner hardskills/langues/loisirs dans l'aside, ni les tâches/skills à l'intérieur d'une expérience/formation. Probablement lié à un besoin de champ `position` explicite (déjà présent sur les tâches, absent sur hardskill/langue/hobby). À concevoir une fois le formulaire expérience/formation en place, pour couvrir les deux cas ensemble.
-- **Tri des expériences/formations** : actuellement rendues dans l'ordre de l'id (ordre naturel de la requête), pas par pertinence. Cible à terme : tri par date de fin, avec les `summary` en bas et les `detail` en haut, chaque groupe trié par date de fin en interne.
+- ~~**Tri des expériences/formations**~~ — **fait**, voir `docs/refactor-chronological-sort.md`.
 
 Aucun de ces trois points n'est bloquant pour la suite (formulaires expérience/formation) — notés pour une session future dédiée au design de ces interactions.
 

@@ -24,6 +24,7 @@ interface Props {
     itemId?: number;
     onClose: () => void;
     onPreviewChange?: (preview: EditPreview) => void;
+    ref?: (node: HTMLElement | null) => void;
 }
 
 const CATEGORY_LABELS: Record<DashboardCategory, string> = {
@@ -50,7 +51,7 @@ const CATEGORY_FORMS: Partial<Record<DashboardCategory, ComponentType<FormProps>
     formation: FormationForm,
 };
 
-export default function EditShell({ category, mode, itemId, onClose, onPreviewChange }: Props) {
+export default function EditShell({ category, mode, itemId, onClose, onPreviewChange, ref }: Props) {
     const Form = CATEGORY_FORMS[category];
     const label = `${mode === 'add' ? 'Ajout' : 'Édition'} — ${CATEGORY_LABELS[category]}`;
     const handlePreviewChange = onPreviewChange
@@ -58,7 +59,7 @@ export default function EditShell({ category, mode, itemId, onClose, onPreviewCh
         : undefined;
 
     return (
-        <section className="edit-shell" aria-label={label}>
+        <section ref={ref} className="edit-shell" aria-label={label}>
             {Form ? (
                 <Form mode={mode} itemId={itemId} onClose={onClose} onPreviewChange={handlePreviewChange} />
             ) : (

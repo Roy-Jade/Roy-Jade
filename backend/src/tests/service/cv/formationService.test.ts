@@ -59,6 +59,23 @@ describe('fetchFormation', () => {
 
         await expect(fetchFormation(["hylien"])).resolves.toEqual([
             {
+                id: 2,
+                slug: "temple-temps",
+                title: "Gardien du Temple du Temps",
+                institution: "Temple du Temps",
+                location: "Plaine d'Hyrule",
+                obtention_date: "1880",
+                description: "Certification de gardien des artefacts sacrés.",
+                level: "Certification",
+                tasks: [
+                    { content: "Protection de l'Épée de Légende", position: 1 }
+                ],
+                hardskills: [
+                    { slug: "combat-epee", label: "Combat à l'épée", level: "expert", category: "Combat", sub_category: null }
+                ],
+                domains: ["hylien"]
+            },
+            {
                 id: 1,
                 slug: "academie-hyrule",
                 title: "Maîtrise des Arts Magiques",
@@ -73,23 +90,6 @@ describe('fetchFormation', () => {
                 ],
                 hardskills: [
                     { slug: "magie-triforce", label: "Magie de la Triforce", level: "expert", category: "Magie", sub_category: "Triforce" }
-                ],
-                domains: ["hylien"]
-            },
-            {
-                id: 2,
-                slug: "temple-temps",
-                title: "Gardien du Temple du Temps",
-                institution: "Temple du Temps",
-                location: "Plaine d'Hyrule",
-                obtention_date: "1880",
-                description: "Certification de gardien des artefacts sacrés.",
-                level: "Certification",
-                tasks: [
-                    { content: "Protection de l'Épée de Légende", position: 1 }
-                ],
-                hardskills: [
-                    { slug: "combat-epee", label: "Combat à l'épée", level: "expert", category: "Combat", sub_category: null }
                 ],
                 domains: ["hylien"]
             }

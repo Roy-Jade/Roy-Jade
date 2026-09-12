@@ -1,4 +1,5 @@
 import db from '../../config/db.js';
+import { sortByDateDesc, sortByTypeThenDateDesc } from '../../utils/sortByDate.js';
 
 export async function fetchDashboard() {
 
@@ -91,8 +92,8 @@ export async function fetchDashboard() {
         domain : domainResult.rows,
         softskill : softskillResult.rows,
         hardskill : hardskillResult.rows,
-        experience : experienceResult.rows,
-        formation : formationResult.rows,
+        experience : sortByTypeThenDateDesc(experienceResult.rows, row => row.type, row => row.end_date),
+        formation : sortByDateDesc(formationResult.rows, row => row.obtention_date),
     }
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
@@ -82,6 +82,10 @@ export default function CV() {
         setPreview(null);
     };
 
+    const scrollToMenuOnlyForm = useCallback((node: HTMLElement | null) => {
+        node?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, []);
+
     const isAdmin = !!session?.isAdmin;
     const menuOnlyEditing = editing && MENU_ONLY_CATEGORIES.includes(editing.category) ? editing : null;
 
@@ -125,10 +129,12 @@ export default function CV() {
                         />
                         {menuOnlyEditing && (
                             <EditShell
+                                key={`${menuOnlyEditing.category}-${menuOnlyEditing.mode}-${menuOnlyEditing.item?.id ?? 'new'}`}
                                 category={menuOnlyEditing.category}
                                 mode={menuOnlyEditing.mode}
                                 itemId={menuOnlyEditing.item?.id}
                                 onClose={closeEditing}
+                                ref={scrollToMenuOnlyForm}
                             />
                         )}
                     </>

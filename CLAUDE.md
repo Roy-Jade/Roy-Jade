@@ -122,6 +122,7 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-cv-dashboard-edit.md](docs/refactor-cv-dashboard-edit.md) — édition en direct sur rendu CV côté dashboard admin. Terminé (branche `cv-dashboard-refactor`, mergée).
 - [docs/refactor-date-format.md](docs/refactor-date-format.md) — format `jj/mm/aaaa` forcé (année seule obligatoire) sur les dates d'expérience/formation, saisie en 3 champs, validation+normalisation Zod, `CHECK` en base. Terminé (branche `date-format`).
 - [docs/refactor-slug-generation.md](docs/refactor-slug-generation.md) — génération automatique des slugs (expérience, formation, hardskill, softskill, langue, loisir, domaine) au lieu d'une saisie libre. Terminé.
+- [docs/refactor-chronological-sort.md](docs/refactor-chronological-sort.md) — tri par date de fin/obtention décroissante (expériences groupées par type puis triées, formations triées), plus deux bugs corrigés dans la foulée (édition d'expérience summary, scroll manquant sur les formulaires domaine/identité/softskill). Terminé.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 

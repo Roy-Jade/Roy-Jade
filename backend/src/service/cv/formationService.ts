@@ -5,6 +5,7 @@ import { deleteInJunctionTable, insertInJunctionTable, insertTasks } from "../..
 import { AppError } from "../../utils/AppError.js";
 import { slugify } from "../../utils/slugify.js";
 import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
+import { sortByDateDesc } from "../../utils/sortByDate.js";
 
 export async function fetchFormation(data:string[]) {
 
@@ -44,7 +45,7 @@ export async function fetchFormation(data:string[]) {
     if(results.rows[0]===undefined) {
         throw new AppError(404, "Aucune donnée trouvée")
     }
-    return results.rows
+    return sortByDateDesc(results.rows, row => row.obtention_date)
 }
 
 

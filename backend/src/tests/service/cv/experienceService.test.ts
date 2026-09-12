@@ -66,28 +66,7 @@ describe('fetchExperience', () => {
             ]});
 
         await expect(fetchExperience([{"domains":["combattant", "magicien"], "type":"detail"}])).resolves.toEqual([
-                { 
-                    id:1,
-                    slug:"ranger",
-                    type:"detail",
-                    title:"Chevalier ranger mercenaire",
-                    company:"Poing enflammé",
-                    location:"Porte de Baldur",
-                    start_date:"1396",
-                    end_date:"1401",
-                    description:"En association du Point enflammé, la mission consistait à démanteler un culte maléfique qui prenait ces racines dans les profondeurs de la Porte de Baldur.",
-                    tasks :[
-                        {content:"Dépistage des cellules de cultistes", position:1},
-                        {content:"Suppresion des leaders du culte", position:2},
-                    ],
-                    softskills: [
-                        {slug:"autonomie", label:"Autonomie"}
-                    ],
-                    hardskills: [
-                        {slug:"traque-urbain", label:"Capacités de traque en milieu urbain", level:"expert", category:"Survie", sub_category:"Pistage"}
-                    ]
-                },
-                { 
+                {
                     id:2,
                     slug:"occultiste",
                     type:"detail",
@@ -107,6 +86,27 @@ describe('fetchExperience', () => {
                     ],
                     hardskills: [
                         {slug:"occultisme", label:"Compétences de combat d'occultiste", level:"intermédiaire", category:"Magie", sub_category:"Occultisme"}
+                    ]
+                },
+                {
+                    id:1,
+                    slug:"ranger",
+                    type:"detail",
+                    title:"Chevalier ranger mercenaire",
+                    company:"Poing enflammé",
+                    location:"Porte de Baldur",
+                    start_date:"1396",
+                    end_date:"1401",
+                    description:"En association du Point enflammé, la mission consistait à démanteler un culte maléfique qui prenait ces racines dans les profondeurs de la Porte de Baldur.",
+                    tasks :[
+                        {content:"Dépistage des cellules de cultistes", position:1},
+                        {content:"Suppresion des leaders du culte", position:2},
+                    ],
+                    softskills: [
+                        {slug:"autonomie", label:"Autonomie"}
+                    ],
+                    hardskills: [
+                        {slug:"traque-urbain", label:"Capacités de traque en milieu urbain", level:"expert", category:"Survie", sub_category:"Pistage"}
                     ]
                 },
             ]);
