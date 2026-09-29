@@ -5,4 +5,5 @@ export type Hardskill = {
     level: string;
     category: string;
     sub_category: string | null;
+    position: number;
 };

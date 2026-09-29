@@ -4,7 +4,7 @@ import { AppError } from "./AppError.js";
 
 export const getHardskillById = async (id:number) => {
     const results = await db.query(`
-        SELECT id, slug, label, level, category, sub_category
+        SELECT id, slug, label, level, category, sub_category, position
         FROM hardskill
         WHERE id = $1
         `, [id]);

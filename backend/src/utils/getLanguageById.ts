@@ -3,7 +3,7 @@ import { AppError } from "./AppError.js";
 
 export const getLanguageById = async (id: number) => {
     const results = await db.query(`
-        SELECT id, slug, label, level
+        SELECT id, slug, label, level, position
         FROM language
         WHERE id = $1
         `, [id]);

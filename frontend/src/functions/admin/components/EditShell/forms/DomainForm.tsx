@@ -45,7 +45,9 @@ export default function DomainForm({ mode, itemId, onClose }: Props) {
             showToast(mode === 'edit' ? 'Domaine mis à jour' : 'Domaine ajouté');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

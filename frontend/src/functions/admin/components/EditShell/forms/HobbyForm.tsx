@@ -50,7 +50,9 @@ export default function HobbyForm({ mode, itemId, onClose, onPreviewChange }: Pr
             showToast(mode === 'edit' ? "Centre d'intérêt mis à jour" : "Centre d'intérêt ajouté");
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

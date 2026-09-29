@@ -26,12 +26,20 @@ try {
 
 Couvert par `src/tests/service/cv/experienceService.test.ts` / `formationService.test.ts` (cas nominal : `BEGIN` → opérations → `COMMIT` → `client.release()` ; cas d'échec : `ROLLBACK`, `COMMIT` jamais atteint, `client.release()` quand même appelé, aucune donnée exposée) et `src/tests/utils/editInJunctionTable.test.ts`.
 
-## Bug connu : ligne fantôme sur les JSON_AGG sans FILTER (tasks/hardskills/softskills)
+## Bug connu : ligne fantôme sur les JSON_AGG sans FILTER (tasks/hardskills/softskills) — corrigé
 
-**Symptôme :** une formation (ou expérience) sans tâche renvoie `tasks: [{ id: null, content: null, position: null }]` au lieu de `tasks: []`. S'affiche comme une ligne de tâche vide/"null" côté CV et dans le dashboard. Confirmé via `GET /api/cv/formation` (formations sans tâche, ex. id 2/3/4 du seed actuel).
+**Symptôme (avant correctif) :** une formation (ou expérience) sans tâche renvoyait `tasks: [{ id: null, content: null, position: null }]` au lieu de `tasks: []`. S'affichait comme une ligne de tâche vide/"null" côté CV et dans le dashboard.
 
-**Cause :** `JSON_AGG(DISTINCT jsonb_build_object(...))` sur un `LEFT JOIN ..._task` sans ligne correspondante produit une ligne "tout NULL" issue du LEFT JOIN, que `JSON_AGG` enveloppe quand même en tableau à un élément au lieu de renvoyer un tableau vide. `dashboardService.fetchDashboard` évite déjà ce problème via `COALESCE(JSON_AGG(...) FILTER (WHERE task.content IS NOT NULL), '[]')` — mais `experienceService.fetchExperience`, `formationService.fetchFormation`, `getExperienceById` et `getFormationById` n'ont pas ce traitement (ni sur `tasks`, ni sur `hardskills`/`softskills`, potentiellement affectés par le même bug si un item n'a aucune compétence liée).
+**Cause :** `JSON_AGG(DISTINCT jsonb_build_object(...))` sur un `LEFT JOIN ..._task` sans ligne correspondante produit une ligne "tout NULL" issue du LEFT JOIN, que `JSON_AGG` enveloppe quand même en tableau à un élément au lieu de renvoyer un tableau vide.
 
-**Fix à appliquer (non fait) :** ajouter `FILTER (WHERE <clé de jointure> IS NOT NULL)` + `COALESCE(..., '[]')` sur chaque `JSON_AGG` bâti sur un `LEFT JOIN` dans ces quatre fichiers, sur le modèle de `dashboardService.fetchDashboard`. Les `JOIN` sur `domain` sont en `INNER JOIN`, non concernés.
+**Fix appliqué :** `COALESCE(JSON_AGG(...) FILTER (WHERE <clé de jointure> IS NOT NULL), '[]')` sur chaque `JSON_AGG` bâti sur un `LEFT JOIN`, sur le modèle déjà en place dans `dashboardService.fetchDashboard`. Appliqué dans `experienceService.fetchExperience` (tasks/softskills/hardskills), `formationService.fetchFormation` (tasks/hardskills), `utils/getExperienceById.ts` (tasks/softskills/hardskills), `utils/getFormationById.ts` (tasks/hardskills). Les `JOIN` sur `domain` restent en `INNER JOIN`, non concernés (toujours au moins une ligne).
 
-**Priorité :** cosmétique (affichage), pas un problème d'intégrité des données. Repéré pendant `cv-dashboard-refactor`, sans lien avec ce chantier — pas encore corrigé.
+Vérifié via `GET /api/cv/formation?data=science` (formations id 2/3/4, sans tâche dans le seed actuel) : `tasks: []` propre. Suite de tests (`experienceService.test.ts`, `formationService.test.ts`) et `tsc` propres.
+
+## `dashboardService.fetchDashboard` / `GET /dashboard` (`getOverview`) — code mort
+
+Découvert pendant le chantier de réorganisation des listes (`docs/refactor-list-reordering.md`, phase 3) : cet endpoint et son service ne sont appelés par **aucun composant frontend**, ni l'admin ni le CV public. Le vrai chemin de données pour hardskill/softskill/langue/loisir passe par `hardskillService`/`softskillService`/`languageService`/`hobbyService` (montés sous `/aside`, `/hardskill`, `/softskill`).
+
+**Conséquence importante :** un correctif antérieur ([[project_ordering_bug]] côté mémoire IA) avait ajouté `ORDER BY id` dans `dashboardService.ts` pour régler un bug d'ordre — mais comme ce fichier n'est pas sur le vrai chemin, **le bug est resté actif** sur les endpoints réellement utilisés (qui n'avaient aucun `ORDER BY`) jusqu'à la phase 3 de la réorganisation des listes, qui l'a corrigé pour de bon via une vraie colonne `position` + `ORDER BY position` sur les 4 services réels.
+
+**Non traité :** `dashboardService.ts`/`getOverview`/la route `GET /dashboard` n'ont pas été supprimés — hors périmètre du chantier qui a fait cette découverte. Code mort à supprimer un jour, avec ses tests dédiés.

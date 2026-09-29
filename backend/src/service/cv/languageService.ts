@@ -6,7 +6,7 @@ import { slugify } from "../../utils/slugify.js";
 import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 
 export async function fetchLanguage() {
-    const results = await db.query(`SELECT id, slug, label, level FROM language`, []);
+    const results = await db.query(`SELECT id, slug, label, level, position FROM language ORDER BY position`, []);
 
     if (!results.rows.length) {
         throw new AppError(404, "Aucune donnée trouvée");
@@ -18,8 +18,8 @@ export async function addLanguage(data: Language) {
     const slug = await generateUniqueSlug(db, "language", slugify({ label: data.label }));
 
     const insert = await db.query(`
-        INSERT INTO language (slug, label, level)
-        VALUES ($1, $2, $3)
+        INSERT INTO language (slug, label, level, position)
+        VALUES ($1, $2, $3, (SELECT COALESCE(MAX(position), -1) + 1 FROM language))
         RETURNING id
         `, [slug, data.label, data.level ?? null]);
 

@@ -8,9 +8,10 @@ interface Props {
     editingId: number | null;
     onEdit: (skill: Softskill) => void;
     onAdd: () => void;
+    onReorder: (id: number, direction: 'up' | 'down') => void;
 }
 
-export default function DashboardSoftskill({ softskills, editingId, onEdit, onAdd }: Props) {
+export default function DashboardSoftskill({ softskills, editingId, onEdit, onAdd, onReorder }: Props) {
     return (
         <section className="dashboard-section dashboard-softskill">
             <h2>Soft skills</h2>
@@ -19,11 +20,15 @@ export default function DashboardSoftskill({ softskills, editingId, onEdit, onAd
                     <span>Soft skill</span>
                     <span />
                 </div>
-                {softskills.map(skill => (
+                {softskills.map((skill, i) => (
                     <div key={skill.id} className={`items-list__row${editingId === skill.id ? ' items-list__row--editing' : ''}`}>
                         <div className="items-list__row-data">
                             <span>{skill.label}</span>
-                            <EditButton onClick={() => onEdit(skill)} />
+                            <span className="items-list__actions">
+                                <button type="button" className="reorder-button" aria-label="Monter" disabled={i === 0} onClick={() => onReorder(skill.id, 'up')}>↑</button>
+                                <button type="button" className="reorder-button" aria-label="Descendre" disabled={i === softskills.length - 1} onClick={() => onReorder(skill.id, 'down')}>↓</button>
+                                <EditButton onClick={() => onEdit(skill)} />
+                            </span>
                         </div>
                     </div>
                 ))}

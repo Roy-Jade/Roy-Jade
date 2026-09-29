@@ -104,7 +104,7 @@ Les scripts SQL dans `backend/conception/` sont exécutés automatiquement au d�
 
 **Fichier concerné :** `frontend/src/functions/admin/components/Dashboard/DashboardHardskill/DashboardHardskill.tsx`.
 
-Le tri/recherche sur les listes de sélection (checkboxes hardskill/softskill dans `ExperienceForm`/`FormationForm`) est **fait**, voir `docs/refactor-cv-closure.md`. Reste ouvert : la liste de *gestion* des hardskills elle-même (le tableau `DashboardHardskill`, accessible depuis le menu cascade, qui liste tous les hardskills pour les éditer/en ajouter) n'a pas de tri/recherche — même problème de liste qui s'allonge, UI différente (tableau avec bouton éditer, pas des checkboxes). Pas encore demandé explicitement — ne pas commencer sans en discuter d'abord.
+Le tri/recherche sur les listes de sélection (checkboxes hardskill/softskill dans `ExperienceForm`/`FormationForm`) est **fait**, voir `docs/refactor-cv-closure.md`. La réorganisation manuelle (boutons haut/bas) de cette même liste de gestion est **faite**, voir `docs/refactor-list-reordering.md`. Reste ouvert : la *recherche* dans cette liste de gestion — elle s'allonge sans moyen de filtrer par texte (contrairement aux checklists de sélection). Pas encore demandé explicitement — ne pas commencer sans en discuter d'abord.
 
 ## Documentation
 
@@ -116,6 +116,8 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-slug-generation.md](docs/refactor-slug-generation.md) — génération automatique des slugs (expérience, formation, hardskill, softskill, langue, loisir, domaine) au lieu d'une saisie libre. Terminé.
 - [docs/refactor-chronological-sort.md](docs/refactor-chronological-sort.md) — tri par date de fin/obtention décroissante (expériences groupées par type puis triées, formations triées), plus deux bugs corrigés dans la foulée (édition d'expérience summary, scroll manquant sur les formulaires domaine/identité/softskill). Terminé.
 - [docs/refactor-cv-closure.md](docs/refactor-cv-closure.md) — retrait du filtre detail/summary par domaine (devenu redondant avec le masquage granulaire) + tri/recherche sur les listes hardskill/softskill dans les formulaires expérience/formation. Terminé.
+- [docs/refactor-list-reordering.md](docs/refactor-list-reordering.md) — réorganisation des listes (boutons haut/bas, pas de drag-and-drop). Phase 1 (tâches) et phase 3 (listes de l'aside hardskill/softskill/langue/loisir, colonne `position` ajoutée) terminées ; phase 2 (skills par item d'expérience/formation) close en YAGNI, comportement actuel jugé suffisant.
+- [docs/refactor-login-redirect.md](docs/refactor-login-redirect.md) — après connexion, redirection vers la page d'origine au lieu de `/cv` en dur, via suivi applicatif du dernier chemin visité (`sessionStorage`) plutôt que l'historique navigateur — rend un redirect vers un domaine externe structurellement impossible. Terminé.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 

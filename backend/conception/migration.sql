@@ -27,16 +27,18 @@ CREATE TABLE identity (
 
 CREATE TABLE language (
     id      SERIAL PRIMARY KEY,
-    slug    VARCHAR(100) UNIQUE NOT NULL, 
+    slug    VARCHAR(100) UNIQUE NOT NULL,
     label   VARCHAR(100) NOT NULL,
-    level   VARCHAR(50)
+    level   VARCHAR(50),
+    position SMALLINT NOT NULL
 );
 
 CREATE TABLE hobby (
     id      SERIAL PRIMARY KEY,
     slug    VARCHAR(100) UNIQUE NOT NULL,
     label   VARCHAR(100) NOT NULL,
-    supplement   VARCHAR(200)
+    supplement   VARCHAR(200),
+    position SMALLINT NOT NULL
 );
 
 CREATE TABLE profile (
@@ -55,7 +57,8 @@ CREATE TABLE domain (
 CREATE TABLE softskill (
     id    SERIAL PRIMARY KEY,
     slug  VARCHAR(100) UNIQUE NOT NULL,
-    label VARCHAR(150) NOT NULL
+    label VARCHAR(150) NOT NULL,
+    position SMALLINT NOT NULL
 );
 
 CREATE TABLE hardskill (
@@ -64,7 +67,8 @@ CREATE TABLE hardskill (
     label        VARCHAR(200) NOT NULL,
     level        VARCHAR(50),
     category     VARCHAR(50),
-    sub_category VARCHAR(50)
+    sub_category VARCHAR(50),
+    position     SMALLINT NOT NULL
 );
 
 CREATE TABLE experience (

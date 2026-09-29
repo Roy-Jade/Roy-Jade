@@ -43,7 +43,9 @@ export default function SoftskillForm({ mode, itemId, onClose }: Props) {
             showToast(mode === 'edit' ? 'Soft skill mis à jour' : 'Soft skill ajouté');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

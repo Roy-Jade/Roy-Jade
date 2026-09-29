@@ -34,6 +34,7 @@ export interface Language {
     slug: string;
     label: string;
     level: string | null;
+    position: number;
 }
 
 export interface Hobby {
@@ -41,6 +42,7 @@ export interface Hobby {
     slug: string;
     label: string;
     supplement: string | null;
+    position: number;
 }
 
 export interface Profile {
@@ -60,6 +62,7 @@ export interface Softskill {
     id: number;
     slug: string;
     label: string;
+    position: number;
 }
 
 export interface Hardskill {
@@ -69,6 +72,7 @@ export interface Hardskill {
     level: string | null;
     category: string | null;
     sub_category: string | null;
+    position: number;
 }
 
 export interface Experience {
@@ -130,7 +134,7 @@ export const patchIdentity = async (data: Partial<Omit<Identity, 'id'>>): Promis
     return response.result;
 };
 
-export const postLanguage = async (data: Omit<Language, 'id' | 'slug'>): Promise<Language> => {
+export const postLanguage = async (data: Omit<Language, 'id' | 'slug' | 'position'>): Promise<Language> => {
     const response = await privateApi('/api/cv/dashboard/language', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -146,7 +150,7 @@ export const patchLanguage = async (id: number, data: Partial<Omit<Language, 'id
     return response.result;
 };
 
-export const postHobby = async (data: Omit<Hobby, 'id' | 'slug'>): Promise<Hobby> => {
+export const postHobby = async (data: Omit<Hobby, 'id' | 'slug' | 'position'>): Promise<Hobby> => {
     const response = await privateApi('/api/cv/dashboard/hobby', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -162,7 +166,7 @@ export const patchHobby = async (id: number, data: Partial<Omit<Hobby, 'id' | 's
     return response.result;
 };
 
-export const postSoftskill = async (data: Omit<Softskill, 'id' | 'slug'>): Promise<Softskill> => {
+export const postSoftskill = async (data: Omit<Softskill, 'id' | 'slug' | 'position'>): Promise<Softskill> => {
     const response = await privateApi('/api/cv/dashboard/softskill', {
         method: 'POST',
         body: JSON.stringify({ data }),
@@ -178,7 +182,7 @@ export const patchSoftskill = async (id: number, data: Partial<Omit<Softskill, '
     return response.result;
 };
 
-export const postHardskill = async (data: Omit<Hardskill, 'id' | 'slug'>): Promise<Hardskill> => {
+export const postHardskill = async (data: Omit<Hardskill, 'id' | 'slug' | 'position'>): Promise<Hardskill> => {
     const response = await privateApi('/api/cv/dashboard/hardskill', {
         method: 'POST',
         body: JSON.stringify({ data }),

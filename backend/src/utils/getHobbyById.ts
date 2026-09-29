@@ -3,7 +3,7 @@ import { AppError } from "./AppError.js";
 
 export const getHobbyById = async (id: number) => {
     const results = await db.query(`
-        SELECT id, slug, label, supplement
+        SELECT id, slug, label, supplement, position
         FROM hobby
         WHERE id = $1
         `, [id]);

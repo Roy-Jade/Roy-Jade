@@ -61,7 +61,9 @@ export default function ProfileForm({ mode, itemId, onClose, onPreviewChange }: 
             showToast(mode === 'edit' ? 'Profil mis à jour' : 'Profil ajouté');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

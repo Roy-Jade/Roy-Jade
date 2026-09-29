@@ -3,4 +3,5 @@ export type Language = {
     slug: string;
     label: string;
     level: string | null;
+    position: number;
 };

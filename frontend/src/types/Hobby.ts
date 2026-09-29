@@ -3,4 +3,5 @@ export type Hobby = {
     slug: string;
     label: string;
     supplement: string | null;
+    position: number;
 };

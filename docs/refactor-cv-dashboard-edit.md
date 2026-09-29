@@ -75,7 +75,7 @@ Non testé sur affichage mobile/portable — pas une priorité tant que le besoi
 
 ## Autres points reportés (repérés en testant les 7 premiers formulaires)
 
-- **Réorganisation des listes** : pas de mécanisme pour réordonner hardskills/langues/loisirs dans l'aside, ni les tâches/skills à l'intérieur d'une expérience/formation. Probablement lié à un besoin de champ `position` explicite (déjà présent sur les tâches, absent sur hardskill/langue/hobby). À concevoir une fois le formulaire expérience/formation en place, pour couvrir les deux cas ensemble.
+- **Réorganisation des listes** — voir `docs/refactor-list-reordering.md` pour le détail. Phase 1 (tâches d'une expérience/formation) faite. Restent : ordre des hardskills/softskills sélectionnés dans une expérience/formation (migration nécessaire, colonne `position` absente des tables de liaison), ordre des listes de l'aside hardskill/softskill/langue/loisir (migration nécessaire, triées par `id` aujourd'hui).
 - ~~**Tri des expériences/formations**~~ — **fait**, voir `docs/refactor-chronological-sort.md`.
 
 Aucun de ces trois points n'est bloquant pour la suite (formulaires expérience/formation) — notés pour une session future dédiée au design de ces interactions.
@@ -102,10 +102,12 @@ Profil : bouton Éditer ajouté (cohérent, l'ancrage existait déjà) ; pas de 
 
 `ToastContext` (Context React, `frontend/src/functions/admin/context/ToastContext.tsx`) + `ToastStack` (rendu une fois dans `CV.tsx`, en haut de l'écran, `position: fixed`). Choix Context plutôt que callback-prop (contrairement à l'aperçu live) : pas de pattern de prop-drilling existant à respecter ici, et il aurait fallu traverser ~8 niveaux (`CV.tsx` → `CvSheet` → 4 conteneurs → `EditOverlay` → `EditShell` → 9 formulaires, dont 3 rendus hors de cette chaîne pour identité/domaine/softskill) pour un simple signal ponctuel.
 
-`showToast(text, variant?)` appelé dans les 9 formulaires juste après la résolution de la mutation (donc un état réel, pas optimiste) et juste avant `onClose()`. Variante `success` (`role="status"`, `aria-live="polite"`) seule câblée pour l'instant ; variante `error` prête (`role="alert"`, assertive) mais pas encore déclenchée — les erreurs restent affichées inline dans le formulaire (`dash-error`), pas dupliquées en toast, pour rester dans le périmètre demandé (confirmation de succès uniquement). Auto-disparition à 4s, clic pour fermer immédiatement.
+`showToast(text, variant?)` appelé dans les 9 formulaires juste après la résolution de la mutation (donc un état réel, pas optimiste) et juste avant `onClose()`. Variante `success` (`role="status"`, `aria-live="polite"`) déclenchée à la sauvegarde. Auto-disparition à 4s, clic pour fermer immédiatement.
 
 Confirmé fonctionnel par test utilisateur (tests visuels).
 
+**Variante `error` — câblée.** Chaque `catch` des 9 formulaires appelle désormais aussi `showToast(message, 'error')`, en plus du message inline (`dash-error`) qui reste affiché dans le formulaire. Choix explicite de garder les deux plutôt que de remplacer l'inline : le toast attire l'œil immédiatement (le formulaire peut être hors du champ de vision, notamment dans la coquille en overlay), l'inline reste pour le détail exact une fois le formulaire regardé.
+
 ## État du chantier
 
-**Le refactor dashboard est terminé.** Les 9 formulaires, l'aperçu live, la coquille en overlay, les boutons edit/add sur le CV et le toast sont tous fonctionnels et confirmés par test utilisateur réel. Points volontairement non traités, listés ci-dessus, pour une session future si le besoin se fait sentir : réorganisation des listes (aside + tâches/skills), tri des expériences/formations par date, clamp de la coquille aux bords d'écran, responsive mobile de l'admin, routes DELETE (branche séparée), variante toast d'erreur.
+**Le refactor dashboard est terminé.** Les 9 formulaires, l'aperçu live, la coquille en overlay, les boutons edit/add sur le CV et le toast (succès + erreur) sont tous fonctionnels. Points volontairement non traités, listés ci-dessus, pour une session future si le besoin se fait sentir : réorganisation des listes (aside + tâches/skills), clamp de la coquille aux bords d'écran, responsive mobile de l'admin, routes DELETE (branche séparée).

@@ -8,8 +8,10 @@ import NotFound from './functions/core/pages/NotFound/NotFound';
 import Portfolio from './functions/portfolio/pages/Portfolio/Portfolio';
 import CV from './functions/cv/pages/CV/CV';
 import Login from './functions/admin/pages/Login/Login';
+import { useTrackLastVisitedPath } from './functions/core/hooks/useTrackLastVisitedPath';
 
 export default function App() {
+  useTrackLastVisitedPath();
 
   return (
     <>

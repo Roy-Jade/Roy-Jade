@@ -3,6 +3,7 @@ import {z} from "zod";
 export const SoftskillSchema = z.object({
     id: z.number().optional(),
     label: z.string(),
+    position: z.number().int().optional(),
 });
 
 export const SoftskillKeyList = Object.keys(SoftskillSchema.omit({id: true}).shape)
@@ -15,6 +16,7 @@ export const HardskillSchema = z.object({
     level: z.string().optional(),
     category: z.string().optional(),
     sub_category: z.string().optional(),
+    position: z.number().int().optional(),
 });
 
 export const HardskillKeyList = Object.keys(HardskillSchema.omit({id: true}).shape)

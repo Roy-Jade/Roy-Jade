@@ -6,7 +6,7 @@ import { slugify } from "../../utils/slugify.js";
 import { generateUniqueSlug } from "../../utils/generateUniqueSlug.js";
 
 export async function fetchHobby() {
-    const results = await db.query(`SELECT id, slug, label, supplement FROM hobby`, []);
+    const results = await db.query(`SELECT id, slug, label, supplement, position FROM hobby ORDER BY position`, []);
 
     if (!results.rows.length) {
         throw new AppError(404, "Aucune donnée trouvée");
@@ -18,8 +18,8 @@ export async function addHobby(data: Hobby) {
     const slug = await generateUniqueSlug(db, "hobby", slugify({ label: data.label }));
 
     const insert = await db.query(`
-        INSERT INTO hobby (slug, label, supplement)
-        VALUES ($1, $2, $3)
+        INSERT INTO hobby (slug, label, supplement, position)
+        VALUES ($1, $2, $3, (SELECT COALESCE(MAX(position), -1) + 1 FROM hobby))
         RETURNING id
         `, [slug, data.label, data.supplement ?? null]);
 

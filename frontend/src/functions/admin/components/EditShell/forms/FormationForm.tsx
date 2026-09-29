@@ -45,6 +45,13 @@ const toInput = (f: FormData): FormationInput => ({
 const toggleId = (ids: number[], id: number): number[] =>
     ids.includes(id) ? ids.filter(x => x !== id) : [...ids, id];
 
+const moveItem = <T,>(items: T[], from: number, to: number): T[] => {
+    if (to < 0 || to >= items.length) return items;
+    const next = items.slice();
+    [next[from], next[to]] = [next[to], next[from]];
+    return next;
+};
+
 export default function FormationForm({ mode, itemId, onClose, onPreviewChange }: Props) {
     const queryClient = useQueryClient();
     const { showToast } = useToast();
@@ -130,7 +137,9 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
             showToast(mode === 'edit' ? 'Formation mise à jour' : 'Formation ajoutée');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 
@@ -176,6 +185,8 @@ export default function FormationForm({ mode, itemId, onClose, onPreviewChange }
                             value={task}
                             onChange={e => setTasks(p => p.map((t, j) => j === i ? e.target.value : t))}
                         />
+                        <button type="button" aria-label="Monter" disabled={i === 0} onClick={() => setTasks(p => moveItem(p, i, i - 1))}>↑</button>
+                        <button type="button" aria-label="Descendre" disabled={i === tasks.length - 1} onClick={() => setTasks(p => moveItem(p, i, i + 1))}>↓</button>
                         <button type="button" onClick={() => setTasks(p => p.filter((_, j) => j !== i))}>Supprimer</button>
                     </div>
                 ))}

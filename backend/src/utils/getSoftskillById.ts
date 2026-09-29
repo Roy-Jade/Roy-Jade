@@ -4,7 +4,7 @@ import { AppError } from "./AppError.js";
 
 export const getSoftskillById = async (id:number) => {
     const results = await db.query(`
-        SELECT id, slug, label
+        SELECT id, slug, label, position
         FROM softskill
         WHERE id = $1
         `, [id]);

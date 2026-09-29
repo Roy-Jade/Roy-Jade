@@ -14,18 +14,18 @@ export const getExperienceById = async (id:number) => {
             exp.start_date,
             exp.end_date,
             exp.description,
-            JSON_AGG(DISTINCT jsonb_build_object(
-                'content', task.content, 
-                'position', task.position)) AS tasks, 
-            JSON_AGG(DISTINCT jsonb_build_object(
-                'slug', soft.slug, 'label', 
-                soft.label)) AS softskills, 
-            JSON_AGG(DISTINCT jsonb_build_object(
-                'slug', hard.slug, 
-                'label', hard.label, 
-                'level', hard.level, 
-                'category', hard.category, 
-                'sub_category', hard.sub_category)) AS hardskills,
+            COALESCE(JSON_AGG(DISTINCT jsonb_build_object(
+                'content', task.content,
+                'position', task.position)) FILTER (WHERE task.content IS NOT NULL), '[]') AS tasks,
+            COALESCE(JSON_AGG(DISTINCT jsonb_build_object(
+                'slug', soft.slug, 'label',
+                soft.label)) FILTER (WHERE soft.slug IS NOT NULL), '[]') AS softskills,
+            COALESCE(JSON_AGG(DISTINCT jsonb_build_object(
+                'slug', hard.slug,
+                'label', hard.label,
+                'level', hard.level,
+                'category', hard.category,
+                'sub_category', hard.sub_category)) FILTER (WHERE hard.slug IS NOT NULL), '[]') AS hardskills,
             JSON_AGG(DISTINCT jsonb_build_object(
                 'slug', dom.slug, 
                 'label', dom.label)) AS domains

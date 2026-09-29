@@ -10,8 +10,10 @@ export async function fetchSoftskill() {
         SELECT
             soft.id,
             soft.slug,
-            soft.label
+            soft.label,
+            soft.position
             FROM softskill soft
+            ORDER BY soft.position
         `, []);
 
     if(results.rows[0]===undefined) {
@@ -24,8 +26,8 @@ export async function addSoftskill(data:Softskill) {
     const slug = await generateUniqueSlug(db, "softskill", slugify({ label: data.label }));
 
     const insertSoftskill = await db.query(`
-        INSERT INTO softskill (slug, label)
-        VALUES ($1, $2)
+        INSERT INTO softskill (slug, label, position)
+        VALUES ($1, $2, (SELECT COALESCE(MAX(position), -1) + 1 FROM softskill))
         RETURNING id
         `, [
             slug,

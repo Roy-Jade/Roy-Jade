@@ -57,7 +57,9 @@ export default function LanguageForm({ mode, itemId, onClose, onPreviewChange }:
             showToast(mode === 'edit' ? 'Langue mise à jour' : 'Langue ajoutée');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

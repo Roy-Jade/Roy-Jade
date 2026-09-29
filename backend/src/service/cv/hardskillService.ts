@@ -15,16 +15,18 @@ export async function fetchHardskill(category:string[], level:string) {
     const levelTable = levels.slice(levels.indexOf(level))
 
     const results = await db.query(`
-        SELECT 
+        SELECT
             hard.id,
             hard.slug,
             hard.label,
             hard.level,
             hard.category,
-            hard.sub_category
+            hard.sub_category,
+            hard.position
             FROM hardskill hard
             WHERE hard.category = ANY($1)
             AND hard.level = ANY($2)
+            ORDER BY hard.position
             `, [category, levelTable]);
     
     if(results.rows[0]===undefined) {
@@ -37,8 +39,8 @@ export async function addHardskill(data:Hardskill) {
     const slug = await generateUniqueSlug(db, "hardskill", slugify({ label: data.label }));
 
     const insertHardskill = await db.query(`
-        INSERT INTO hardskill (slug, label, level, category, sub_category)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO hardskill (slug, label, level, category, sub_category, position)
+        VALUES ($1, $2, $3, $4, $5, (SELECT COALESCE(MAX(position), -1) + 1 FROM hardskill))
         RETURNING id
         `, [
             slug,

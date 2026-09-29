@@ -71,16 +71,18 @@ describe('fetchHardskill', () => {
             }
         ]);
         expect(db.query).toHaveBeenCalledWith(`
-        SELECT 
+        SELECT
             hard.id,
             hard.slug,
             hard.label,
             hard.level,
             hard.category,
-            hard.sub_category
+            hard.sub_category,
+            hard.position
             FROM hardskill hard
             WHERE hard.category = ANY($1)
             AND hard.level = ANY($2)
+            ORDER BY hard.position
             `, [["dressage", "soins-pokemon"], ["notions", "courant", "maîtrise"]]);
     });
 

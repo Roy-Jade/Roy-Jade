@@ -70,7 +70,9 @@ export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }
             showToast(mode === 'edit' ? 'Compétence mise à jour' : 'Compétence ajoutée');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

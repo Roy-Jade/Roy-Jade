@@ -53,7 +53,9 @@ export default function IdentityForm({ onClose }: Props) {
             showToast('Identité mise à jour');
             onClose();
         } catch (err) {
-            setErrorMessage(isApiError(err) ? err.message : 'Erreur inattendue');
+            const message = isApiError(err) ? err.message : 'Erreur inattendue';
+            setErrorMessage(message);
+            showToast(message, 'error');
         }
     };
 

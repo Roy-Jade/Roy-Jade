@@ -8,9 +8,10 @@ interface Props {
     editingId: number | null;
     onEdit: (hobby: Hobby) => void;
     onAdd: () => void;
+    onReorder: (id: number, direction: 'up' | 'down') => void;
 }
 
-export default function DashboardHobby({ hobbies, editingId, onEdit, onAdd }: Props) {
+export default function DashboardHobby({ hobbies, editingId, onEdit, onAdd, onReorder }: Props) {
     return (
         <section className="dashboard-section dashboard-hobby">
             <h2>Centres d'intérêts</h2>
@@ -20,12 +21,16 @@ export default function DashboardHobby({ hobbies, editingId, onEdit, onAdd }: Pr
                     <span>Complément</span>
                     <span />
                 </div>
-                {hobbies.map(hobby => (
+                {hobbies.map((hobby, i) => (
                     <div key={hobby.id} className={`items-list__row${editingId === hobby.id ? ' items-list__row--editing' : ''}`}>
                         <div className="items-list__row-data">
                             <span>{hobby.label}</span>
                             <span className="muted">{hobby.supplement || '—'}</span>
-                            <EditButton onClick={() => onEdit(hobby)} />
+                            <span className="items-list__actions">
+                                <button type="button" className="reorder-button" aria-label="Monter" disabled={i === 0} onClick={() => onReorder(hobby.id, 'up')}>↑</button>
+                                <button type="button" className="reorder-button" aria-label="Descendre" disabled={i === hobbies.length - 1} onClick={() => onReorder(hobby.id, 'down')}>↓</button>
+                                <EditButton onClick={() => onEdit(hobby)} />
+                            </span>
                         </div>
                     </div>
                 ))}

@@ -4,6 +4,7 @@ export const LanguageSchema = z.object({
     id: z.number().optional(),
     label: z.string(),
     level: z.string().optional(),
+    position: z.number().int().optional(),
 });
 
 export const LanguageKeyList = Object.keys(LanguageSchema.omit({ id: true }).shape);
