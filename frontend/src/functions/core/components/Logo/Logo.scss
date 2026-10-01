@@ -1,0 +1,26 @@
+// Proportions reprises du fichier du designer : le texte fait 81 % de la hauteur
+// du symbole, séparé de lui par 11 % de cette hauteur.
+// --logo-size n'est pas déclarée ici mais lue avec une valeur de repli : ainsi, le parent
+// qui la définit l'emporte toujours, quel que soit l'ordre des feuilles dans le bundle.
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--logo-size, 2.5rem) * 0.11);
+    height: var(--logo-size, 2.5rem);
+
+    color: var(--color-text);
+}
+
+.logo__mark {
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1;
+
+    color: var(--color-accent);
+}
+
+.logo__wordmark {
+    height: 81%;
+    width: auto;
+    aspect-ratio: 336 / 162;
+}

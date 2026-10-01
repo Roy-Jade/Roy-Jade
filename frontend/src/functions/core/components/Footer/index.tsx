@@ -1,34 +1,52 @@
+import './Footer.scss';
 import { NavLink } from 'react-router';
-// import './index.css';
 import { useQuery } from '@tanstack/react-query';
 import { getIdentity } from '../../../../api/cvApi';
+import CtaLink from '../CtaLink/CtaLink';
+import { socialLinks } from '../../constants/socialLinks';
 
 export default function Footer() {
-
-    const { data, isLoading, isError } = useQuery({
+    // Information d'appoint : rien n'est affiché pendant le chargement ni en cas d'erreur
+    // (visible dans l'onglet réseau de l'inspecteur si besoin).
+    const { data } = useQuery({
         queryKey: ['identity'],
         queryFn: getIdentity,
         staleTime: 20 * 60 * 1000,
     })
 
-    return(
-        <footer>
-            <nav aria-label="Liens utiles">
-                <ul>
-                    <li><NavLink to="/legal">Mentions légales</NavLink></li> 
-                    <li><NavLink to="/contact">Me contacter</NavLink></li>
-                </ul>
-            </nav>
+    return (
+        <footer className="site-footer">
+            <div className="site-footer__inner">
 
-            {isLoading ? <p>Récupération des données</p> :
-                isError ? <p>Erreur à la récupération des données</p> :
-                <address>
-                    {data.firstname} {data.lastname}<br/>
-                    {data.github_link && <a href={data.github_link}>Github</a>}
-                    {data.gitlab_link && <a href={data.gitlab_link}>Gitlab</a>}
-                    {data.linkedin_link && <a href={data.linkedin_link}>LinkedIn</a>}
-                </address>
-            }
+                <nav className="site-footer__nav" aria-label="Liens utiles">
+                    <ul>
+                        <li><NavLink to="/legal" className="site-footer__link">Mentions légales</NavLink></li>
+                        <li className="site-footer__contact-link"><NavLink to="/contact" className="site-footer__link">Me contacter</NavLink></li>
+                    </ul>
+                </nav>
+
+                <div className="site-footer__contact-cta">
+                    <CtaLink to="/contact" variant="secondary">Me contacter</CtaLink>
+                </div>
+
+                {data && (
+                    <address className="site-footer__identity">
+                        <span className="site-footer__name">{data.firstname} {data.lastname}</span>
+                        {/* Liens externes volontairement dans le même onglet : le visiteur choisit
+                            d'en ouvrir un nouveau (Cmd/Ctrl+clic, clic du milieu), rien ne lui est imposé. */}
+                        {socialLinks.map(({ key, icon, label }) => {
+                            const href = data[key];
+                            if (!href) return null;
+                            return (
+                                <a href={href} className={`site-footer__link site-footer__social site-footer__social--${key}`} key={key}>
+                                    <img src={icon} alt="" />
+                                    {label}
+                                </a>
+                            );
+                        })}
+                    </address>
+                )}
+            </div>
         </footer>
     );
 }

@@ -1,0 +1,42 @@
+.cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    line-height: 1;
+    text-decoration: none;
+
+    transition:
+        transform var(--duration-base) var(--ease),
+        border-color var(--duration-base) var(--ease),
+        color var(--duration-base) var(--ease);
+}
+
+.cta-link--primary {
+    background: var(--color-spark);
+    border-color: var(--color-spark);
+    color: var(--color-on-spark);
+
+    &:hover {
+        color: var(--color-on-spark);
+        transform: translateY(-2px);
+    }
+}
+
+.cta-link--secondary {
+    background: transparent;
+    border-color: var(--color-line);
+    color: var(--color-text);
+
+    &:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+    }
+}

@@ -1,0 +1,113 @@
+@use "breakpoints" as *;
+
+.site-footer {
+    border-top: 1px solid var(--color-line);
+    background: var(--color-bg);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+// Mobile : liens internes empilés à gauche et centrés entre eux (colonne à la largeur
+// de la pilule), identité empilée à droite.
+// À partir de la tablette : une seule ligne, liens internes à gauche, identité à droite.
+.site-footer__inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-items: center;
+    grid-template-areas:
+        "nav identity"
+        "cta identity";
+    align-items: start;
+    gap: var(--space-4) var(--space-6);
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: var(--space-6) var(--gutter);
+
+    @include up(md) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.site-footer__nav {
+    grid-area: nav;
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        @include up(md) {
+            flex-direction: row;
+            gap: var(--space-6);
+        }
+    }
+}
+
+.site-footer__contact-cta {
+    grid-area: cta;
+
+    @include up(md) {
+        display: none;
+    }
+}
+
+.site-footer__identity {
+    grid-area: identity;
+    justify-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-2);
+    font-style: normal;
+
+    @include up(md) {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-6);
+    }
+}
+
+.site-footer__name {
+    color: var(--color-text);
+}
+
+.site-footer__link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease);
+
+    &:hover,
+    &[aria-current="page"] {
+        color: var(--color-text);
+    }
+}
+
+.site-footer__social {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    img {
+        width: 1.1em;
+        height: 1.1em;
+        object-fit: contain;
+    }
+}
+
+// Le logo GitHub d'origine est noir : inversé, il devient la version claire officielle
+// (cercle blanc, silhouette sombre), lisible sur le fond vert.
+.site-footer__social--github_link img {
+    filter: invert(1);
+}
+
+// Sur mobile, la pilule du header est masquée : le contact passe en CTA ci-dessus,
+// et le lien simple de la navigation disparaît pour ne pas doubler l'accès.
+.site-footer__contact-link {
+    display: none;
+
+    @include up(md) {
+        display: list-item;
+    }
+}

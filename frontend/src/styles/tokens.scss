@@ -1,0 +1,73 @@
+:root {
+    color-scheme: dark;
+
+    // Couleurs relevées sur les bannières LinkedIn.
+    // --color-accent-fill (#005F4C) ne tient que 2:1 en texte sur fond sombre :
+    // réservé aux remplissages, avec --color-text par-dessus (7:1).
+    --color-bg-deep: #05240c;
+    --color-bg: #112a1c;
+    --color-surface: #173724;
+    --color-sheen: #36524a;
+    --color-line: #2b4a39;
+    --color-text: #f5f5ee;
+    --color-text-muted: #bfc8bc;
+    --color-accent: #6cc6ae;
+    --color-accent-fill: #005f4c;
+    --color-spark: #ff751f;
+    --color-on-spark: #112a1c;
+    --color-danger: #ff9c8a;
+
+    --font-display: "Outfit Variable", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Figtree Variable", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 2rem;
+    --text-display: clamp(2rem, 4.5vw + 0.5rem, 3.25rem);
+
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    --leading-tight: 1.15;
+    --leading-normal: 1.6;
+    --tracking-label: 0.12em;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-pill: 999px;
+    --stroke: 2px;
+
+    --content-max: 72rem;
+    --reading-max: 65ch;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+    --grid-size: 32px;
+
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 900ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --duration-fast: 0ms;
+        --duration-base: 0ms;
+        --duration-slow: 0ms;
+    }
+}

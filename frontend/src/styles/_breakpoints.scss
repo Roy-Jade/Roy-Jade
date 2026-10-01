@@ -1,0 +1,16 @@
+@use "sass:map";
+
+$breakpoints: (
+    md: 48rem,
+    lg: 64rem,
+);
+
+@mixin up($name) {
+    @if not map.has-key($breakpoints, $name) {
+        @error "Point de rupture inconnu : #{$name}. Disponibles : #{map.keys($breakpoints)}";
+    }
+
+    @media (min-width: map.get($breakpoints, $name)) {
+        @content;
+    }
+}

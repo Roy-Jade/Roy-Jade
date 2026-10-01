@@ -1,0 +1,59 @@
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+}
+
+// Le footer reste collé en bas de l'écran sur les pages courtes : #root occupe au moins
+// toute la hauteur, et main absorbe l'espace restant entre header et footer.
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+// La feuille CV garde sa propre identité : les règles globales ci-dessous l'excluent
+// (spécificité nulle via :where), et elle reprend sa couleur de texte, qu'elle
+// hériterait sinon du body clair-sur-sombre.
+.cv-a4 {
+    color: var(--cv-color-text);
+}
+
+:where(h1, h2, h3):not(:where(.cv-a4 *)) {
+    font-family: var(--font-display);
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+}
+
+:where(a:not(.cv-a4 *)) {
+    color: var(--color-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--ease);
+}
+
+:where(a:not(.cv-a4 *):hover) {
+    color: var(--color-text);
+}
+
+:where(code, kbd, samp) {
+    font-family: var(--font-mono);
+}
+
+:focus-visible {
+    outline: var(--stroke) solid var(--color-spark);
+    outline-offset: 3px;
+}
+
+::selection {
+    background: var(--color-accent-fill);
+    color: var(--color-text);
+}

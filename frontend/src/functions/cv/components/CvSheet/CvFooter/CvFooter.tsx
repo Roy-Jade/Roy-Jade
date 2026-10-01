@@ -1,16 +1,8 @@
 import type { Identity } from '../../../../../types/Identity';
-import githubIcon from '../../../../../assets/icons/github.svg';
-import gitlabIcon from '../../../../../assets/icons/gitlab.svg';
-import linkedinIcon from '../../../../../assets/icons/linkedin.svg';
+import { socialLinks } from '../../../../core/constants/socialLinks';
 
 import Tag from '../../../../core/components/Tag/Tag';
 // import './CvFooter.scss';
-
-const socialLinks = [
-    { key: 'github_link' as const, icon: githubIcon, label: 'GitHub' },
-    { key: 'gitlab_link' as const, icon: gitlabIcon, label: 'GitLab' },
-    { key: 'linkedin_link' as const, icon: linkedinIcon, label: 'LinkedIn' },
-];
 
 interface Props {
     identity: Identity | undefined;
