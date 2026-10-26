@@ -2,6 +2,7 @@ import type { ExperienceItem as ExperienceItemData } from '../../../../../types/
 import type { HiddenIdField } from '../../../../../types/searchParams';
 import { isHidden } from '../../../../../utils/isHidden';
 import { formatDisplayDate } from '../../../../../utils/formatDisplayDate';
+import { toDateTimeAttr } from '../../../../../utils/toDateTimeAttr';
 import Tag from '../../../../core/components/Tag/Tag';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
@@ -41,8 +42,8 @@ export default function ExperienceItem({
                 />
             </span>
             <span className="cv-experience__dates">
-                <span>{formatDisplayDate(exp.start_date)}</span>
-                {exp.end_date && exp.end_date !== exp.start_date && <span>{formatDisplayDate(exp.end_date)}</span>}
+                <time dateTime={toDateTimeAttr(exp.start_date)}>{formatDisplayDate(exp.start_date)}</time>
+                {exp.end_date && exp.end_date !== exp.start_date && <time dateTime={toDateTimeAttr(exp.end_date)}>{formatDisplayDate(exp.end_date)}</time>}
             </span>
             <div className="cv-experience__content">
                 <h3 className="cv-experience__title">

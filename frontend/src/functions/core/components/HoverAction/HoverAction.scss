@@ -1,23 +1,42 @@
+// Outils d'admin posés sur la feuille : couleurs du site (pas celles du CV), pour qu'on ne les confonde
+// pas avec le contenu. --color-accent-fill tient 7:1 sur le blanc de la feuille.
+
+// Taille du bouton, lue aussi par useSmallTargetFlag pour calculer sa taille à l'écran une fois zoomé.
+:root {
+    --hover-action-size: 20px;
+}
+
 .hover-action {
     position: absolute;
     top: 0;
     right: 0;
+    width: var(--hover-action-size);
+    height: var(--hover-action-size);
+    justify-content: center;
     background: none;
     border: none;
-    padding: 3px;
+    padding: 0;
     cursor: pointer;
-    color: #a1a1aa;
+    color: var(--color-accent-fill);
     display: inline-flex;
     align-items: center;
     border-radius: 4px;
     flex-shrink: 0;
     opacity: 0;
-    transition: color 0.15s, background 0.15s, opacity 0.15s;
+    transition:
+        color var(--duration-fast),
+        background var(--duration-fast),
+        opacity var(--duration-fast);
 
     &:hover,
     &:focus-visible {
-        color: #3b5bdb;
-        background: #eef2ff;
+        color: var(--color-text);
+        background: var(--color-accent-fill);
+    }
+
+    &:focus-visible {
+        outline: var(--stroke) solid var(--color-spark);
+        outline-offset: 1px;
     }
 
     svg {
@@ -49,4 +68,28 @@
 .hover-reveal:hover .hover-action,
 .hover-reveal:focus-within .hover-action {
     opacity: 1;
+}
+
+// Au doigt, pas de survol : les boutons sont toujours visibles, sauf s'ils sont trop petits à l'écran
+// (data-small-targets, posé par useSmallTargetFlag selon le zoom). Ils deviennent alors invisibles et
+// inertes au toucher, pour qu'un doigt qui fait glisser la feuille ne les active pas par erreur.
+// Ils restent atteignables (et visibles) au clavier : l'activation y est toujours volontaire.
+@media (pointer: coarse) {
+    .hover-action {
+        opacity: 1;
+    }
+
+    [data-small-targets="true"] .hover-action:not(:focus-visible) {
+        opacity: 0;
+    }
+
+    [data-small-targets="true"] .hover-action {
+        pointer-events: none;
+    }
+}
+
+@media print {
+    .hover-action {
+        display: none;
+    }
 }

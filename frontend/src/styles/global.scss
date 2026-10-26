@@ -16,8 +16,46 @@ body {
     min-height: 100dvh;
 }
 
+// Décor commun à toutes les pages : reflet métallique diagonal (repris de la bannière LinkedIn,
+// très atténué) et quadrillage « papier millimétré ». Fondu sur les bords gauche et droit ;
+// en haut et en bas, il passe sous les traits du header et du footer.
 main {
     flex: 1 0 auto;
+
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(
+        115deg,
+        var(--color-bg-deep) 0%,
+        var(--color-bg) 38%,
+        color-mix(in srgb, var(--color-sheen) 55%, var(--color-bg)) 62%,
+        var(--color-bg) 85%
+    );
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image:
+            linear-gradient(var(--color-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+        background-size: var(--grid-size) var(--grid-size);
+        background-position: -1px -1px;
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.45) 20%, rgb(0 0 0 / 0.45) 80%, transparent 100%);
+        mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.45) 20%, rgb(0 0 0 / 0.45) 80%, transparent 100%);
+    }
+}
+
+// Le navigateur centre un <dialog> modal avec margin: auto, que le `* { margin: 0 }` du reset annule.
+:where(dialog) {
+    margin: auto;
+}
+
+// L'attribut hidden ne masque que via la feuille du navigateur, que n'importe quel `display`
+// d'une classe écrase (ex. un panneau en display: grid resterait visible).
+[hidden] {
+    display: none !important;
 }
 
 // La feuille CV garde sa propre identité : les règles globales ci-dessous l'excluent

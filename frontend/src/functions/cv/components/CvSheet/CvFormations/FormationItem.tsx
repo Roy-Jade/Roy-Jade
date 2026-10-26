@@ -2,6 +2,7 @@ import type { FormationItem as FormationItemData } from '../../../../../types/Fo
 import type { HiddenIdField } from '../../../../../types/searchParams';
 import { isHidden } from '../../../../../utils/isHidden';
 import { formatDisplayDate } from '../../../../../utils/formatDisplayDate';
+import { toDateTimeAttr } from '../../../../../utils/toDateTimeAttr';
 import Tag from '../../../../core/components/Tag/Tag';
 import HoverAction from '../../../../core/components/HoverAction/HoverAction';
 import HideIcon from '../../../../../assets/icons/hide.svg?react';
@@ -38,7 +39,7 @@ export default function FormationItem({
                     onClick={() => toggleHidden('hiddenFormationIds', formation.id)}
                 />
             </span>
-            <span className="cv-formation__date">{formatDisplayDate(formation.obtention_date)}</span>
+            <time className="cv-formation__date" dateTime={toDateTimeAttr(formation.obtention_date)}>{formatDisplayDate(formation.obtention_date)}</time>
             <div className="cv-formation__content">
                 <h3 className="cv-formation__title">
                     <strong>{formation.title}</strong>

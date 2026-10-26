@@ -58,7 +58,7 @@ export default function SoftskillForm({ mode, itemId, onClose }: Props) {
                     <input value={form.label} onChange={e => setForm(p => ({ ...p, label: e.target.value }))} required />
                 </label>
             </div>
-            {errorMessage && <p className="dash-error">{errorMessage}</p>}
+            {errorMessage && <p className="form-error">{errorMessage}</p>}
             <div className="form-actions">
                 <button type="submit">{mode === 'edit' ? 'Sauvegarder' : 'Ajouter'}</button>
                 <button type="button" onClick={onClose}>Annuler</button>

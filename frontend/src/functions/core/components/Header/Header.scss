@@ -41,13 +41,12 @@
     align-items: center;
     gap: var(--space-4);
     max-width: var(--content-max);
-    min-height: 3.5rem;
+    min-height: var(--header-height);
     margin-inline: auto;
     padding-inline: var(--gutter);
 
     @include up(md) {
         gap: var(--space-8);
-        min-height: 4rem;
     }
 }
 

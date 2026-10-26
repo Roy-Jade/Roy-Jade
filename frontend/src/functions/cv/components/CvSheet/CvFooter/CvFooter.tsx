@@ -17,6 +17,8 @@ export default function CvFooter({ identity }: Props) {
                     const href = identity?.[key];
                     if (!href) return null;
                     const username = href.replace(/\/+$/, '').split('/').pop();
+                    // Nouvel onglet volontaire, contrairement au footer du site : depuis le CV, on ouvre
+                    // un lien pour recouper une info (ex. le code d'un projet cité) sans quitter le CV.
                     return (
                         <li className="cv-footer__list-links" key={key}>
                             <a href={href} aria-label={`${label} : ${username}`} target="_blank" rel="noopener noreferrer">

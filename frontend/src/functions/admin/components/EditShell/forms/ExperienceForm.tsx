@@ -243,7 +243,7 @@ export default function ExperienceForm({ mode, itemId, onClose, onPreviewChange 
                 onToggle={id => setSoftskillIds(p => toggleId(p, id))}
             />
 
-            {errorMessage && <p className="dash-error">{errorMessage}</p>}
+            {errorMessage && <p className="form-error">{errorMessage}</p>}
             <div className="form-actions">
                 <button type="submit">{mode === 'edit' ? 'Sauvegarder' : 'Ajouter'}</button>
                 <button type="button" onClick={onClose}>Annuler</button>

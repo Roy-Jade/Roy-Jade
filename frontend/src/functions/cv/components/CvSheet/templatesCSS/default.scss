@@ -34,19 +34,10 @@
     }
 }
 
-html {
-    background: var(--cv-color-backpage);
-}
-
-@media screen {
-    .cv-a4 {
-        box-shadow: 0 5px 50px var(--cv-color-backpage-shadow);
-    }
-}
-
 // Limite connue : sous Safari, l'impression à 100% déborde
-// légèrement sur une 2e page (fine bande du footer), avec une
-// zone grise sous le footer dont l'origine reste inexpliquée.
+// légèrement sur une 2e page (fine bande du footer). La zone grise
+// qui l'accompagnait venait du fond gris posé sur `html`, déplacé
+// depuis dans CV.scss (décor de page, neutralisé à l'impression).
 // Sans effet sous Safari : @page size/margin, .cv-a4 margin
 // (auto vs fixe), zoom, transform, box-shadow.
 // Workaround : zoom impression à 99%. Firefox/Chrome : 100% ok.
@@ -135,12 +126,30 @@ html {
         }
     }
 
+    &__address {
+        font-style: normal;
+    }
+
+    &__right {
+        container-type: inline-size;
+        display: flex;
+        flex-direction: column;
+    }
+
+    // CSS ne sait pas détecter un débordement : la taille est estimée
+    // depuis le nombre de caractères (~0.68em par majuscule en Arial gras,
+    // légèrement surestimé pour réduire trop plutôt que couper).
     &__tagline {
+        font-weight: bold;
         color: var(--cv-color-banner-text);
         text-shadow: 1pt 1pt 2pt var(--cv-color-banner-text-shadow);
-        font-size: 180%;
+        font-size: min(180%, calc((100cqi - 20pt) / (var(--tagline-length) * 0.68)));
+        white-space: nowrap;
         text-transform: uppercase;
-        text-align: center;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-right: 20pt;
     }
 }
@@ -182,7 +191,7 @@ html {
         line-height: 1.4;
     }
 
-    article:last-child ul {
+    section:last-child ul {
         border-bottom: none;
     }
 }
@@ -207,6 +216,18 @@ html {
     p {
         color: var(--cv-color-text);
         line-height: 1.1;
+    }
+}
+
+// En-tête titre + bouton d'ajout (Expériences, Formations) : c'est lui qui porte
+// le décalage vers le haut du titre, pour que le bouton reste aligné sur le titre.
+.cv-section-heading {
+    display: inline-block;
+    position: relative;
+    top: -10pt;
+
+    h2 {
+        top: 0;
     }
 }
 

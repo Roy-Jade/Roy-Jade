@@ -1,0 +1,82 @@
+.login-dialog {
+    width: min(24rem, calc(100% - 2 * var(--gutter)));
+    padding: var(--space-6);
+
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: 0 24px 64px color-mix(in srgb, var(--color-shadow) 60%, transparent);
+
+    &[open] {
+        animation: login-dialog-in var(--duration-base) var(--ease);
+    }
+
+    // Les variables de :root n'atteignent ::backdrop que dans les navigateurs récents :
+    // chaque var() a donc une valeur de repli, sinon le fond resterait transparent ailleurs.
+    &::backdrop {
+        background: color-mix(in srgb, var(--color-bg-deep, #05240c) 75%, transparent);
+        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px);
+    }
+}
+
+.login-dialog__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+
+    h2 {
+        font-size: var(--text-2xl);
+        font-weight: var(--weight-semibold);
+    }
+}
+
+.login-dialog__close {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition:
+        background-color var(--duration-fast) var(--ease),
+        color var(--duration-fast) var(--ease);
+
+    &:hover {
+        background: var(--color-line);
+        color: var(--color-text);
+    }
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+}
+
+.login-dialog__form {
+    display: grid;
+    gap: var(--space-4);
+
+    .form-actions button {
+        width: 100%;
+    }
+}
+
+@keyframes login-dialog-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--space-2));
+    }
+}

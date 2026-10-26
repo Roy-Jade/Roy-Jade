@@ -18,7 +18,7 @@ const MENU_ONLY_CATEGORIES: DashboardCategory[] = ['identity', 'domain', 'softsk
 import CvFilters from '../../components/CvFilters/CvFilters';
 import CvSheet from '../../components/CvSheet/CvSheet';
 import CvHiddenPanel from '../../components/CvHiddenPanel/CvHiddenPanel';
-// import './CV.scss';
+import './CV.scss';
 
 export default function CV() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -97,27 +97,29 @@ export default function CV() {
                     searchParams={searchParams}
                     setSearchParams={setSearchParams}
                 />
-                <section className="cv-viewport">
-                    {filtersReady && !identityLoading
-                        ? (
-                            <CvSheet
-                                filters={filters}
-                                identity={identity}
-                                toggleHidden={toggleHidden}
-                                editing={isAdmin ? editing : null}
-                                preview={isAdmin ? preview : null}
-                                onCloseEdit={closeEditing}
-                                onPreviewChange={setPreview}
-                                onEdit={isAdmin ? handleEdit : undefined}
-                                onAdd={isAdmin ? handleAdd : undefined}
-                            />
-                        )
-                        : <p>Chargement du CV…</p>
-                    }
-                </section>
-                {filtersReady && (
-                    <CvHiddenPanel filters={filters} toggleHidden={toggleHidden} clearHidden={clearHidden} />
-                )}
+                <div className="cv-stage">
+                    <section className="cv-viewport">
+                        {filtersReady && !identityLoading
+                            ? (
+                                <CvSheet
+                                    filters={filters}
+                                    identity={identity}
+                                    toggleHidden={toggleHidden}
+                                    editing={isAdmin ? editing : null}
+                                    preview={isAdmin ? preview : null}
+                                    onCloseEdit={closeEditing}
+                                    onPreviewChange={setPreview}
+                                    onEdit={isAdmin ? handleEdit : undefined}
+                                    onAdd={isAdmin ? handleAdd : undefined}
+                                />
+                            )
+                            : <p>Chargement du CV…</p>
+                        }
+                    </section>
+                    {filtersReady && (
+                        <CvHiddenPanel filters={filters} toggleHidden={toggleHidden} clearHidden={clearHidden} />
+                    )}
+                </div>
                 {isAdmin && filtersReady && filtersData && (
                     <>
                         <DashboardMenu

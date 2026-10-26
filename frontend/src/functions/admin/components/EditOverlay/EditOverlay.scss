@@ -1,18 +1,26 @@
 .edit-overlay {
     position: fixed;
     z-index: 100;
-    margin-top: 0.375rem;
+    margin-top: var(--space-2);
     width: min(28rem, calc(100vw - 2rem));
     max-height: 50vh;
     overflow-y: auto;
-    background: #fff;
-    border: 1px solid #3b5bdb;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(24, 24, 27, 0.18);
-    box-sizing: border-box;
-    font-size: 1rem;
+
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--color-shadow) 60%, transparent);
+    font-size: var(--text-base);
 
     .edit-shell {
-        padding: 0.875rem;
+        padding: var(--space-3);
+    }
+
+    // Le formulaire est déjà encadré par la fenêtre : pas de second cadre.
+    .rich-form {
+        margin-top: 0;
+        border: 0;
+        background: transparent;
     }
 }

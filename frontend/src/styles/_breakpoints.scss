@@ -3,6 +3,7 @@
 $breakpoints: (
     md: 48rem,
     lg: 64rem,
+    xl: 72rem,
 );
 
 @mixin up($name) {

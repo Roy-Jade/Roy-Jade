@@ -46,12 +46,12 @@ export default function CvFormations({
 
     return (
         <section className="cv-formations cv-selectable">
-            <h2 className="hover-reveal">
-                Formations et diplômes
+            <header className="cv-section-heading hover-reveal">
+                <h2>Formations et diplômes</h2>
                 {onAdd && (
                     <HoverAction icon={<span>+</span>} label="Ajouter une formation" onClick={() => onAdd('formation')} />
                 )}
-            </h2>
+            </header>
             <ul>
                 {formations.filter(formation => !isHidden(formation.id, hiddenFormationIds)).map(formation => (
                     <FormationItem

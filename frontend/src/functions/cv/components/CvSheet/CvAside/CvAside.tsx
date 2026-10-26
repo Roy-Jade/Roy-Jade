@@ -52,13 +52,13 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
             {(isError || isAsideError) && <p>Erreur</p>}
 
             {(hardskills.length > 0 || isAddingNew('hardskill')) && (
-                <article>
-                    <h2 className="hover-reveal">
-                        Compétences
+                <section>
+                    <header className="hover-reveal">
+                        <h2>Compétences</h2>
                         {onAdd && (
                             <HoverAction icon={<span>+</span>} label="Ajouter une compétence" onClick={() => onAdd('hardskill')} />
                         )}
-                    </h2>
+                    </header>
                     <ul>
                         {hardskills
                             .filter(skill => !isHidden(skill.id, hiddenHardskillIds))
@@ -77,17 +77,17 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
                                 : <li ref={setAnchor}>Nouvelle compétence</li>
                         )}
                     </ul>
-                </article>
+                </section>
             )}
 
             {(language.length > 0 || isAddingNew('language')) && (
-                <article>
-                    <h2 className="hover-reveal">
-                        Langues
+                <section>
+                    <header className="hover-reveal">
+                        <h2>Langues</h2>
                         {onAdd && (
                             <HoverAction icon={<span>+</span>} label="Ajouter une langue" onClick={() => onAdd('language')} />
                         )}
-                    </h2>
+                    </header>
                     <ul>
                         {language.map(item => (
                             <LanguageItem
@@ -103,17 +103,17 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
                                 : <li ref={setAnchor}>Nouvelle langue</li>
                         )}
                     </ul>
-                </article>
+                </section>
             )}
 
             {(hobby.length > 0 || isAddingNew('hobby')) && (
-                <article>
-                    <h2 className="hover-reveal">
-                        Centres d'intérêts
+                <section>
+                    <header className="hover-reveal">
+                        <h2>Centres d'intérêts</h2>
                         {onAdd && (
                             <HoverAction icon={<span>+</span>} label="Ajouter un centre d'intérêt" onClick={() => onAdd('hobby')} />
                         )}
-                    </h2>
+                    </header>
                     <ul>
                         {hobby.map(item => (
                             <HobbyItem
@@ -129,7 +129,7 @@ export default function CvAside({ level, categories, hiddenHardskillIds, toggleH
                                 : <li ref={setAnchor}>Nouveau centre d'intérêt</li>
                         )}
                     </ul>
-                </article>
+                </section>
             )}
         </aside>
     );

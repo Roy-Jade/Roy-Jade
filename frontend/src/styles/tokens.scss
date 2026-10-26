@@ -1,3 +1,5 @@
+@use "breakpoints" as bp;
+
 :root {
     color-scheme: dark;
 
@@ -16,6 +18,7 @@
     --color-spark: #ff751f;
     --color-on-spark: #112a1c;
     --color-danger: #ff9c8a;
+    --color-shadow: color-mix(in srgb, var(--color-bg-deep) 40%, black);
 
     --font-display: "Outfit Variable", "Avenir Next", "Segoe UI", system-ui, sans-serif;
     --font-body: "Figtree Variable", "Segoe UI", system-ui, sans-serif;
@@ -57,6 +60,16 @@
     --reading-max: 65ch;
     --gutter: clamp(1rem, 4vw, 2.5rem);
     --grid-size: 32px;
+    --header-height: 3.5rem;
+
+    @include bp.up(md) {
+        --header-height: 4rem;
+    }
+
+    // Publiés pour le JS (matchesBreakpoint) : la table SCSS reste la seule source de vérité.
+    @each $name, $value in bp.$breakpoints {
+        --bp-#{$name}: #{$value};
+    }
 
     --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
     --duration-fast: 150ms;

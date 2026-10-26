@@ -5,6 +5,7 @@ import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchPar
 import type { DashboardCategory, EditingState } from '../../../admin/types/EditingState';
 import type { EditPreview } from '../../../admin/types/EditPreview';
 import { useEditAnchor } from '../../../admin/hooks/useEditAnchor';
+import { useSmallTargetFlag } from '../../hooks/useSmallTargetFlag';
 import EditOverlay from '../../../admin/components/EditOverlay/EditOverlay';
 import CvHeader from './CvHeader/CvHeader';
 import CvPresentation from './CvPresentation/CvPresentation';
@@ -29,14 +30,22 @@ interface Props {
 }
 
 export default function CvSheet({ filters, identity, toggleHidden, editing, preview, onCloseEdit, onPreviewChange, onEdit, onAdd }: Props) {
-    const printRef = useRef<HTMLDivElement>(null);
+    const printRef = useRef<HTMLElement>(null);
     const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
     const handlePrint = useReactToPrint({ contentRef: printRef });
     const { rect: anchorRect, setAnchor } = useEditAnchor(transformRef);
+    const flagSmallTargets = useSmallTargetFlag(printRef);
 
     return (
         <>
-            <button onClick={() => handlePrint()}>Télécharger PDF</button>
+            {/* Le nom accessible reste complet à toutes les tailles : seul le complément
+                est masqué visuellement sur mobile (le libellé visible reste inclus dans le nom). */}
+            <button type="button" className="cv-print" onClick={() => handlePrint()}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" />
+                </svg>
+                Imprimer<span className="cv-print__extra"> ou enregistrer en PDF</span>
+            </button>
             {/* .cv-selectable : exclusion JS (ici) ET override CSS (templatesCSS/default.scss)
                 nécessaires ensemble — la lib applique son propre user-select:none, indépendant
                 de sa logique de pan. panning ET doubleClick ont chacun leur propre `excluded` —
@@ -45,11 +54,13 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                 ref={transformRef}
                 panning={{ excluded: ['cv-selectable'] }}
                 doubleClick={{ excluded: ['cv-selectable'] }}
+                onInit={ref => flagSmallTargets(ref.state.scale)}
+                onTransform={(_, state) => flagSmallTargets(state.scale)}
             >
                 <TransformComponent>
-                    <div ref={printRef} className="cv-a4">
+                    <article ref={printRef} className="cv-a4">
                         <CvHeader identity={identity} context={filters.context} />
-                        <main className="cv-main">
+                        <div className="cv-main">
                             <CvAside
                                 level={filters.hardskillLevel}
                                 categories={filters.hardskillCategories}
@@ -97,9 +108,9 @@ export default function CvSheet({ filters, identity, toggleHidden, editing, prev
                                     onAdd={onAdd}
                                 />
                             </section>
-                        </main>
+                        </div>
                         <CvFooter identity={identity} />
-                    </div>
+                    </article>
                 </TransformComponent>
             </TransformWrapper>
             <EditOverlay editing={editing} anchorRect={anchorRect} onClose={onCloseEdit} onPreviewChange={onPreviewChange} />

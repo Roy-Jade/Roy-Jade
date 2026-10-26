@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getFilters } from '../../../../api/cvApi';
-// import './CvFilters.scss';
+import { useDisclosure } from '../../../core/hooks/useDisclosure';
+import { matchesBreakpoint } from '../../../../utils/matchesBreakpoint';
+import './CvFilters.scss';
 import type { FiltersData } from '../../../../types/FiltersData';
 import type { SetURLSearchParams } from '../../../../types/SetURLSearchParams';
 
@@ -11,6 +13,10 @@ interface Props {
 }
 
 export default function CvFilters({ searchParams, setSearchParams }: Props) {
+    // Mobile-first : replié par défaut, déplié d'emblée à partir de la tablette.
+    // Évalué avant le premier rendu (pas de rendu serveur) : aucun décalage de mise en page.
+    const { isOpen, toggle } = useDisclosure({ initialOpen: () => matchesBreakpoint('md') });
+
     const { data: filtersData, isLoading, isError } = useQuery<FiltersData>({
         queryKey: ['filters'],
         queryFn: getFilters,
@@ -55,8 +61,8 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
         }, { replace: true });
     }, [filtersData, setSearchParams]);
 
-    if (isLoading) return <aside className="cv-filters"><p>Chargement des filtres…</p></aside>;
-    if (isError || !filtersData) return <aside className="cv-filters"><p>Erreur lors du chargement des filtres.</p></aside>;
+    if (isLoading) return <section className="cv-filters"><p className="cv-filters__status">Chargement des filtres…</p></section>;
+    if (isError || !filtersData) return <section className="cv-filters"><p className="cv-filters__status">Erreur lors du chargement des filtres.</p></section>;
 
     const currentContext = searchParams.get('context') ?? filtersData.context[0];
     const currentLevel = searchParams.get('level') ?? filtersData.level[0];
@@ -115,77 +121,99 @@ export default function CvFilters({ searchParams, setSearchParams }: Props) {
         }, { replace: true });
 
     return (
-        <aside className="cv-filters">
-            <fieldset>
-                <legend>Contexte</legend>
-                {filtersData.context.map(ctx => (
-                    <label key={ctx}>
-                        <input
-                            type="radio"
-                            name="context"
-                            value={ctx}
-                            checked={currentContext === ctx}
-                            onChange={() => setContext(ctx)}
-                        />
-                        {ctx}
-                    </label>
-                ))}
-            </fieldset>
+        <section className="cv-filters" aria-label="Filtres du CV">
+            <button
+                type="button"
+                className="cv-filters__toggle"
+                aria-expanded={isOpen}
+                aria-controls="cv-filters-panel"
+                onClick={toggle}
+            >
+                Filtres
+                <svg className="cv-filters__chevron" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
 
-            <fieldset>
-                <legend>Niveau minimum</legend>
-                <select value={currentLevel} onChange={e => setLevel(e.target.value)}>
-                    {filtersData.level.map(lvl => (
-                        <option key={lvl} value={lvl}>{lvl}</option>
-                    ))}
-                </select>
-            </fieldset>
+            <div id="cv-filters-panel" className="cv-filters__panel" hidden={!isOpen}>
+                <fieldset className="cv-filters__group">
+                    <legend>Contexte</legend>
+                    <div className="cv-filters__segmented">
+                        {filtersData.context.map(ctx => (
+                            <label key={ctx} className="cv-filters__option">
+                                <input
+                                    type="radio"
+                                    name="context"
+                                    value={ctx}
+                                    checked={currentContext === ctx}
+                                    onChange={() => setContext(ctx)}
+                                />
+                                <span>{ctx}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
 
-            <fieldset>
-                <legend>Catégories de compétences</legend>
-                {filtersData.category.map(cat => (
-                    <label key={cat}>
-                        <input
-                            type="checkbox"
-                            value={cat}
-                            checked={currentCategories.length === 0 || currentCategories.includes(cat)}
-                            onChange={() => toggleCategory(cat)}
-                        />
-                        {cat}
-                    </label>
-                ))}
-            </fieldset>
+                <fieldset className="cv-filters__group">
+                    <legend>Niveau minimum</legend>
+                    <select className="cv-filters__select" value={currentLevel} onChange={e => setLevel(e.target.value)}>
+                        {filtersData.level.map(lvl => (
+                            <option key={lvl} value={lvl}>{lvl}</option>
+                        ))}
+                    </select>
+                </fieldset>
 
-            <fieldset>
-                <legend>Domaines d'expérience</legend>
-                {filtersData.domain.map(domain => (
-                    <label key={domain.slug}>
-                        <input
-                            type="checkbox"
-                            value={domain.slug}
-                            checked={currentExperienceDomains.length === 0 || currentExperienceDomains.includes(domain.slug)}
-                            onChange={() => toggleExperienceDomain(domain.slug)}
-                        />
-                        {domain.label}
-                    </label>
-                ))}
-            </fieldset>
+                <fieldset className="cv-filters__group">
+                    <legend>Catégories de compétences</legend>
+                    <div className="cv-filters__chips">
+                        {filtersData.category.map(cat => (
+                            <label key={cat} className="cv-filters__option">
+                                <input
+                                    type="checkbox"
+                                    value={cat}
+                                    checked={currentCategories.length === 0 || currentCategories.includes(cat)}
+                                    onChange={() => toggleCategory(cat)}
+                                />
+                                <span>{cat}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
 
-            <fieldset>
-                <legend>Domaines de formation</legend>
-                {filtersData.domain.map(domain => (
-                    <label key={domain.slug}>
-                        <input
-                            type="checkbox"
-                            value={domain.slug}
-                            checked={currentFormationDomains.length === 0 || currentFormationDomains.includes(domain.slug)}
-                            onChange={() => toggleFormationDomain(domain.slug)}
-                        />
-                        {domain.label}
-                    </label>
-                ))}
-            </fieldset>
+                <fieldset className="cv-filters__group">
+                    <legend>Domaines d'expérience</legend>
+                    <div className="cv-filters__chips">
+                        {filtersData.domain.map(domain => (
+                            <label key={domain.slug} className="cv-filters__option">
+                                <input
+                                    type="checkbox"
+                                    value={domain.slug}
+                                    checked={currentExperienceDomains.length === 0 || currentExperienceDomains.includes(domain.slug)}
+                                    onChange={() => toggleExperienceDomain(domain.slug)}
+                                />
+                                <span>{domain.label}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
 
-        </aside>
+                <fieldset className="cv-filters__group">
+                    <legend>Domaines de formation</legend>
+                    <div className="cv-filters__chips">
+                        {filtersData.domain.map(domain => (
+                            <label key={domain.slug} className="cv-filters__option">
+                                <input
+                                    type="checkbox"
+                                    value={domain.slug}
+                                    checked={currentFormationDomains.length === 0 || currentFormationDomains.includes(domain.slug)}
+                                    onChange={() => toggleFormationDomain(domain.slug)}
+                                />
+                                <span>{domain.label}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+            </div>
+        </section>
     );
 }

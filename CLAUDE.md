@@ -118,6 +118,7 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-cv-closure.md](docs/refactor-cv-closure.md) — retrait du filtre detail/summary par domaine (devenu redondant avec le masquage granulaire) + tri/recherche sur les listes hardskill/softskill dans les formulaires expérience/formation. Terminé.
 - [docs/refactor-list-reordering.md](docs/refactor-list-reordering.md) — réorganisation des listes (boutons haut/bas, pas de drag-and-drop). Phase 1 (tâches) et phase 3 (listes de l'aside hardskill/softskill/langue/loisir, colonne `position` ajoutée) terminées ; phase 2 (skills par item d'expérience/formation) close en YAGNI, comportement actuel jugé suffisant.
 - [docs/refactor-login-redirect.md](docs/refactor-login-redirect.md) — après connexion, redirection vers la page d'origine au lieu de `/cv` en dur, via suivi applicatif du dernier chemin visité (`sessionStorage`) plutôt que l'historique navigateur — rend un redirect vers un domaine externe structurellement impossible. Terminé.
+- [docs/refactor-tagline-fit.md](docs/refactor-tagline-fit.md) — réduction automatique de la police du titre du CV selon sa longueur (estimation par nombre de caractères + `cqi`, une seule ligne, centrage vertical), options pur CSS étudiées et écartées. Terminé.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 

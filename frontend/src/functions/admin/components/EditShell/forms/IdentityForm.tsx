@@ -88,7 +88,7 @@ export default function IdentityForm({ onClose }: Props) {
             <label>LinkedIn
                 <input value={form.linkedin_link} onChange={e => setForm(p => ({ ...p, linkedin_link: e.target.value }))} />
             </label>
-            {errorMessage && <p className="dash-error">{errorMessage}</p>}
+            {errorMessage && <p className="form-error">{errorMessage}</p>}
             <div className="form-actions">
                 <button type="submit">Sauvegarder</button>
                 <button type="button" onClick={onClose}>Annuler</button>

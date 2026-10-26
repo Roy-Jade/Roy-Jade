@@ -78,7 +78,7 @@ export default function LanguageForm({ mode, itemId, onClose, onPreviewChange }:
                     {LANGUAGE_LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
             </label>
-            {errorMessage && <p className="dash-error">{errorMessage}</p>}
+            {errorMessage && <p className="form-error">{errorMessage}</p>}
             <div className="form-actions">
                 <button type="submit">{mode === 'edit' ? 'Sauvegarder' : 'Ajouter'}</button>
                 <button type="button" onClick={onClose}>Annuler</button>

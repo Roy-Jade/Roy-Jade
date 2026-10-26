@@ -102,7 +102,7 @@ export default function HardskillForm({ mode, itemId, onClose, onPreviewChange }
                 </label>
                 <div />
             </div>
-            {errorMessage && <p className="dash-error">{errorMessage}</p>}
+            {errorMessage && <p className="form-error">{errorMessage}</p>}
             <div className="form-actions">
                 <button type="submit">{mode === 'edit' ? 'Sauvegarder' : 'Ajouter'}</button>
                 <button type="button" onClick={onClose}>Annuler</button>

@@ -47,12 +47,12 @@ export default function CvExperiences({
 
     return (
         <section className="cv-experiences cv-selectable">
-            <h2 className="hover-reveal">
-                Expériences professionnelles
+            <header className="cv-section-heading hover-reveal">
+                <h2>Expériences professionnelles</h2>
                 {onAdd && (
                     <HoverAction icon={<span>+</span>} label="Ajouter une expérience" onClick={() => onAdd('experience')} />
                 )}
-            </h2>
+            </header>
             <ul>
                 {experiences.filter(exp => !isHidden(exp.id, hiddenExperienceIds)).map(exp => (
                     <ExperienceItem

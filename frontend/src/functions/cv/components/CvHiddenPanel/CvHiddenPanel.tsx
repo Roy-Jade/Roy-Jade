@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import './CvHiddenPanel.scss';
 import type { CvFiltersParams, HiddenIdField } from '../../../../types/searchParams';
 import { useExperienceData } from '../../hooks/useExperienceData';
 import { useFormationData } from '../../hooks/useFormationData';
 import { useHardskillData } from '../../hooks/useHardskillData';
 import { useFocusRegistry } from '../../hooks/useFocusRegistry';
+import { useDisclosure } from '../../../core/hooks/useDisclosure';
 import {
     ALL_HIDDEN_FIELDS,
     BUCKET_FIELDS,
@@ -21,8 +23,9 @@ interface Props {
 }
 
 export default function CvHiddenPanel({ filters, toggleHidden, clearHidden }: Props) {
-    const [isOpen, setIsOpen] = useState(false);
     const { register, requestFocus } = useFocusRegistry();
+    const returnFocusToToggle = useCallback(() => requestFocus(['panel-toggle']), [requestFocus]);
+    const { isOpen, toggle, close } = useDisclosure({ onEscape: returnFocusToToggle });
 
     const { data: experiences = [] } = useExperienceData(filters.experienceDomains);
     const { data: formations = [] } = useFormationData(filters.formationDomains);
@@ -69,26 +72,60 @@ export default function CvHiddenPanel({ filters, toggleHidden, clearHidden }: Pr
 
     const hasHidden = competenceEntries.length > 0 || experienceGroups.length > 0 || formationGroups.length > 0;
 
+    // Compté depuis les entrées réellement listées (et non depuis l'URL, qui peut contenir des IDs
+    // hors filtres actuels) : le nombre affiché correspond toujours à ce que le panneau montre.
+    const countGroupEntries = (groups: typeof experienceGroups) => groups.reduce(
+        (total, group) => total + (group.fullyHidden
+            ? 1
+            : group.subGroups.reduce((sum, subGroup) => sum + subGroup.entries.length, 0)),
+        0
+    );
+    const hiddenCount = competenceEntries.length + countGroupEntries(experienceGroups) + countGroupEntries(formationGroups);
+
+    // Plus rien à réafficher : on referme, sinon le panneau resurgirait tout seul au prochain masquage.
+    useEffect(() => {
+        if (!hasHidden) close();
+    }, [hasHidden, close]);
+
     return (
-        <aside className="cv-hidden-panel">
+        <aside className="cv-hidden-panel" aria-label="Éléments masqués">
             <button
                 type="button"
+                className="cv-hidden-panel__toggle"
                 ref={register('panel-toggle')}
                 aria-disabled={!hasHidden}
-                aria-expanded={isOpen}
+                aria-expanded={isOpen && hasHidden}
+                aria-controls="cv-hidden-panel-content"
                 aria-describedby={!hasHidden ? 'cv-hidden-panel-empty-hint' : undefined}
-                onClick={() => { if (hasHidden) setIsOpen(open => !open); }}
+                onClick={() => { if (hasHidden) toggle(); }}
             >
                 Éléments masqués
+                {hasHidden && <span className="cv-hidden-panel__count">{hiddenCount}</span>}
             </button>
             <span id="cv-hidden-panel-empty-hint" className="visually-hidden">
                 Aucun élément masqué à réafficher
             </span>
 
             {isOpen && hasHidden && (
-                <div className="cv-hidden-panel__content">
+                <section id="cv-hidden-panel-content" className="cv-hidden-panel__content" aria-labelledby="cv-hidden-panel-title">
+                    <header className="cv-hidden-panel__header">
+                        <h2 id="cv-hidden-panel-title">Éléments masqués</h2>
+                        <button
+                            type="button"
+                            className="cv-hidden-panel__close"
+                            aria-label="Fermer le panneau des éléments masqués"
+                            onClick={() => {
+                                close();
+                                returnFocusToToggle();
+                            }}
+                        >
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                        </button>
+                    </header>
+
                     <button
                         type="button"
+                        className="cv-hidden-panel__reset-all"
                         onClick={() => {
                             requestFocus(['panel-toggle']);
                             clearHidden(ALL_HIDDEN_FIELDS);
@@ -142,7 +179,7 @@ export default function CvHiddenPanel({ filters, toggleHidden, clearHidden }: Pr
                         register={register}
                         requestFocus={requestFocus}
                     />
-                </div>
+                </section>
             )}
         </aside>
     );

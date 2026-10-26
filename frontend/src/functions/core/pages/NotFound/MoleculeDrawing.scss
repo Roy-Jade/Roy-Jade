@@ -1,0 +1,21 @@
+// Tailles dans l'unité du viewBox (SCALE = 60 par liaison dans MoleculeDrawing.tsx), mises à l'échelle avec le SVG.
+.molecule {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.molecule__bond {
+    stroke: var(--color-accent);
+    stroke-width: 4.5;
+    stroke-linecap: round;
+}
+
+.molecule__label {
+    fill: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: var(--weight-semibold);
+    text-anchor: middle;
+}

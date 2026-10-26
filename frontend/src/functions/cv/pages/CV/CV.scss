@@ -1,0 +1,142 @@
+@use "breakpoints" as *;
+
+// Décor et mise en page autour de la feuille : n'appartient pas au template CV,
+// et suit les tokens du site (l'ombre change avec le thème).
+
+// Scène : la feuille et le panneau des éléments masqués, qui se positionne par rapport à elle.
+.cv-stage {
+    --panel-width: 17.5rem;
+    --panel-gap: var(--space-6);
+
+    position: relative;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: var(--space-4) var(--gutter) var(--space-8);
+}
+
+// Le conteneur de react-zoom-pan-pinch fait la largeur de son contenu (fit-content) :
+// on le centre lui, la feuille ne peut pas se centrer dans une boîte aussi large qu'elle.
+// max-width : sur mobile, il devient une fenêtre de la largeur de l'écran dans laquelle
+// on fait glisser la feuille, au lieu de déborder de la page.
+.cv-viewport .react-transform-wrapper {
+    max-width: 100%;
+    margin-inline: auto;
+    transition: translate var(--duration-base) var(--ease);
+}
+
+// Bouton d'impression (rendu par CvSheet, hors de la feuille) : même famille que les
+// boutons « Filtres » et « Éléments masqués », sur la même ligne que ce dernier.
+.cv-print {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+
+    transition: border-color var(--duration-fast) var(--ease);
+
+    &:hover {
+        border-color: var(--color-accent);
+    }
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+}
+
+// Sur mobile, le libellé complet chevaucherait le bouton du panneau : le complément est
+// masqué visuellement (mêmes règles que .visually-hidden), mais reste lu par les lecteurs d'écran.
+.cv-print__extra {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+
+    @include up(md) {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+    }
+}
+
+// Panneau ouvert, grand écran : la feuille glisse à gauche de la moitié de (colonne + espacement),
+// l'ensemble feuille + colonne reste centré. Seule la position change : rien n'est recalculé.
+@include up(xl) {
+    .cv-stage:has(.cv-hidden-panel__content) .react-transform-wrapper {
+        translate: calc((var(--panel-width) + var(--panel-gap)) / -2) 0;
+    }
+}
+
+// Le panneau occupe toute la hauteur de la scène, côté droit, hors du flux. En dessous de xl,
+// il passe donc par-dessus la feuille ; au-delà, il tombe pile dans l'espace libéré par le glissement.
+// pointer-events : la piste vide laisse passer les clics et le glisser vers la feuille.
+.cv-stage > .cv-hidden-panel {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--gutter);
+    bottom: 0;
+    z-index: 5;
+    width: min(var(--panel-width), calc(100% - 2 * var(--gutter)));
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-3);
+
+    pointer-events: none;
+
+    > * {
+        pointer-events: auto;
+    }
+}
+
+// Le contenu reste visible pendant qu'on fait défiler la feuille, sous le header (fixe dès md).
+.cv-stage .cv-hidden-panel__content {
+    position: sticky;
+    top: var(--space-4);
+    width: 100%;
+    max-height: calc(100vh - 2 * var(--space-4));
+    max-height: calc(100dvh - 2 * var(--space-4));
+    overflow-y: auto;
+
+    @include up(md) {
+        top: calc(var(--header-height) + var(--space-4));
+        max-height: calc(100vh - var(--header-height) - 2 * var(--space-4));
+        max-height: calc(100dvh - var(--header-height) - 2 * var(--space-4));
+    }
+}
+
+// Halo sans décalage : visible sur les quatre bords, léger, porté par le flou plutôt que par l'opacité.
+@media screen {
+    .cv-a4 {
+        box-shadow:
+            0 0 48px color-mix(in srgb, var(--color-shadow) 35%, transparent),
+            0 0 4px color-mix(in srgb, var(--color-shadow) 25%, transparent);
+    }
+}
+
+// La feuille s'imprime seule sur fond blanc, sans le fond vert du site.
+@media print {
+    html,
+    body {
+        background: none;
+    }
+}
