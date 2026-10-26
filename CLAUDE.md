@@ -45,11 +45,15 @@ Roy-Jade/
 └── frontend/
     └── src/
         ├── api/                # Fonctions fetch (cvApi, dashboardApi, privateApi)
+        ├── styles/             # tokens.scss (design), _breakpoints.scss, global.scss, forms.scss
         ├── types/              # Types partagés
+        ├── utils/              # matchesBreakpoint, toDateTimeAttr
         └── functions/
-            ├── core/           # Header, Footer, page Home
-            ├── cv/             # Éditeur de CV — CvFilters, CvSheet et ses sous-composants
-            ├── admin/          # Login, Dashboard et ses 9 sections
+            ├── core/           # Header, Footer, Logo, CtaLink, HoverAction, Tag ; hooks/useDisclosure ;
+            │                   # constants/socialLinks ; pages Home, Contact, NotFound (molécule SVG), Legal
+            ├── cv/             # Éditeur de CV — CvFilters, CvHiddenPanel, CvSheet et ses sous-composants ;
+            │                   # hooks/useSmallTargetFlag, useIdentityData
+            ├── admin/          # Login, Dashboard et ses 9 sections, EditOverlay/EditShell, ToastStack
             └── portfolio/
 ```
 
@@ -119,6 +123,7 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-list-reordering.md](docs/refactor-list-reordering.md) — réorganisation des listes (boutons haut/bas, pas de drag-and-drop). Phase 1 (tâches) et phase 3 (listes de l'aside hardskill/softskill/langue/loisir, colonne `position` ajoutée) terminées ; phase 2 (skills par item d'expérience/formation) close en YAGNI, comportement actuel jugé suffisant.
 - [docs/refactor-login-redirect.md](docs/refactor-login-redirect.md) — après connexion, redirection vers la page d'origine au lieu de `/cv` en dur, via suivi applicatif du dernier chemin visité (`sessionStorage`) plutôt que l'historique navigateur — rend un redirect vers un domaine externe structurellement impossible. Terminé.
 - [docs/refactor-tagline-fit.md](docs/refactor-tagline-fit.md) — réduction automatique de la police du titre du CV selon sa longueur (estimation par nombre de caractères + `cqi`, une seule ligne, centrage vertical), options pur CSS étudiées et écartées. Terminé.
+- [docs/refactor-site-design.md](docs/refactor-site-design.md) — refonte design du site (thème sombre vert + orange, tokens dans `styles/`, feuille CV protégée des styles globaux, pièges de spécificité, logique tactile des boutons du CV, pages 404 avec molécule SVG et Contact), bugs connus restants. Terminé.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 
