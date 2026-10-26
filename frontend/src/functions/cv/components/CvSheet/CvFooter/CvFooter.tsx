@@ -1,5 +1,5 @@
 import type { Identity } from '../../../../../types/Identity';
-import { socialLinks } from '../../../../core/constants/socialLinks';
+import { getUsername, socialLinks } from '../../../../core/constants/socialLinks';
 
 import Tag from '../../../../core/components/Tag/Tag';
 // import './CvFooter.scss';
@@ -16,7 +16,7 @@ export default function CvFooter({ identity }: Props) {
                 {socialLinks.map(({ key, icon, label }) => {
                     const href = identity?.[key];
                     if (!href) return null;
-                    const username = href.replace(/\/+$/, '').split('/').pop();
+                    const username = getUsername(href);
                     // Nouvel onglet volontaire, contrairement au footer du site : depuis le CV, on ouvre
                     // un lien pour recouper une info (ex. le code d'un projet cité) sans quitter le CV.
                     return (

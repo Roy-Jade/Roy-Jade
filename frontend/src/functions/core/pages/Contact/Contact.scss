@@ -1,0 +1,123 @@
+@use "breakpoints" as *;
+
+.contact {
+    display: grid;
+    gap: var(--space-8);
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: var(--space-12) var(--gutter);
+
+    @include up(md) {
+        padding-block: var(--space-16);
+    }
+}
+
+.contact__title {
+    font-size: var(--text-display);
+    font-weight: var(--weight-bold);
+    letter-spacing: -0.015em;
+}
+
+.contact__error {
+    max-width: var(--reading-max);
+    color: var(--color-danger);
+}
+
+// <address> est en italique par défaut dans les navigateurs.
+.contact__address {
+    font-style: normal;
+}
+
+.contact__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-4);
+}
+
+.contact__card {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    min-width: 0;
+}
+
+.contact__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.contact__icon {
+    width: 1.5em;
+    height: 1.5em;
+    flex-shrink: 0;
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.contact__value {
+    margin: 0;
+    font-size: var(--text-lg);
+    // Une adresse e-mail n'a pas d'espace où couper : sans ça, elle déborderait de la carte sur mobile.
+    overflow-wrap: anywhere;
+}
+
+.contact__link {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast), text-decoration-color var(--duration-fast);
+
+    &:hover,
+    &:focus-visible {
+        color: var(--color-accent);
+        text-decoration-color: currentColor;
+    }
+}
+
+.contact__status {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+
+    &--error {
+        color: var(--color-danger);
+    }
+}
+
+.contact__socials {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.contact__social {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+
+    img {
+        width: 1.1em;
+        height: 1.1em;
+        object-fit: contain;
+    }
+}
+
+// Même correction que dans le pied de page : le logo GitHub d'origine est noir, illisible sur fond vert.
+.contact__social--github_link img {
+    filter: invert(1);
+}
