@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { AppError } from "../../utils/AppError.js";
 import { editIdentity, fetchIdentity } from "../../service/cv/identityService.js";
 import { IdentitySchema } from "../../schema/cv/identity.js";
+import { DatabaseError } from "pg";
 
 export const getIdentity = async (req:Request, res:Response) => {
 
@@ -33,6 +34,9 @@ export const patchIdentity = async (req:Request, res:Response) => {
         }
         if (error instanceof ZodError) {
             return res.status(400).json({message: error.message})
+        }
+        if (error instanceof DatabaseError && error.constraint === "siret_domiciliation_together") {
+            return res.status(400).json({ message: "Le SIRET et l'adresse de domiciliation doivent être renseignés ensemble" });
         }
         return res.status(500).json({ message: "Erreur lors de la modification des données" });
     }

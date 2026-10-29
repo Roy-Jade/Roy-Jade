@@ -3,3 +3,8 @@
         margin-top: 0.1rem;
     }
 }
+
+// L'adresse de domiciliation est saisie sur plusieurs lignes.
+.dashboard-identity__multiline {
+    white-space: pre-line;
+}

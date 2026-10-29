@@ -14,6 +14,8 @@ interface FormData {
     lastname: string;
     email: string;
     telephone: string;
+    siret: string;
+    domiciliation: string;
     github_link: string;
     gitlab_link: string;
     linkedin_link: string;
@@ -21,6 +23,7 @@ interface FormData {
 
 const emptyForm: FormData = {
     firstname: '', lastname: '', email: '', telephone: '',
+    siret: '', domiciliation: '',
     github_link: '', gitlab_link: '', linkedin_link: '',
 };
 
@@ -38,6 +41,8 @@ export default function IdentityForm({ onClose }: Props) {
             lastname: identity.lastname,
             email: identity.email ?? '',
             telephone: identity.telephone ?? '',
+            siret: identity.siret ?? '',
+            domiciliation: identity.domiciliation ?? '',
             github_link: identity.github_link ?? '',
             gitlab_link: identity.gitlab_link ?? '',
             linkedin_link: identity.linkedin_link ?? '',
@@ -77,6 +82,17 @@ export default function IdentityForm({ onClose }: Props) {
                 </label>
                 <label>Téléphone
                     <input value={form.telephone} onChange={e => setForm(p => ({ ...p, telephone: e.target.value }))} />
+                </label>
+            </div>
+            <div className="form-grid-2">
+                <label>SIRET
+                    <input value={form.siret} onChange={e => setForm(p => ({ ...p, siret: e.target.value }))}
+                        inputMode="numeric" pattern="[0-9]{14}" maxLength={14} title="14 chiffres, sans espace"
+                        required={form.domiciliation !== ''} />
+                </label>
+                <label>Adresse de domiciliation
+                    <textarea value={form.domiciliation} onChange={e => setForm(p => ({ ...p, domiciliation: e.target.value }))}
+                        rows={2} maxLength={255} required={form.siret !== ''} />
                 </label>
             </div>
             <label>GitHub

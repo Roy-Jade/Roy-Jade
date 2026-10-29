@@ -21,7 +21,7 @@ Interface protégée par session pour administrer les données du CV sans déplo
 
 | Section | Ce qu'on y gère |
 |---|---|
-| Identité | Prénom, nom, email, téléphone, liens GitHub / GitLab / LinkedIn |
+| Identité | Prénom, nom, email, téléphone, SIRET et adresse de domiciliation (facultatifs), liens GitHub / GitLab / LinkedIn |
 | Profils | Contextes d'accroche (labo, alternance, générique) avec tagline et description |
 | Expériences | Titre, entreprise, lieu, dates, type, description, tâches, soft/hard skills, domaines |
 | Formations | Titre, établissement, lieu, date, niveau, description, tâches, hard skills, domaines |
@@ -268,3 +268,9 @@ Le schéma et les données initiales sont injectés automatiquement au premier d
 - Suppression des domaines (nécessite vérification des dépendances avant suppression + UI)
 - Fix transactions manquantes (voir section Bugs connus)
 - Déploiement public
+
+---
+
+## Licence
+
+Copyright (C) 2026 Grégoire Portier — sous licence AGPL-3.0-only, voir [LICENSE](LICENSE).

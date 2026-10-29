@@ -124,6 +124,7 @@ Fichiers de référence détaillés dans `docs/`, à lire uniquement quand le su
 - [docs/refactor-login-redirect.md](docs/refactor-login-redirect.md) — après connexion, redirection vers la page d'origine au lieu de `/cv` en dur, via suivi applicatif du dernier chemin visité (`sessionStorage`) plutôt que l'historique navigateur — rend un redirect vers un domaine externe structurellement impossible. Terminé.
 - [docs/refactor-tagline-fit.md](docs/refactor-tagline-fit.md) — réduction automatique de la police du titre du CV selon sa longueur (estimation par nombre de caractères + `cqi`, une seule ligne, centrage vertical), options pur CSS étudiées et écartées. Terminé.
 - [docs/refactor-site-design.md](docs/refactor-site-design.md) — refonte design du site (thème sombre vert + orange, tokens dans `styles/`, feuille CV protégée des styles globaux, pièges de spécificité, logique tactile des boutons du CV, pages 404 avec molécule SVG et Contact), bugs connus restants. Terminé.
+- [docs/refactor-legal-page.md](docs/refactor-legal-page.md) — page mentions légales, champs SIRET/domiciliation (« les deux ou aucun ») dans `identity`, licence AGPL-3.0-only. En cours : hébergeur à renseigner.
 
 **Convention :** tout nouveau fichier ajouté dans `docs/` doit avoir sa ligne ajoutée ici (chemin + résumé d'une phrase).
 

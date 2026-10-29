@@ -18,6 +18,8 @@ export default function DashboardIdentity({ identity, isEditing, onEdit }: Props
                         <div className="item-card__title">{identity.firstname} {identity.lastname}</div>
                         {identity.email && <div className="item-card__subtitle">{identity.email}</div>}
                         {identity.telephone && <div className="item-card__subtitle">{identity.telephone}</div>}
+                        {identity.siret && <div className="item-card__subtitle">SIRET {identity.siret}</div>}
+                        {identity.domiciliation && <div className="item-card__subtitle dashboard-identity__multiline">{identity.domiciliation}</div>}
                     </div>
                     <EditButton onClick={onEdit} />
                 </div>

@@ -84,7 +84,7 @@ Retourne les informations personnelles.
 **Réponses**
 | Code | Corps |
 |------|-------|
-| 200 | `{ result: { id, firstname, lastname, email, telephone, github_link, gitlab_link, linkedin_link, rqth } }` |
+| 200 | `{ result: { id, firstname, lastname, email, telephone, town, siret, domiciliation, github_link, gitlab_link, linkedin_link, rqth } }` |
 | 500 | `{ message: "Erreur lors de la récupération des données" }` |
 
 ---
@@ -318,16 +318,19 @@ Modifie les informations personnelles (tous les champs sont optionnels).
 **Body**
 ```json
 {
-  "data": { "firstname": "string?", "lastname": "string?", "email": "string?", "telephone": "string?", "github_link": "string?", "gitlab_link": "string?", "linkedin_link": "string?", "rqth": "boolean?" }
+  "data": { "firstname": "string?", "lastname": "string?", "email": "string?", "telephone": "string?", "town": "string?", "siret": "string|null?", "domiciliation": "string|null?", "github_link": "string?", "gitlab_link": "string?", "linkedin_link": "string?", "rqth": "boolean?" }
 }
 ```
 
 **Réponses**
 | Code | Corps |
 |------|-------|
-| 200 | `{ result: { id, firstname, lastname, email, telephone, github_link, gitlab_link, linkedin_link, rqth } }` |
+| 200 | `{ result: { id, firstname, lastname, email, telephone, town, siret, domiciliation, github_link, gitlab_link, linkedin_link, rqth } }` |
 | 400 | `{ message: "..." }` (ZodError ou AppError) |
+| 400 | `{ message: "Le SIRET et l'adresse de domiciliation doivent être renseignés ensemble" }` |
 | 500 | `{ message: "Erreur lors de la modification des données" }` |
+
+**Champs `siret` et `domiciliation`** : facultatifs, mais renseignés ensemble ou pas du tout (contrainte `siret_domiciliation_together` en base). Une chaîne vide est convertie en `null`. `siret` doit comporter exactement 14 chiffres, `domiciliation` ne peut pas être composée uniquement d'espaces.
 
 ---
 
